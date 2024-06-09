@@ -6,7 +6,7 @@ export interface User extends Document {
     password: string;
     fullName: string;
     avatar: string;
-    isVarified: boolean;
+    isVerified: boolean;
     verificationCode: string;
     verifiCationCodeExpires: Date;
     posts: string[];   //TODO: change to Posts[] 
@@ -38,10 +38,10 @@ export const UserSchema : Schema<User> = new mongoose.Schema({
             type: String,
         },
         avatar:{
-            type: String,
-            required: [true, "Avatar is required"],
+            public_id:String,
+            url:String,
         },
-        isVarified: {
+        isVerified: {
             type: Boolean,
             default: false,
         },
@@ -53,12 +53,6 @@ export const UserSchema : Schema<User> = new mongoose.Schema({
             type: Date,
             required: [true, "Verification code expiry date is required"],
         },
-        posts: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Post",
-            },
-        ],
 }, { timestamps: true });
 
 const UserModel = mongoose.models.User as mongoose.Model<User> || mongoose.model<User>("User", UserSchema);
