@@ -1,4 +1,4 @@
-import mongoose ,{Schema,Document, Mongoose} from "mongoose";
+import mongoose ,{Schema,Document} from "mongoose";
 
 export interface Post extends Document {
     postUrl: string;
@@ -31,7 +31,7 @@ export const PostSchema:Schema<Post> = new mongoose.Schema({
     },
     owner:{
         type:Schema.Types.ObjectId,
-        ref:"user",
+        ref:"User",
     }
 },{timestamps:true}) 
 
