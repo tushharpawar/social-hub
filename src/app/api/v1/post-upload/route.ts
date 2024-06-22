@@ -13,9 +13,7 @@ export const POST = async (req: NextRequest, res: NextResponse) =>{
     dbConnect()
 
     try {
-            const formData = await req.formData()
-            const postUrl = formData.get('postUrl') as string
-            const caption = formData.get('caption') as string
+            const {postUrl,userId,caption} =  await req.json()
 
             const cloudinaryUrl = await cloudinary.uploader.upload(postUrl,{
                 folder:"user-posts"
@@ -24,6 +22,7 @@ export const POST = async (req: NextRequest, res: NextResponse) =>{
             const newPost = new PostModel({
                 postUrl:cloudinaryUrl.secure_url,
                 caption,
+                owner:userId,
             })
 
             await newPost.save();
@@ -35,7 +34,7 @@ export const POST = async (req: NextRequest, res: NextResponse) =>{
                 message: "Post uploaded successfully!",
             }, {status: 201});
 
-    } catch (error) {
+    } catch (error:any) {
         console.log("Error in posting images: ", error);
         return NextResponse.json({
             suceess:false,
