@@ -13,7 +13,10 @@ export const POST = async (req: NextRequest, res: NextResponse) =>{
     dbConnect()
 
     try {
-            const {postUrl,userId,caption} =  await req.json()
+        const formData = await req.formData();
+        const postUrl = formData.get('postUrl') as string
+        const userId = formData.get('userId') as string
+        const caption = formData.get('caption') as string
 
             const cloudinaryUrl = await cloudinary.uploader.upload(postUrl,{
                 folder:"user-posts"
