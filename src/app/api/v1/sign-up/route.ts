@@ -5,6 +5,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import { sendMail } from "@/app/helper/mailer";
 
+//need to add 
+//TODO: Add change password features
+//TODO: Add update or remove avatar feature
+//TODO: Add public/private account feature
+//TODO: Add story upload feature
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -13,7 +18,7 @@ cloudinary.config({
 });
 
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const POST = async (req: Request, res: NextResponse) => {
 
          await dbConnect()
         try{
@@ -28,7 +33,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
             const avatar = formData.get('avatar') as string
 
 
-        // const { email, username, password, fullName,avatarUrl } = await req.body;
+        // const { email, username, password, fullName, avatar }  = await req.json();
 
         // Rest of the code...
 
