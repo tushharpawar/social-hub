@@ -24,6 +24,8 @@ export const POST = async (req: NextRequest, res: NextResponse) =>{
                 folder:"user-posts"
             }) 
 
+            
+
             const newPost = new PostModel({
                 postUrl:cloudinaryUrl.secure_url,
                 caption,
