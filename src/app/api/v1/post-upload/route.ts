@@ -2,6 +2,8 @@ import dbConnect from "@/lib/dbConnect";
 import PostModel from "@/models/Post.model";
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
+import UserModel from "@/models/User.model";
+
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -13,10 +15,6 @@ export const POST = async (req: NextRequest, res: NextResponse) =>{
     dbConnect()
 
     try {
-        // const formData = await req.formData();
-        // const postUrl = formData.get('postUrl') as string
-        // const userId = formData.get('userId') as string
-        // const caption = formData.get('caption') as string
 
         const {postUrl,userId,caption} = await req.json()
 
