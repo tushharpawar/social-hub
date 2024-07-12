@@ -9,7 +9,7 @@ export interface User extends Document {
     isVerified: boolean;
     verificationCode: string;
     verifiCationCodeExpires: Date;
-    posts: ObjectId;   //TODO: change to Posts[] 
+    posts: ObjectId;   
     createdAt: Date;
     updatedAt: Date;
 }
@@ -53,9 +53,6 @@ export const UserSchema : Schema<User> = new mongoose.Schema({
             type: Date,
             required: [true, "Verification code expiry date is required"],
         },
-        posts:{
-            type:Array(),
-        }
 }, { timestamps: true });
 
 const UserModel = mongoose.models.User as mongoose.Model<User> || mongoose.model<User>("User", UserSchema);
