@@ -2,7 +2,7 @@ import dbConnect from "@/lib/dbConnect";
 import PostModel from "@/models/Post.model";
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
-import UserModel from "@/models/User.model";
+
 
 
 cloudinary.config({
@@ -21,8 +21,6 @@ export const POST = async (req: NextRequest, res: NextResponse) =>{
             const cloudinaryUrl = await cloudinary.uploader.upload(postUrl,{
                 folder:"user-posts"
             }) 
-
-            
 
             const newPost = new PostModel({
                 postUrl:cloudinaryUrl.secure_url,
