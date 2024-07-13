@@ -23,6 +23,7 @@ export const LikeSchema : Schema<Like> = new mongoose.Schema({
     likedBy:{
         type:Schema.Types.ObjectId,
         ref:"User",
+        unique:true
     }
 },{timestamps:true})
 
