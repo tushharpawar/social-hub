@@ -2,8 +2,8 @@ import dbConnect from "@/lib/dbConnect";
 import PostModel from "@/models/Post.model";
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
-
-
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/options";
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -12,11 +12,25 @@ cloudinary.config({
 });
 
 export const POST = async (req: NextRequest, res: NextResponse) =>{
-    dbConnect()
+    await dbConnect()
+
+    //Getting userId from logged in user from Session
+
+    const session = await getServerSession(authOptions)
+    const _user = session?.user;
+
+    if(!session || !_user){
+        return NextResponse.json(
+            { success: false, message: 'Not authenticated' },
+            { status: 401 }
+          );
+    }
+
+    const userId = _user._id;
 
     try {
 
-        const {postUrl,userId,caption} = await req.json()
+        const {postUrl,caption} = await req.json()
 
             const cloudinaryUrl = await cloudinary.uploader.upload(postUrl,{
                 folder:"user-posts"
