@@ -64,7 +64,7 @@ export const authOptions: NextAuthOptions = {
       }
       return true // Do different verification for other providers that don't have `email_verified`
     },
-    async jwt({token,user} :any) {
+    async jwt({token,user}) {
         if(user){
           token._id = user._id?.toString();
           token.email = user.email;
@@ -73,7 +73,7 @@ export const authOptions: NextAuthOptions = {
         }
         return token;
     },
-    async session({session,token} :any){
+    async session({session,token}){
       if(token){
         session.user._id = token._id;
         session.user.email = token.email;
