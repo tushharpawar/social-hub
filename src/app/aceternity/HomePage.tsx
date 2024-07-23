@@ -26,7 +26,7 @@ export function HomePage() {
         className="text-xl mt-10 px-4 md:text-xl lg:text-3xl font-bold text-neutral-700 dark:text-white max-w-4xl leading-relaxed lg:leading-snug text-center mx-auto "
       >
         Welcome to <Highlight>Social-Hub</Highlight>.
-        <p>Share what you&apos;re into with the people who get you..</p>
+        <p>Share what you&apos;re into with the people who get you.</p>
       </motion.h1>
 
       <div className="w-full mt-5 flex justify-center items-center">
