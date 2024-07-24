@@ -1,15 +1,69 @@
-import React from "react";
+'use client'
+
+import React, { useState } from "react";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import {
   InputOTP,
   InputOTPGroup,
-  InputOTPSeparator,
   InputOTPSlot,
-} from "@/components/ui/input-otp";
+} from "@/components/ui/input-otp"
 import { Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button";
-
+import axios ,{AxiosError} from "axios";
+import { useParams, useRouter } from "next/navigation";
+import {z} from 'zod' 
+import { verifyCodeSchema } from "@/app/schemas/verifyCodeSchema";
+import { toast } from "@/components/ui/use-toast";
+import { ApiResponse } from "@/types/ApiResponse";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const Page = () => {
+
+  const params = useParams<{username:string}>()
+  const router = useRouter()
+  const form = useForm<z.infer<typeof verifyCodeSchema>>({
+    resolver:zodResolver(verifyCodeSchema)
+  })
+
+  const onSubmit  = async(data:z.infer<typeof verifyCodeSchema>)=>{
+        try {
+          
+         await axios.post(`/api/v1/verify-code`,{
+           username:params.username,
+            code:data.code
+          })
+  
+          toast({
+            title:"Success",
+            description:(
+              <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+              </pre>
+            )
+          })
+  
+          router.replace('/sign-in')
+        } catch (error) {
+          const axiosError = error as AxiosError<ApiResponse>;
+          toast({
+            title: 'Verification Failed',
+            description:
+              axiosError.response?.data.message ??
+              'An error occurred. Please try again.',
+            variant: 'destructive',
+          });
+        }
+  }
+
   return (
     <div className="min-h-screen flex justify-center items-center bg-slate-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
@@ -24,26 +78,37 @@ const Page = () => {
           </p>
         </div>
       <div className="w-full items-center flex justify-center">
-        <InputOTP
-        maxLength={6}
-      >
-        <InputOTPGroup>
-          <InputOTPSlot index={0} />
-          <InputOTPSlot index={1} />
-          <InputOTPSlot index={2} />
-          <InputOTPSlot index={3} />
-          <InputOTPSlot index={4} />
-          <InputOTPSlot index={5} />
-        </InputOTPGroup>
-      </InputOTP>       
-        </div>
-        <div className="text-center text-lg">
-
-          <>Enter your 6-digit code here.</>
-       
-      </div>
-        <div className=" flex items-center justify-center ">
-        <Button type="submit" className="w-[70%]">Submit</Button>
+      <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+        <FormField
+          control={form.control}
+          name="code"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>One-Time Password</FormLabel>
+              <FormControl>
+                <InputOTP maxLength={6} {...field}>
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </FormControl>
+              <FormDescription>
+                Please enter the one-time password sent to your email.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+ 
+        <Button type="submit" className="w-full">Submit</Button>
+      </form>
+    </Form>       
         </div>
       </div>
     </div>
