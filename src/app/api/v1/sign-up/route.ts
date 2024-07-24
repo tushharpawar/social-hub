@@ -25,17 +25,15 @@ export const POST = async (req: Request, res: NextResponse) => {
 
             //getting Data from formdata
 
-            const formData = await req.formData();
-            const email = formData.get('email') as string
-            const username = formData.get('username') as string
-            const password = formData.get('password') as string
-            const fullName = formData.get('fullName') as string
-            const avatar = formData.get('avatar') as string
+            // const formData = await req.formData();
+            // const email = formData.get('email') as string
+            // const username = formData.get('username') as string
+            // const password = formData.get('password') as string
+            // const fullName = formData.get('fullName') as string
+            // const avatar = formData.get('avatar') as string
 
 
-        // const { email, username, password, fullName, avatar }  = await req.json();
-
-        // Rest of the code...
+        const { email, username, password, fullName, avatar }  = await req.json();
 
         const existingUserByEmail = await UserModel.findOne({email});
         let verificationCode = Math.floor(100000+Math.random()*900000).toString()
