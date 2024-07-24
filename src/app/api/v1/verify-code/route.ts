@@ -5,10 +5,17 @@ import dbConnect from "@/lib/dbConnect"
 export const POST =async(req:NextRequest,res:NextResponse)=> {
     await dbConnect();
     try {
-        const {username , code} = await req.json()
-        const decodedUsername = decodeURIComponent(username)
+        const {code} = await req.json()
 
-        const user =await UserModel.findOne({username:decodedUsername})
+        const { searchParams } = new URL(req.url);
+
+            const queryParams = {
+        username: searchParams.get("username"),
+        };
+
+        const { username } = queryParams;
+
+        const user =await UserModel.findOne({username})
 
         if(!user){
             return NextResponse.json({
