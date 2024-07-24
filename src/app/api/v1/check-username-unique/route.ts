@@ -28,6 +28,26 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
       );
     }
 
+    if(username?.length ! <3){
+      return NextResponse.json(
+        {
+          suceess: false,
+          message: "Username must be more than 2 charcters.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if(username === ""){
+      return NextResponse.json(
+        {
+          suceess: false,
+          message: "Username can't be empty.",
+        },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       {
         suceess: true,
