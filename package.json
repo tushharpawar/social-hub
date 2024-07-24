@@ -31,6 +31,7 @@
     "express-form-data": "^2.0.23",
     "formidable": "^3.5.1",
     "framer-motion": "^11.3.8",
+    "input-otp": "^1.2.4",
     "lucide-react": "^0.408.0",
     "mini-svg-data-uri": "^1.4.4",
     "mongodb": "^6.8.0",
