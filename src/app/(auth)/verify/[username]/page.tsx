@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from "react";
+import React from "react";
 import {
   Form,
   FormControl,
@@ -37,21 +37,17 @@ const Page = () => {
   const onSubmit  = async(data:z.infer<typeof verifyCodeSchema>)=>{
         try {
           
-         await axios.post(`/api/v1/verify-code`,{
-           username:params.username,
+         const response = await axios.post(`/api/v1/verify-code`,{
+            username:params.username,
             code:data.code
           })
   
           toast({
             title:"Success",
-            description:(
-              <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-              </pre>
-            )
+            description:response.data.message
           })
   
-          router.replace('/sign-in')
+          router.replace(`/avatar/${params.username}`)
         } catch (error) {
           const axiosError = error as AxiosError<ApiResponse>;
           toast({
