@@ -23,17 +23,7 @@ export const POST = async (req: Request, res: NextResponse) => {
          await dbConnect()
         try{
 
-            //getting Data from formdata
-
-            // const formData = await req.formData();
-            // const email = formData.get('email') as string
-            // const username = formData.get('username') as string
-            // const password = formData.get('password') as string
-            // const fullName = formData.get('fullName') as string
-            // const avatar = formData.get('avatar') as string
-
-
-        const { email, username, password, fullName, avatar }  = await req.json();
+        const { email, username, password, fullName}  = await req.json();
 
         const existingUserByEmail = await UserModel.findOne({email});
         let verificationCode = Math.floor(100000+Math.random()*900000).toString()
@@ -56,7 +46,7 @@ export const POST = async (req: Request, res: NextResponse) => {
                 await sendMail({email,verificationCode})
                 return NextResponse.json({
                     success: true,
-                    message: "WE have send you  verificaion email please verify your account",
+                    message: "We have send you  verificaion email please verify your account",
                 }, {status: 200});
             }
         }else{
@@ -67,32 +57,27 @@ export const POST = async (req: Request, res: NextResponse) => {
                 // const dir = path.resolve('/public','/uploads')
                 // const readDir = fs.readdirSync(dir)
                 // const imagesPath = readDir.map(name => path.join('/', '/uploads', name))
-                console.log("Image url::::",avatar);
                 
                 // const cloudinaryUrl =await uploadOnCloudinary(avatar) 
-                const cloudinaryUrl = await cloudinary.uploader.upload(avatar,{
-                    folder:"avatar"
-                })          
-                // await sendMail(email,verificationCode)
+                // const cloudinaryUrl = await cloudinary.uploader.upload(avatar,{
+                //     folder:"avatar"
+                // })   
+                
+                const avatar:string="https://res.cloudinary.com/dsgi2zbq2/image/upload/profile_pic_q6ssck.jpg"
+
                 const newUser = new UserModel({
                     username,
                     email,
                     password:hashedPassword,
                     isVerified:false,
+                    avatar,
                     verificationCode:verificationCode,
                     verifiCationCodeExpires:expiryDate,
                     fullName,
-                    avatar:{
-                        public_id:cloudinaryUrl.public_id,
-                        url:cloudinaryUrl.secure_url
-                    
-                    },
                 })
 
                 await newUser.save();
-                console.log(newUser);
                 await sendMail({email,verificationCode})
-
         }
 
         return NextResponse.json({
