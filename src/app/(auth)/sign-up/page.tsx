@@ -80,8 +80,8 @@ const Page = () => {
 			const response = await axios.post(`api/v1/sign-up`,data)
 
 			toast({
-				title:"Success",
-				description:response.data.message,
+				title:"Signup Successful!🎉",
+				description:"We have sent you 6-digit code on your email.",
 			})
 
 			router.replace(`/verify/${username}`)
@@ -130,8 +130,6 @@ const Page = () => {
 					 }}
 					 />		 
                   </FormControl>
-				  <FormMessage>	
-					 </FormMessage>
 				  {
 						isCheckingUsername && <Loader2 className=" animate-spin"/>
 					 }
@@ -180,6 +178,7 @@ const Page = () => {
                 </FormItem>
               )}
             />
+
             <Button type="submit" disabled={isSubmitting}>
 				{
 					isSubmitting ? (
