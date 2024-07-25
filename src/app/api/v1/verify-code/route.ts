@@ -5,17 +5,10 @@ import dbConnect from "@/lib/dbConnect"
 export const POST =async(req:NextRequest,res:NextResponse)=> {
     await dbConnect();
     try {
-        const {code} = await req.json()
+        const {username , code} = await req.json()
+        const decodedUsername = decodeURIComponent(username)
 
-        const { searchParams } = new URL(req.url);
-
-            const queryParams = {
-        username: searchParams.get("username"),
-        };
-
-        const { username } = queryParams;
-
-        const user =await UserModel.findOne({username})
+        const user =await UserModel.findOne({username:decodedUsername})
 
         if(!user){
             return NextResponse.json({
@@ -33,7 +26,7 @@ export const POST =async(req:NextRequest,res:NextResponse)=> {
             await user.save();
             return NextResponse.json({
                 suceess:true,
-                message: "User is verified now"}
+                message: "Your account is verified successfuly!"}
             ,{status: 201});
         }else if(!isCodeNotExpired){
             //Verification code is expired now
