@@ -8,8 +8,7 @@ export interface User extends Document {
     avatar: string;
     isVerified: boolean;
     verificationCode: string;
-    verifiCationCodeExpires: Date;
-    posts: ObjectId;   
+    verifiCationCodeExpires: Date;   
     createdAt: Date;
     updatedAt: Date;
 }
@@ -38,8 +37,8 @@ export const UserSchema : Schema<User> = new mongoose.Schema({
             type: String,
         },
         avatar:{
-            public_id:String,
-            url:String,
+            type:String,
+            required:[true,"Avatar is required!"],
         },
         isVerified: {
             type: Boolean,
