@@ -63,7 +63,7 @@ export const POST = async (req: Request, res: NextResponse) => {
                 //     folder:"avatar"
                 // })   
                 
-                const avatar:string="https://res.cloudinary.com/dsgi2zbq2/image/upload/profile_pic_q6ssck.jpg"
+                let avatar:string="https://res.cloudinary.com/dsgi2zbq2/image/upload/profile_pic_q6ssck.jpg"
 
                 const newUser = new UserModel({
                     username,
