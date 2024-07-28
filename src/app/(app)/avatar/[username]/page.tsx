@@ -1,13 +1,12 @@
-/* eslint-disable react/jsx-no-comment-textnodes */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Image from "next/image";
-import { useParams } from "next/navigation";
-import "react-image-crop/dist/ReactCrop.css";
-import ReactCrop, { type Crop } from "react-image-crop";
+import { useParams, useRouter } from "next/navigation";
+import Cropper from "react-easy-crop";
 import { Button } from "@/components/ui/button";
+import getCroppedImg from "@/app/helper/getImg";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,16 +18,25 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import axios from "axios";
+import { toast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
 
 const ASPECT_RETIO = 1;
-const MIN_DIMENTION = 150;
 
 const Page = () => {
-  const [imgSrc, setImgSrc] = useState("");
 
-  const [crop, setCrop] = useState<Crop>();
+  const [imgSrc, setImgSrc] = useState("");
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [openBox, setOpenBox] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [croppedImage, setCroppedImage] = useState(null);
+  const [isLoadingImage,setIsLoadingImage] = useState(false)
+  const [isUploading,setIsUploading] = useState(false)
 
   const params = useParams<{ username: string }>();
+  const router = useRouter();
 
   const onSelectFile = (e: any) => {
     const file = e.target.files?.[0];
@@ -38,8 +46,9 @@ const Page = () => {
     const reader = new FileReader();
 
     reader.addEventListener("load", () => {
-      if(imgSrc) setImgSrc("") 
+      if (imgSrc) setImgSrc("");
       const imgUrl = reader.result?.toString() || "";
+      setOpenBox(true);
       console.log(imgUrl);
       setImgSrc(imgUrl);
     });
@@ -47,26 +56,55 @@ const Page = () => {
     reader.readAsDataURL(file);
   };
 
-  const onImageLoad = (e: any) => {
-
-    const width = 50;
-    const height = 50;
-    setCrop({
-      unit: "%",
-      x: 10,
-      y: 10,
-      width,
-      height,
-    });
+  const cancelHandler = () => {
+    setImgSrc("");
+    setOpenBox(false);
   };
 
-  const cancelHandler = () =>{
-        setImgSrc("");
+  const showCroppedImage = async () => {
+    try {
+      const croppedImage:any = await getCroppedImg(imgSrc, croppedAreaPixels);
+      console.log("donee", { croppedImage });
+      setCroppedImage(croppedImage);
+      setOpenBox(false);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const onCropComplete = (croppedArea :any, croppedAreaPixels:any) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  };
+
+  const onSkip = () => {
+    router.replace('/sign-in')
   }
 
-  const continueHandler = () =>{
-        setImgSrc("");
+  const updateAvatar = async() =>{
+      setIsUploading(true)
+       try {
+         const response = await axios.patch('/api/v1/update-avatar',{avatar:croppedImage,
+           username:params.username
+         })
+ 
+         toast({
+           title:"Avatar uploaded!",
+         })
+ 
+         router.replace('/sign-in')
+ 
+         setIsUploading(false)
+       } catch (error) {
+            console.log("An error in avatar page.tsx",error);
+            toast({
+              title:"Something went wrong :(",
+              description:"Please try again later.",
+              variant:"destructive"
+            })
+            setIsUploading(false)
+       }
   }
+
   return (
     <div className="min-h-screen flex justify-center items-center bg-slate-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
@@ -81,8 +119,12 @@ const Page = () => {
           </div>
 
           <div>
-            <Image
-              src="https://res.cloudinary.com/dsgi2zbq2/image/upload/profile_pic_q6ssck.jpg"
+            <img
+              src={
+                croppedImage
+                  ? croppedImage
+                  : "https://res.cloudinary.com/dsgi2zbq2/image/upload/profile_pic_q6ssck.jpg"
+              }
               alt="profile pic"
               width={150}
               height={150}
@@ -103,43 +145,70 @@ const Page = () => {
                   onChange={onSelectFile}
                 />
               </AlertDialogTrigger>
-              {imgSrc && (
+              {openBox && (
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Selected avatar
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>Move circle to select area.</AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <div>
-                      <ReactCrop
+                    <AlertDialogTitle>Selected avatar</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Move circle to select area.
+                    </AlertDialogDescription>
+                    <div className="w-full h-[60vh] flex justify-center ml-2 items-center cropper">
+                      <Cropper
+                        image={imgSrc}
                         crop={crop}
-                        circularCrop
-                        keepSelection
                         aspect={ASPECT_RETIO}
-                        minWidth={MIN_DIMENTION}
-                        onChange={(crop, percentCrop) => setCrop(crop)}
-                        locked
-                      >
-                        <div className=" max-h-[500px] max-w-[500px] flex items-center justify-center overflow-hidden">
-                          <img
-                            src={imgSrc}
-                            alt="Upload"
-                            width={(e) => e.currentTarget.naturalWidth}
-                            height={(e) => e.currentTarget.naturalHeight}
-                            onLoad={onImageLoad}
-                          />
-                        </div>
-                      </ReactCrop>
-                  </div>
+                        zoom={zoom}
+                        cropShape="round"
+                        onCropChange={setCrop}
+                        onZoomChange={setZoom}
+                        onCropComplete={onCropComplete}
+                        objectFit="cover"
+                        style={{
+                          containerStyle: {
+                            width: "400px",
+                            height: "400px",
+                            marginTop: "100px",
+                            display: "flex",
+                            justifyItems: "center",
+                          },
+                          cropAreaStyle: {
+                            width: "150px",
+                            height: "150px",
+                          },
+                        }}
+                      ></Cropper>
+                    </div>
+                  </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel onClick={cancelHandler}>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={continueHandler}>Continue</AlertDialogAction>
+                    <AlertDialogCancel onClick={cancelHandler}>
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction onClick={showCroppedImage}>
+                      Continue
+                    </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               )}
             </AlertDialog>
           </div>
+        </div>
+        <div className=" flex justify-between">
+        <Button variant={"outline"} className="text-md border-gray-800" onClick={onSkip}>
+          Skip for now
+        </Button>
+
+        {
+          croppedImage && <Button className="text-md" disabled={isUploading} onClick={updateAvatar}>
+          {
+            isUploading ? (
+              <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
+              Please wait
+              </>
+            ) : ('Save avatar') 
+          }
+        </Button>
+        }
         </div>
       </div>
     </div>
