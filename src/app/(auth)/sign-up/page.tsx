@@ -83,8 +83,9 @@ const Page = () => {
 				title:"Signup Successful!🎉",
 				description:"We have sent you 6-digit code on your email.",
 			})
-
-			router.replace(`/verify/${username}`)
+      console.log(response);
+      
+			router.replace(`/verify/${response.data.newUser._id}`)
 			setIsSubmitting(false)
 		} catch (error) {
 			console.error("Error in signup user",error)
