@@ -9,7 +9,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_TOKEN,
 });
 
-export const PATCH = async (req: NextRequest, res: NextResponse) => {
+export const PUT = async (req: NextRequest, res: NextResponse) => {
   await dbConnect();
   try {
     const { avatar,username } = await req.json();
@@ -26,18 +26,21 @@ export const PATCH = async (req: NextRequest, res: NextResponse) => {
         }
 
     // const cloudinaryUrl =await uploadOnCloudinary(avatar)
-    const cloudinaryUrl = await cloudinary.uploader.upload(avatar, {
+    const cloudinaryUrl =await cloudinary.uploader.upload(avatar, {
       folder: "avatar",
     });
     console.log(cloudinaryUrl.secure_url);
     
     const update = {
-      $set: {"avatar":cloudinaryUrl.secure_url}
+      $set: {avatar:cloudinaryUrl.secure_url}
     }
 
     console.log(update);
     
-    const updatedAvatar = await UserModel.updateOne({username:decodedUsername},{$set: {"avatar":cloudinaryUrl.secure_url}})
+    const updatedAvatar = await UserModel.updateOne({user},update)
+
+    console.log(updatedAvatar);
+    
     
     if(!updatedAvatar){
         return NextResponse.json(
@@ -48,6 +51,7 @@ export const PATCH = async (req: NextRequest, res: NextResponse) => {
             { status: 400 }
           );
     }
+
     return NextResponse.json(
         {
           success: true,
@@ -55,7 +59,7 @@ export const PATCH = async (req: NextRequest, res: NextResponse) => {
         },
         { status: 200 }
       );
-  } catch (error) {
+  } catch (error:any) {
     console.log("Error in uploading avatar: ", error);
     return NextResponse.json(
       {
