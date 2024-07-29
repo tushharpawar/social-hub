@@ -78,12 +78,14 @@ export const POST = async (req: Request, res: NextResponse) => {
 
                 await newUser.save();
                 await sendMail({email,verificationCode})
+                return NextResponse.json({
+                    success: true,
+                    message: "User registered successfully ,please verify your account from email",
+                    newUser
+                }, {status: 200});
         }
-
-        return NextResponse.json({
-            success: true,
-            message: "User registered successfully ,please verify your account from email",
-        }, {status: 200});
+        
+        
     } catch (error) {
         console.log("Error in sign-up: ", error);
         return NextResponse.json({
