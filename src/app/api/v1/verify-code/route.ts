@@ -1,14 +1,19 @@
 import UserModel from "@/models/User.model"
 import { NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/dbConnect"
+import mongoose from "mongoose";
 
-export const POST =async(req:NextRequest,res:NextResponse)=> {
+export const POST =async(req:NextRequest,{params}:{params:{_id:string}},res:NextResponse)=> {
     await dbConnect();
     try {
-        const {username , code} = await req.json()
-        const decodedUsername = decodeURIComponent(username)
+        const { code} = await req.json()
+        // const decodedUsername:any = decodeURIComponent(_id)
+        // const objectId = new mongoose.Types.ObjectId(_id);
+        const {_id} = params
 
-        const user =await UserModel.findOne({username:decodedUsername})
+        console.log(_id);
+        
+        const user = await UserModel.findById(_id)
 
         if(!user){
             return NextResponse.json({
