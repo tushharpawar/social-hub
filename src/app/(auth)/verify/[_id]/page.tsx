@@ -1,6 +1,6 @@
 'use client'
 
-import React from "react";
+import React,{useState} from "react";
 import {
   Form,
   FormControl,
@@ -28,13 +28,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 const Page = () => {
 
+  const [isSubmitting,setIsSubmitting] = useState(false)
+
+  //Get id from the url
   const params = useParams<{_id:string}>()
   const router = useRouter()
+
+  //using from from react-hook form and validating data from zod.
+
   const form = useForm<z.infer<typeof verifyCodeSchema>>({
     resolver:zodResolver(verifyCodeSchema)
   })
 
+  //Sending request to api endpoint for validate verify-code
+
   const onSubmit  = async(data:z.infer<typeof verifyCodeSchema>)=>{
+    setIsSubmitting(true)
         try {
           const _id = params._id.toString()
          const response = await axios.post(`/api/v1/verify-code/${_id}`,{
@@ -45,7 +54,7 @@ const Page = () => {
             title:"Success",
             description:response.data.message
           })
-  
+          setIsSubmitting(false)
           router.replace(`/avatar/${params._id}`)
         } catch (error) {
           const axiosError = error as AxiosError<ApiResponse>;
@@ -57,7 +66,7 @@ const Page = () => {
             variant: 'destructive',
           });
           console.log(error);
-          
+          setIsSubmitting(false)
         }
   }
 
@@ -74,6 +83,9 @@ const Page = () => {
             We have sent you a 6-digit verification code on your email.
           </p>
         </div>
+
+      {/* form from shadcn-ui */}
+
       <div className="w-full items-center flex justify-center">
       <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
@@ -103,7 +115,16 @@ const Page = () => {
           )}
         />
  
-        <Button type="submit" className="w-full">Submit</Button>
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
+        {isSubmitting ? (
+          <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
+          Please wait
+          </>
+        ):(
+          'Submit'
+        )}
+        </Button>
       </form>
     </Form>       
         </div>
