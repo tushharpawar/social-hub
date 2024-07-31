@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Link from "next/link";
-import axios ,{AxiosError} from "axios";
-import {useDebounceCallback} from "usehooks-ts";
+import axios, { AxiosError } from "axios";
+import { useDebounceCallback } from "usehooks-ts";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,90 +18,92 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { signUpSchema } from "@/app/schemas/signUpSchema";
 import { ApiResponse } from "@/types/ApiResponse";
 import { Loader2 } from "lucide-react";
 
 const Page = () => {
+  const [username, setUsername] = useState("");
+  const [usernameMessage, setUsernameMessage] = useState("");
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const [username,setUsername] = useState("");
-    const [usernameMessage,setUsernameMessage] = useState("");
-    const [isCheckingUsername,setIsCheckingUsername] = useState(false);
-    const [isSubmitting,setIsSubmitting] = useState(false);
-    
-    const debounced = useDebounceCallback(setUsername,300);
+  const debounced = useDebounceCallback(setUsername, 300);
 
-	const { toast } = useToast();
+  const { toast } = useToast();
 
-	const router = useRouter();
+  const router = useRouter();
 
-	//implementing zod .
+  //implementing zod .
 
-	const form = useForm<z.infer<typeof signUpSchema>>({
-		resolver:zodResolver(signUpSchema),
-		defaultValues:{
-			username:"",
-			fullName:"",
-			email:"",
-			password:"",
-		}
-	});
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      username: "",
+      fullName: "",
+      email: "",
+      password: "",
+    },
+  });
 
-	useEffect(() => {
-	  const checkUsernameUnique = async()=>{
-			if(username){
-				setIsCheckingUsername(true)
-				setUsernameMessage("")
-				try {
-					const response = await axios.get(`/api/v1/check-username-unique?username=${username}`)
+  //Checking for username's uniqueness
 
-					setUsernameMessage(response.data.message)
+  useEffect(() => {
+    const checkUsernameUnique = async () => {
+      if (username) {
+        setIsCheckingUsername(true);
+        setUsernameMessage("");
+        try {
+          const response = await axios.get(
+            `/api/v1/check-username-unique?username=${username}`
+          );
 
-				} catch (error:any) {
-					const axiosError = error as AxiosError<ApiResponse>
-					setUsernameMessage(
-						axiosError.response?.data.message ?? "Error while checking username"
-					)
-				}finally{
-					setIsCheckingUsername(false)
-				}
-			}
-	  }
-	  checkUsernameUnique()
-	}, [username]);
-	
+          setUsernameMessage(response.data.message);
+        } catch (error: any) {
+          const axiosError = error as AxiosError<ApiResponse>;
+          setUsernameMessage(
+            axiosError.response?.data.message ?? "Error while checking username"
+          );
+        } finally {
+          setIsCheckingUsername(false);
+        }
+      }
+    };
+    checkUsernameUnique();
+  }, [username]);
 
-  	const onSubmit = async(data:z.infer<typeof signUpSchema>) => {
-		setIsSubmitting(true)
+  //Hitting api endpoint for sign-up user
 
-		try {
-			const response = await axios.post(`api/v1/sign-up`,data)
+  const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
+    setIsSubmitting(true);
 
-			toast({
-				title:"Signup Successful!🎉",
-				description:"We have sent you 6-digit code on your email.",
-			})
-      console.log(response);
-      
-			router.replace(`/verify/${response.data.newUser._id}`)
-			setIsSubmitting(false)
-		} catch (error) {
-			console.error("Error in signup user",error)
-			const axiosError = error as AxiosError<ApiResponse>
-			let errorMessage = axiosError.response?.data.message
+    try {
+      const response = await axios.post(`api/v1/sign-up`, data);
 
-			toast({
-				title:"Sign up failed",
-				description:errorMessage,
-				variant:"destructive"
-			})
-			setIsSubmitting(false)
-		}
-	};
+      toast({
+        title: "Signup Successful!🎉",
+        description: "We have sent you 6-digit code on your email.",
+      });
 
-	return (
+      router.replace(`/verify/${response.data.newUser._id}`);
+      setIsSubmitting(false);
+    } catch (error) {
+      console.error("Error in signup user", error);
+      const axiosError = error as AxiosError<ApiResponse>;
+      let errorMessage = axiosError.response?.data.message;
+
+      toast({
+        title: "Sign up failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
     <div className=" min-h-screen flex justify-center items-center bg-slate-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
         <div className="text-center">
@@ -114,6 +116,9 @@ const Page = () => {
             Sign up to see photos and videos from your friends.
           </p>
         </div>
+
+        {/* using form from shadcn ui  */}
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -124,20 +129,27 @@ const Page = () => {
                   <FormLabel>Username</FormLabel>
                   <FormControl>
                     <Input
-					 placeholder="username" {...field}
-					 onChange={(e)=>{
-						field.onChange(e)
-						debounced(e.target.value)
-					 }}
-					 />		 
+                      placeholder="username"
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        debounced(e.target.value);
+                      }}
+                    />
                   </FormControl>
-				  {
-						isCheckingUsername && <Loader2 className=" animate-spin"/>
-					 }
-					 <p className={`text-sm ${usernameMessage === 'Username is unique' ? ' text-green-500' : ' text-red-600'}`}>
-							{usernameMessage}
-						</p>
-					 
+
+                  {/* display message for username's uniqueness */}
+
+                  {isCheckingUsername && <Loader2 className=" animate-spin" />}
+                  <p
+                    className={`text-sm ${
+                      usernameMessage === "Username is unique"
+                        ? " text-green-500"
+                        : " text-red-600"
+                    }`}
+                  >
+                    {usernameMessage}
+                  </p>
                 </FormItem>
               )}
             />
@@ -181,21 +193,22 @@ const Page = () => {
             />
 
             <Button type="submit" disabled={isSubmitting}>
-				{
-					isSubmitting ? (
-						<>
-						<Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
-						Please wait
-						</>
-					) : ('Sign up')
-				}
-			</Button>
+              {/* loading animation if form will be submitting */}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
+                  Please wait
+                </>
+              ) : (
+                "Sign up"
+              )}
+            </Button>
           </form>
         </Form>
 
-		<div className="text-center mt-4">
+        <div className="text-center mt-4">
           <p>
-            Already a member?{' '}
+            Already a member?{" "}
             <Link href="/sign-in" className="text-blue-600 hover:text-blue-800">
               Sign in
             </Link>
