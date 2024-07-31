@@ -25,19 +25,19 @@ import { Loader2 } from "lucide-react";
 const ASPECT_RETIO = 1;
 
 const Page = () => {
-
   const [imgSrc, setImgSrc] = useState("");
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [openBox, setOpenBox] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [croppedImage, setCroppedImage] = useState(null);
-  const [isLoadingImage,setIsLoadingImage] = useState(false)
-  const [isUploading,setIsUploading] = useState(false)
+  const [isLoadingImage, setIsLoadingImage] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const params = useParams<{ _id: string }>();
   const router = useRouter();
-  let username = ""
+
+  //Getting imageurl when image is selected by user.
 
   const onSelectFile = (e: any) => {
     const file = e.target.files?.[0];
@@ -47,6 +47,7 @@ const Page = () => {
     const reader = new FileReader();
 
     reader.addEventListener("load", () => {
+      setIsLoadingImage(true);
       if (imgSrc) setImgSrc("");
       const imgUrl = reader.result?.toString() || "";
       setOpenBox(true);
@@ -55,56 +56,70 @@ const Page = () => {
     });
 
     reader.readAsDataURL(file);
+    setIsLoadingImage(false);
   };
+
+  //Handles when user cancels to update avatar when crop image alert is popped up.
 
   const cancelHandler = () => {
     setImgSrc("");
     setOpenBox(false);
   };
 
+  //function for showing a cropped image as avatar on page.
+
   const showCroppedImage = async () => {
     try {
-      const croppedImage:any = await getCroppedImg(imgSrc, croppedAreaPixels);
-      console.log("donee", { croppedImage });
+      setIsLoadingImage(true);
+      const croppedImage: any = await getCroppedImg(imgSrc, croppedAreaPixels);
       setCroppedImage(croppedImage);
       setOpenBox(false);
+      setIsLoadingImage(false);
     } catch (e) {
       console.error(e);
+      setIsLoadingImage(false);
     }
   };
 
-  const onCropComplete = (croppedArea :any, croppedAreaPixels:any) => {
+  //When user compeletes a crop cropppedAreaPixels stores pixels of cropped image.
+
+  const onCropComplete = (croppedArea: any, croppedAreaPixels: any) => {
     setCroppedAreaPixels(croppedAreaPixels);
   };
 
+  //When user clicks on (Skip for now ) button.
+
   const onSkip = () => {
-    router.replace(`/sign-in`)
-  }
+    router.replace(`/sign-in`);
+  };
 
-  const updateAvatar = async() =>{
+  //Hits api endpoint for uploading avatar
 
-      setIsUploading(true)
-       try {
-        const _id = params._id.toString()
-         const response = await axios.post(`/api/v1/update-avatar/${_id}`,{avatar:croppedImage})
-        
-         toast({
-           title:"Avatar uploaded!",
-         })
- 
-         router.replace(`/sign-in`)
- 
-         setIsUploading(false)
-       } catch (error) {
-            console.log("An error in avatar page.tsx",error);
-            toast({
-              title:"Something went wrong :(",
-              description:"Please try again later.",
-              variant:"destructive"
-            })
-            setIsUploading(false)
-       }
-  }
+  const updateAvatar = async () => {
+    setIsUploading(true);
+    try {
+      const _id = params._id.toString();
+      const response = await axios.post(`/api/v1/update-avatar/${_id}`, {
+        avatar: croppedImage,
+      });
+
+      toast({
+        title: "Avatar uploaded!",
+      });
+
+      router.replace(`/sign-in`);
+
+      setIsUploading(false);
+    } catch (error) {
+      console.log("An error in avatar page.tsx", error);
+      toast({
+        title: "Something went wrong :(",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+      setIsUploading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-slate-100">
@@ -118,6 +133,8 @@ const Page = () => {
           <div className="text-center w-full text-lg font-medium">
             {`Welcome, @${params._id}`}
           </div>
+
+          {/* showing avatar when user just signed up */}
 
           <div>
             <img
@@ -137,6 +154,8 @@ const Page = () => {
               Please upload avatar
             </Label>
 
+            {/* Alert when image will be loaded */}
+
             <AlertDialog>
               <AlertDialogTrigger>
                 <Input
@@ -146,14 +165,17 @@ const Page = () => {
                   onChange={onSelectFile}
                 />
               </AlertDialogTrigger>
+
               {openBox && (
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>Selected avatar</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Move circle to select area.
+                      Zoom or move to set your image
                     </AlertDialogDescription>
+
                     <div className="w-full h-[60vh] flex justify-center ml-2 items-center cropper">
+                      {/* Cropper tool from react-easy-crop for croppping image */}
                       <Cropper
                         image={imgSrc}
                         crop={crop}
@@ -193,23 +215,33 @@ const Page = () => {
             </AlertDialog>
           </div>
         </div>
-        <div className=" flex justify-between">
-        <Button variant={"outline"} className="text-md border-gray-800" onClick={onSkip}>
-          Skip for now
-        </Button>
 
-        {
-          croppedImage && <Button className="text-md" disabled={isUploading} onClick={updateAvatar}>
-          {
-            isUploading ? (
-              <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
-              Please wait
-              </>
-            ) : ('Save avatar') 
-          }
-        </Button>
-        }
+        <div className=" flex justify-between">
+          <Button
+            variant={"outline"}
+            className="text-md border-gray-800"
+            onClick={onSkip}
+          >
+            Skip for now
+          </Button>
+
+          {/* if image is cropped then this componnent will be shown */}
+          {croppedImage && (
+            <Button
+              className="text-md"
+              disabled={isUploading}
+              onClick={updateAvatar}
+            >
+              {isUploading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
+                  Please wait
+                </>
+              ) : (
+                "Save avatar"
+              )}
+            </Button>
+          )}
         </div>
       </div>
     </div>
