@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { signInSchema } from "@/app/schemas/signInSchema";
 import { signIn } from "next-auth/react";
-import { Separator } from "@/components/ui/separator"
+import GoogleSignIn from "@/components/GoogleSignIn";
 
 const Page = () => {
 
@@ -33,10 +33,6 @@ const Page = () => {
 
 	const form = useForm<z.infer<typeof signInSchema>>({
 		resolver:zodResolver(signInSchema),
-		defaultValues:{
-			identifier:"",
-			password:"",
-		}
 	});
 
   //sign in using credentials from nextjs
@@ -64,23 +60,6 @@ const Page = () => {
     setIsSubmitting(false)
 	};
 
-  const onGoogleLogin =async() =>{
-    const result = await signIn("google",{
-      redirect:false
-    })
-
-    if(result?.error){
-      toast({
-        title:"Login failed",
-        description:"Incorrect username or password",
-        variant:"destructive"
-      })
-    }
-
-    if(result?.url){
-      router.replace('/post')
-    }
-  }
 
 	return (
     <div className=" min-h-screen flex justify-center items-center bg-slate-100">
@@ -134,11 +113,10 @@ const Page = () => {
 				}
 			</Button>
 
-      <Separator />
-      <Button type="submit" onClick={onGoogleLogin} className="w-full"> Sign in with Google</Button>
-
           </form>
         </Form>
+
+        <GoogleSignIn></GoogleSignIn>
         		<div className="text-center mt-4">
           <p>
             Not a member?{' '}
