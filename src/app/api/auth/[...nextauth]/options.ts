@@ -58,12 +58,12 @@ export const authOptions: NextAuthOptions = {
       })
   ],
   callbacks:{
-    // async signIn( account:any, profile:any ) {
-    //   if (account?.provider === "google") {
-    //     return profile?.email_verified && profile?.email?.endsWith("@gmail.com");
-    //   }
-    //   return true // Do different verification for other providers that don't have `email_verified`
-    // },
+async signIn( {account, profile}:any ) {
+      if (account?.provider === "google") {
+        return profile?.email_verified && profile?.email?.endsWith("@gmail.com");
+      }
+      return true // Do different verification for other providers that don't have `email_verified`
+    },
     async jwt({token,user}) {
         if(user){
           token._id = user._id?.toString();
