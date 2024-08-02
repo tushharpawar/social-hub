@@ -75,13 +75,13 @@ const Page = () => {
           </p>
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 text-md">
             <FormField
               control={form.control}
               name="identifier"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="text-md">Email</FormLabel>
                   <FormControl>
                     <Input placeholder="example@gmail.com" {...field} />
                   </FormControl>
@@ -91,10 +91,10 @@ const Page = () => {
 
             <FormField
               control={form.control}
-              name="password"
+              name="password" 
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="text-md">Password</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="password" {...field} />
                   </FormControl>
@@ -102,7 +102,7 @@ const Page = () => {
               )}
             />
 
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting} className="w-full text-md">
 				{
 					isSubmitting ? (
 						<>
