@@ -20,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FcGoogle } from "react-icons/fc";
+import { getServerSession } from "next-auth";
 
 const GoogleSignIn = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,10 +44,7 @@ const GoogleSignIn = () => {
         variant: "destructive",
       });
     }
-
-    if (result?.ok) {
-      router.replace("/post")
-    }
+    console.log("Result::",result);
     setIsSubmitting(false)
   };
   return (
