@@ -82,6 +82,10 @@ async signIn( {account, profile}:any ) {
       }
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      //redirecting user to anoher page after sign in
+      return "/post"; 
+    },
   },
   session:{
     strategy:"jwt",
