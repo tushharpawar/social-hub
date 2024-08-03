@@ -1,11 +1,19 @@
 import React from 'react'
 import Slidebar from '@/components/Slidebar'
+import { Separator } from '@radix-ui/react-separator'
+import HomeNavbar from '@/components/HomeNavbar'
+
 const page = () => {
   return (
-    <main>
+    <main className='flex'>
+      <div className='w-[40vw] min-h-screen '>
+      <Slidebar></Slidebar>
+      </div>
+
       <div className='w-full min-h-screen'>
-        <Slidebar className=' w-[20%] text-md min-h-screen fixed border-r-2 border-gray-300'></Slidebar>
+        <HomeNavbar></HomeNavbar>
     </div>
+
     </main>
   )
 }
