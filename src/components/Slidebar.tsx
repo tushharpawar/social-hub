@@ -56,11 +56,6 @@ export default function Sidebar({ className }: SidebarProps) {
             </Button>
 
             <Button variant="ghost" className="w-full justify-start text-lg">
-              <FaRegBookmark className="mr-3 h-6 w-6" />
-              Saved
-            </Button>
-
-            <Button variant="ghost" className="w-full justify-start text-lg">
               <MdOutlineSettings className="mr-3 h-6 w-6" />
               Settings
             </Button>
