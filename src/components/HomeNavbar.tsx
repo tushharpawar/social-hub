@@ -1,31 +1,18 @@
 import React from "react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import {Avatar} from "@nextui-org/react";
 
 const HomeNavbar = () => {
   return (
     <div className=" w-[60%] h-[15vh] flex items-center">
-      <div className=" px-2 w-[72px] h-[72px]">
-        <Avatar className="h-12 w-12">
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+      <div className=" px-2">
+      <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026704d" size="md" />
         <div className="text-xs overflow-hidden">tushhar.14</div>
       </div>
-      <div className=" px-2 w-[72px] h-[72px]">
-        <Avatar className="h-12 w-12">
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+      <div className=" px-2 ">
+      <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026704d" size="md" />
         <div className="text-xs overflow-hidden">tushhar.14</div>
-      </div>
-      <div className=" px-2 w-[72px] h-[72px]">
-        <Avatar className="h-12 w-12">
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-        <div className="text-xs overflow-hidden">tushhar.14</div>
-      </div>
+      </div>     
     </div>
   );
 };
