@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss"
+import {nextui} from "@nextui-org/react";
 
 const svgToDataUri = require("mini-svg-data-uri");
 const {
@@ -12,6 +13,7 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
 	],
   prefix: "",
   theme: {
@@ -21,7 +23,10 @@ const config = {
       screens: {
         "2xl": "1400px",
       },
+      darkMode: "class",
+      plugins: [nextui()]
     },
+
     extend: {
       colors: {
         border: "hsl(var(--border))",
