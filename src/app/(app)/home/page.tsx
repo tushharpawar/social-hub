@@ -1,12 +1,13 @@
 import React from 'react'
 import Slidebar from '@/components/Slidebar'
-import { Separator } from '@radix-ui/react-separator'
 import HomeNavbar from '@/components/HomeNavbar'
+
+import {Divider} from "@nextui-org/divider";
 
 const page = () => {
   return (
-    <main className='flex'>
-      <div className='w-[40vw] min-h-screen '>
+    <main className='flex overflow-hidden'>
+      <div className='w-[40vw] min-h-screen'>
       <Slidebar></Slidebar>
       </div>
 
