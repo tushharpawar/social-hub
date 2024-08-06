@@ -11,7 +11,9 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@nextui-org/divider": "^2.0.31",
+    "@nextui-org/image": "^2.0.31",
     "@nextui-org/react": "^2.4.6",
+    "@nextui-org/skeleton": "^2.0.31",
     "@nextui-org/system": "^2.2.5",
     "@nextui-org/theme": "^2.2.9",
     "@pqina/pintura": "^8.82.15",
