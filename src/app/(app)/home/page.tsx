@@ -2,7 +2,7 @@ import React from 'react'
 import Slidebar from '@/components/Slidebar'
 import HomeNavbar from '@/components/HomeNavbar'
 
-import {Divider} from "@nextui-org/divider";
+import Page from '../post/page'
 
 const page = () => {
   return (
@@ -13,6 +13,7 @@ const page = () => {
 
       <div className='w-full min-h-screen'>
         <HomeNavbar></HomeNavbar>
+        <Page/>
     </div>
 
     </main>
