@@ -1,7 +1,7 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
 import PostModel from "@/models/Post.model";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/options";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(req:NextRequest,{params}:{params:{postId:string}},res:NextResponse) {
