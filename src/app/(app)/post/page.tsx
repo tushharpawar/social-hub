@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MdOutlineMoreVert } from "react-icons/md";
 import {
@@ -14,9 +14,33 @@ import { FaRegComment } from "react-icons/fa";
 import { IoPaperPlaneOutline } from "react-icons/io5";
 import { FaRegBookmark } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator"
+import axios from "axios";
+import { toast } from "@/components/ui/use-toast";
 
 
 const Page = () => {
+
+  const [isLoading,setIsLoading] = useState(false)
+  const [username,setUsername] = useState("")
+  const [postSrc,setPostSrc] = useState("")
+
+  useEffect(()=>{
+      try {
+        const response = axios.get('api/v1/all-posts')
+        if(!response){
+          toast({
+            title:"Failed to fetch posts",
+            variant:"destructive"
+          })
+
+          console.log(response);
+          
+        }
+      } catch (error) {
+        console.log("Error");
+      }
+
+  },[])
 
   return (
     <div className="w-full max-w-md max-h-screen ">
@@ -25,7 +49,7 @@ const Page = () => {
           <div className="max-w-[300px] w-full flex items-center gap-3 flex-col ">
             <div className="flex items-center gap-10">
               <div className="flex items-center space-x-4">
-              <Skeleton className="h-10 w-10 rounded-full" />
+              <Skeleton className="h-10 w-10 rounded-full"/>
               <div className="space-y-2">
                 <Skeleton className="h-3 w-[170px]" />
               </div>
