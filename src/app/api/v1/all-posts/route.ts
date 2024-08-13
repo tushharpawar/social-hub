@@ -1,8 +1,8 @@
 import dbConnect from "@/lib/dbConnect";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/options";
 import PostModel from "@/models/Post.model";
+import { authOptions } from "../../auth/[...nextauth]/options";
 
 export async function GET(req: NextRequest, res: NextResponse) {
   await dbConnect();
