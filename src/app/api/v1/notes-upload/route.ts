@@ -2,7 +2,7 @@ import dbConnect from "@/lib/dbConnect";
 import NotesModel from "@/models/Note.model";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/options";
+import { authOptions } from "../../auth/[...nextauth]/options";
 
 export async function POST(req:NextRequest,res:NextResponse) {
         await dbConnect()
