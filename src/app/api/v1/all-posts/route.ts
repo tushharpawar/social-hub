@@ -25,21 +25,21 @@ export async function GET(req: NextRequest, res: NextResponse) {
                 from: "users",
                 localField: "owner",
                 foreignField: "_id",
-                as: "post"
+                as: "owner"
               }
           },
             {
-              $unwind: "$post"
+              $unwind: "$owner"
           },
             {
           $project: {
             postUrl:1,
             caption:1,
             createdAt:1,
-            "post.username":1,
-            "post.email":1,
-            "post.avatar.url":1,
-            "post.fullName":1
+            "owner.username":1,
+            "owner.email":1,
+            "owner.avatar.url":1,
+            "owner.fullName":1
           }}
           
     ])
