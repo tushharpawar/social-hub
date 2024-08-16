@@ -18,11 +18,7 @@ const Page = () => {
     setIsLoading(true)
     try {
       const response = await axios.get('/api/v1/all-posts')
-      
-      // setUsername(response.data.message.post.username)
-      // setAvatar(response.data.message.post.avatar)
-      // setPostSrc(response.data.message.postUrl)
-      // setCaption(response.data.message.caption)
+
       setPosts(response.data.message)
       console.log(posts);
       console.log(response.data.message);
