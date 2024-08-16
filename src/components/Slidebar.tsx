@@ -10,6 +10,7 @@ import { FaRegBookmark } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MdOutlineSettings } from "react-icons/md";
 import React from "react";
+import Link from "next/link";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -25,20 +26,25 @@ export default function Sidebar({ className }: SidebarProps) {
 
         <div className="px-8 py-2">
           <div className="space-y-3 ">
+          <Link href={'/Home'}>
             <Button variant="ghost" className="w-full justify-start text-lg">
               <AiOutlineHome className="mr-3 h-6 w-6" />
               Home
             </Button>
+            </Link>
 
             <Button variant="ghost" className="w-full justify-start text-lg">
               <IoSearchOutline className="mr-3 h-6 w-6" fill="true" />
-              Explore
+              Stories
             </Button>
 
+            
             <Button variant="ghost" className="w-full justify-start text-lg">
               <AiOutlinePlusSquare className="mr-3 h-6 w-6" />
-              Post
+              <Link href={'/create'}>Create</Link>
+              
             </Button>
+            
 
             <Button variant="ghost" className="w-full justify-start text-lg">
               <CgNotes className="mr-3 h-6 w-6" />
@@ -62,16 +68,7 @@ export default function Sidebar({ className }: SidebarProps) {
           </div>
         </div>
 
-        <div className="flex items-center px-12 w-full justify-start text-lg">
-          <div className="text-center">
-            <Avatar className="mr-3 h-6 w-6">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </div>
 
-          <div className="text-lg">Profile</div>
-        </div>
       </div>
     </div>
   );
