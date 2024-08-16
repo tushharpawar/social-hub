@@ -25,12 +25,15 @@ type PostCardProps = {
 const PostPage = ({username,avatar,postUrl,caption}:PostCardProps) => {
 
   return (
-    <div className="w-full max-w-md max-h-screen ">
+    <div className="w-[60%] max-h-screen flex justify-center">
       <div className="h-auto flex justify-center items-center">
         <div className="flex items-center justify-center px-5 py-3">
-          <div className="max-w-[300px] w-full flex items-center gap-3 flex-col ">
-            <div className="flex items-center gap-10">
-              <div className="flex items-center space-x-4">
+          <div className="max-w-[350px] w-full flex items-center gap-3 flex-col ">
+
+            {/* post - header */}
+
+            <div className="flex items-center justify-between w-[350px] px-2">
+              <div className="flex items-center space-x-4 ">
               {
 
                 avatar ? (
@@ -68,20 +71,18 @@ const PostPage = ({username,avatar,postUrl,caption}:PostCardProps) => {
               </div>
             </div>
 
+              {/* post */}
+
             {
-              
               postUrl ? (
-                <div className="h-[300px] w-[300px] space-y-5">
-                  <img src={postUrl} alt="post" />
+                <div className="h-[350px] w-[350px] space-y-5">
+                  <img src={postUrl} alt="post" className="h-[350px] w-[350px] object-cover overflow-hidden"/>
                 </div>
               ):
               (
                 <Skeleton className="h-[300px] w-[300px] space-y-5" />
               )
-
             }
-
-            
 
           {/* Post-bottom component */}
 
