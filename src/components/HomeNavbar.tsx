@@ -1,19 +1,48 @@
-import React from "react";
+'use client'
 
-import {Avatar} from "@nextui-org/react";
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { IoSearchOutline } from "react-icons/io5";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useSession } from "next-auth/react";
+import { User } from "next-auth";
 
 const HomeNavbar = () => {
+
+  const {data:session} = useSession();
+
+  if (!session || !session.user) {
+    return <div>No session</div>;
+  }
+
+  const {username} = session.user as User
+
   return (
-    <div className=" w-[60%] h-[15vh] flex items-center">
-      <div className=" px-2">
-      <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026704d" size="md" />
-        <div className="text-xs overflow-hidden">tushhar.14</div>
+    <div className="flex items-center">
+    <div className=" w-[60%] h-[15vh] flex items-center justify-center">
+      <div className="flex w-full max-w-sm items-center space-x-2">
+        <Input type="email" placeholder="Find your friends here..." className=" focus:outline-none"/>
+        <Button type="submit">
+            <IoSearchOutline className="w-4 h-4"></IoSearchOutline>
+        </Button>
       </div>
-      <div className=" px-2 ">
-      <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026704d" size="md" />
-        <div className="text-xs overflow-hidden">tushhar.14</div>
-      </div>     
     </div>
+
+    <div className="w-[20%] h-[15vh] flex items-center justify-center">
+    <div className="flex items-center px-12 w-full justify-start text-lg">
+          <div className="text-center">
+            <Avatar className="mr-3 h-10 w-10">
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </div>
+
+          <div className="text-md font-medium">@{username}</div>
+        </div>
+    </div>
+    </div>
+
   );
 };
 
