@@ -30,7 +30,6 @@ const Page = () => {
   },[])
 
   useEffect(() => {
-    
     fetchPost()
   }, [])
   
@@ -52,7 +51,7 @@ const Page = () => {
                 key={index}
                 username={post.owner.username}
                 postUrl={post.postUrl}
-                avatar={post.owner.avatar.url}
+                avatar={post.owner.avatar}
                 caption={post.caption}
                 ></PostPage>
               ))
