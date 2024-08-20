@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
 import { AiOutlineHome } from "react-icons/ai";
 import { IoSearchOutline } from "react-icons/io5";
 import { AiOutlinePlusSquare } from "react-icons/ai";
@@ -11,6 +10,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MdOutlineSettings } from "react-icons/md";
 import React from "react";
 import Link from "next/link";
+import CreatePostAlert from '../components/create-post/CreatePostAlert'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -39,11 +52,11 @@ export default function Sidebar({ className }: SidebarProps) {
             </Button>
 
             
-            <Button variant="ghost" className="w-full justify-start text-lg">
-              <AiOutlinePlusSquare className="mr-3 h-6 w-6" />
-              <Link href={'/create'}>Create</Link>
-              
-            </Button>
+
+
+          <CreatePostAlert/>
+
+
             
 
             <Button variant="ghost" className="w-full justify-start text-lg">
