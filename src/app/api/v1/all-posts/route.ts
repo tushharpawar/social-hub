@@ -40,7 +40,13 @@ export async function GET(req: NextRequest, res: NextResponse) {
             "owner.email":1,
             "owner.avatar.url":1,
             "owner.fullName":1
-          }}
+          }
+        },
+        {
+          $sort:{
+            createdAt: -1
+          }
+        }
           
     ])
 
