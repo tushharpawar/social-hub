@@ -4,6 +4,8 @@ import "./globals.css";
 import AuthProvider from '../context/AuthProvider'
 import { Toaster } from "@/components/ui/toaster"
 import { Providers } from "./providers";
+import Slidebar from '@/components/Slidebar'
+import RightSlidebarHeader from "@/components/right-slidebar/RightSlidebarHeader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +24,14 @@ export default function RootLayout({
       <AuthProvider>
       <body className={inter.className}>
         <Providers>
-        <main>{children}</main>
+        
+        <main className="flex">
+        <div className='w-[25%]'>
+        <Slidebar></Slidebar>
+        </div>
+          {children}
+
+          </main>
         <Toaster />
         </Providers>
       </body>
