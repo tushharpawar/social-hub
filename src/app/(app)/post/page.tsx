@@ -25,7 +25,7 @@ type PostCardProps = {
 const PostPage = ({username,avatar,postUrl,caption}:PostCardProps) => {
 
   return (
-    <div className="w-[60%] max-h-screen flex justify-center">
+    <div className="w-full max-h-screen flex justify-center">
       <div className="h-auto flex justify-center items-center">
         <div className="flex items-center justify-center px-5 py-3">
           <div className="max-w-[350px] w-full flex items-center gap-3 flex-col ">
