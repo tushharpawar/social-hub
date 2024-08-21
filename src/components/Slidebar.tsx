@@ -24,12 +24,16 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { useRouter } from "next/navigation";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export default function Sidebar({ className }: SidebarProps) {
+
+
   return (
     <div className={cn(className)}>
+      <div className="flex justify-start">
       <div className="w-[20%] text-md fixed border-r-2 border-gray-400 space-y-4 py-4 min-h-screen">
         <div className="px-6 py-2 ">
           <h1 className="px-4 text-2xl font-semibold tracking-tight">
@@ -39,30 +43,28 @@ export default function Sidebar({ className }: SidebarProps) {
 
         <div className="px-8 py-2">
           <div className="space-y-3 ">
-          <Link href={'/Home'}>
             <Button variant="ghost" className="w-full justify-start text-lg">
+              <Link href={'/'} className="flex">
               <AiOutlineHome className="mr-3 h-6 w-6" />
               Home
+              </Link>
             </Button>
-            </Link>
 
             <Button variant="ghost" className="w-full justify-start text-lg">
               <IoSearchOutline className="mr-3 h-6 w-6" fill="true" />
               Stories
             </Button>
 
-            
-
-
           <CreatePostAlert/>
-
-
             
-
             <Button variant="ghost" className="w-full justify-start text-lg">
-              <CgNotes className="mr-3 h-6 w-6" />
-              Notes
+            <Link href={'/note'} className="flex">
+            <CgNotes className="mr-3 h-6 w-6" />
+            Notes
+            </Link>
+              
             </Button>
+
 
             <Button variant="ghost" className="w-full justify-start text-lg">
               <BiMessageRoundedDots className="mr-3 h-6 w-6" />
@@ -82,6 +84,7 @@ export default function Sidebar({ className }: SidebarProps) {
         </div>
 
 
+      </div>
       </div>
     </div>
   );
