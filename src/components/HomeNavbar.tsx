@@ -20,7 +20,7 @@ const HomeNavbar = () => {
 
   return (
     <div className="flex items-center">
-    <div className=" w-[60%] h-[15vh] flex items-center justify-center">
+    <div className=" w-full h-[15vh] flex items-center justify-center">
       <div className="flex w-full max-w-sm items-center space-x-2">
         <Input type="email" placeholder="Find your friends here..." className=" focus:outline-none"/>
         <Button type="submit">
@@ -29,7 +29,7 @@ const HomeNavbar = () => {
       </div>
     </div>
 
-    <div className="w-[20%] h-[15vh] flex items-center justify-center">
+    {/* <div className="w-[20%] h-[15vh] flex items-center justify-center">
     <div className="flex items-center px-12 w-full justify-start text-lg">
           <div className="text-center">
             <Avatar className="mr-3 h-10 w-10">
@@ -40,7 +40,7 @@ const HomeNavbar = () => {
 
           <div className="text-md font-medium">@{username}</div>
         </div>
-    </div>
+    </div> */}
     </div>
 
   );
