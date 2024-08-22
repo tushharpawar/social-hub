@@ -6,7 +6,7 @@ import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
 import { avatar } from '@nextui-org/react';
 import PostPage from '../post/PostCard';
-import RightSlidebarHeader from '../right-slidebar/RightSlidebarHeader';
+import RightSlidebarHeader from '../right-slidebar/RightSlidebar';
 
 
 const HomePageAfterLogin = () => {
