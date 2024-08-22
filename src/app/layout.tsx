@@ -5,7 +5,7 @@ import AuthProvider from '../context/AuthProvider'
 import { Toaster } from "@/components/ui/toaster"
 import { Providers } from "./providers";
 import Slidebar from '@/components/Slidebar'
-import RightSlidebarHeader from "@/components/right-slidebar/RightSlidebarHeader";
+import RightSlidebarHeader from "@/components/right-slidebar/RightSlidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
