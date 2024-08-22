@@ -6,9 +6,9 @@ import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
 import { avatar } from '@nextui-org/react';
 import PostPage from '../post/page';
-import NoteCard from '@/components/notes-card/NoteCard'
+import NoteCard from '@/components/notes/NoteCard'
 import { TweetBody, TweetHeader } from '@/components/magicui/tweet-card';
-import RightSlidebarHeader from '@/components/right-slidebar/RightSlidebarHeader';
+import RightSlidebarHeader from '@/components/right-slidebar/RightSlidebar';
 
 
 const Page = () => {
