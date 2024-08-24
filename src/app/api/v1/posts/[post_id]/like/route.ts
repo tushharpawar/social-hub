@@ -34,7 +34,7 @@ export async function POST(req:NextRequest,{params}:{params:{post_id:string}},re
 
             return NextResponse.json({
                 success:true,
-                message:"Your like has been added!"
+                message:newLikeModel.likedBy
             },{status:201})
              
         } catch (error:any) {
