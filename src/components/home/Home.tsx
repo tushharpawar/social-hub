@@ -49,6 +49,7 @@ const HomePageAfterLogin = () => {
               posts.map((post,index)=>(
                 <PostPage
                 key={index}
+                postId={post._id}
                 username={post.owner.username}
                 postUrl={post.postUrl}
                 avatar={post.owner.avatar}
