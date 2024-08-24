@@ -33,6 +33,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
           },
             {
           $project: {
+            _id:1,
             postUrl:1,
             caption:1,
             createdAt:1,
