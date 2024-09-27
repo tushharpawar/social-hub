@@ -25,6 +25,19 @@ export async function POST(req:NextRequest,{params}:{params:{post_id:string}},re
 
             const {post_id}  = params
 
+            const existingLike = await LikeModel.findOne({
+                post:post_id,
+                likedBy:userId
+            })
+
+            if(existingLike){
+                await LikeModel.findByIdAndDelete(existingLike._id)
+                return NextResponse.json({
+                    success:true,
+                    message:"Unliked"
+                },{status:201})
+            }
+
              const newLikeModel = new LikeModel({
                 post:post_id,
                 likedBy:userId
