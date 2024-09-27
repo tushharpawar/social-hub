@@ -6,6 +6,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import HomePageAfterLogin from "@/components/home/Home";
 import RightSlidebarHeader from "@/components/right-slidebar/RightSlidebar";
+import Slidebar from '@/components/Slidebar'
 
 
 //Notes::::
@@ -19,8 +20,8 @@ export default function Home() {
     const session = useSession()
   return (
     <>
-    <main className=" w-full min-h-screen flex items-center justify-center">
-    <HomePageAfterLogin></HomePageAfterLogin>
+    <main className="w-full min-h-screen flex items-center justify-center">
+      <HomePageAfterLogin></HomePageAfterLogin>
     </main>
     </>
   );
