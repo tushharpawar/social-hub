@@ -5,6 +5,7 @@ import AuthProvider from '../context/AuthProvider'
 import { Toaster } from "@/components/ui/toaster"
 import { Providers } from "./providers";
 import Slidebar from '@/components/Slidebar'
+import { useRouter } from 'next/router';
 import RightSlidebarHeader from "@/components/right-slidebar/RightSlidebar";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -14,7 +15,9 @@ export const metadata: Metadata = {
   description: "An social media application!",
 };
 
+
 export default function RootLayout({
+
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -24,13 +27,11 @@ export default function RootLayout({
       <AuthProvider>
       <body className={inter.className}>
         <Providers>
-        
         <main className="flex">
         <div className='w-[25%]'>
         <Slidebar></Slidebar>
         </div>
           {children}
-
           </main>
         <Toaster />
         </Providers>
