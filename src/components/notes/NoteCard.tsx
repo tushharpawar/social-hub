@@ -22,8 +22,7 @@ export default function NoteCard({username,avatar,content}:any) {
       <CardHeader className="justify-between">
         <div className="flex gap-5 my-2">
         <Avatar className="h-10 w-10">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage src={avatar} />
             </Avatar>
           <div className="flex flex-col gap-1 items-start justify-center">
             <h4 className="text-small font-semibold leading-none text-default-600">{username}</h4>
