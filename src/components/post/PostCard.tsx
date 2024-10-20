@@ -48,11 +48,9 @@ const PostPage = ({username,avatar,postUrl,caption,postId}:PostCardProps) => {
   const [isLiked,setIsLiked] = useState(false)
   const [isCommentClicked,setIsCommentClicked] = useState(false)
 
-  const path = isLiked ? 'unlike':'like'
-
   const onLike =async ()=>{
       try {
-        const response = await axios.post(`/api/v1/posts/${postId}/${path}`)
+        const response = await axios.post(`/api/v1/posts/${postId}/like`)
   
         if(response.status === 201){
           Toast({
@@ -100,7 +98,6 @@ const onComment = () =>{
                   <Skeleton className="h-3 w-[170px]" />
                 )
               }
-
               </div>
               </div>
               <div className="">
@@ -154,11 +151,10 @@ const onComment = () =>{
             </p>
             </div>
 
-            {
-              isCommentClicked ? <CommentBox></CommentBox> :<></>
+            {              
+              isCommentClicked ? <CommentBox postId={postId} ></CommentBox> :<></>
             }
-
-            <Separator />
+      <Separator />
           </div>
         </div>
       </div>
