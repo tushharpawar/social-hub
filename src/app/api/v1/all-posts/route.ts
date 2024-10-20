@@ -39,7 +39,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
             createdAt:1,
             "owner.username":1,
             "owner.email":1,
-            "owner.avatar.url":1,
+            "owner.avatar":1,
             "owner.fullName":1
           }
         },
