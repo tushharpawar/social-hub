@@ -25,7 +25,7 @@ export async function POST(req:NextRequest,{params}:{params:{post_id:string}},re
             const {post_id}  = params
              const newCommentModel = new CommentModel({
                 content,
-                post:post_id as string,
+                post:post_id,
                 owner:userId
              })
 
