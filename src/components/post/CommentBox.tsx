@@ -6,32 +6,37 @@ import { Avatar, AvatarImage } from "../ui/avatar"
 import axios from "axios"
 import { useState } from "react"
 import { Toast } from "../ui/toast"
+import { useToast } from "../ui/use-toast"
+import CommentCard from "./CommentCard"
 
 
-export function CommentBox(postId:any) {
+export function CommentBox(postId:any,commentData:any) {
+
+  console.log("Commentdata",commentData);
+  
 
   const [content,setContent] = useState('')
+
+  const {toast} = useToast()
   
   const onChange = (e:any) =>{
     setContent(e.target.value)
-    console.log("contenrt",content); 
-  }
-
-  console.log("Post id",postId.postId);
-  
+  }  
 
   const addComment =async () =>{
     try {
       const res = await axios.post(`/api/v1/posts/${postId.postId}/comment`,{content})
 
       if(res.status === 201){
-        Toast({
+        toast({
           title:res.data.message
         })
       }
+
+      setContent('')
     } catch (error:any) {
       console.log('Error in commenting',error);
-      Toast({
+      toast({
         title:"Cannot add comment due to technical reason!",
         variant:'destructive'
       })
@@ -44,21 +49,24 @@ export function CommentBox(postId:any) {
     <ScrollArea className="h-full w-full ">
       <div className="flex flex-col p-4 ">
         <h1 className=" font-medium">Commentssss</h1>
-        {/* <div className="flex items-center h-[100%] justify-center bg-slate-400">No comments yet!</div> */}
+        
 
 
-        <div className="flex gap-2 mt-3">
-        <Avatar className="h-8 w-8">
-              <AvatarImage src="https://res.cloudinary.com/tushharpawar/image/upload/v1725987768/avatar/hrcubc6bbowfwelcjheh.jpg" />
-        </Avatar>
-        <div>
-          <div className="flex gap-2">
-          <p className=" text-sm font-semibold">username</p>
-          <p className=" text-sm font-light text-gray-600">16m</p>
-          </div>
-          <p className=" text-sm"> Really beautiful pic. I loved this so much. hsdhushdshdkjah dajhdkahdkja adahkdhak Really beautiful pic. I loved this so much. hsdhushdshdkjah dajhdkahdkja adahkdhak</p>
-        </div>
-        </div>
+        {
+          commentData.length > 0 ? (
+            commentData.map((item:any,index:any)=>(
+              <CommentCard
+              key={item._id}
+              avatar={item.commentOwner.avatar}
+              content={item.content}
+              createdAt={item.createdAt}
+              username={item.commentOwner.username}
+              />
+            ))
+          ) :(<div className="flex items-center h-[100%] justify-center bg-slate-400">No comments yet!</div>)
+        }
+
+
       </div>
     </ScrollArea>
     </div>
