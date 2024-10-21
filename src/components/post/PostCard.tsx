@@ -17,6 +17,7 @@ import { Separator } from "@/components/ui/separator"
 import axios from "axios";
 import { Toast } from "../ui/toast";
 import CommentBox from "./CommentBox";
+import { useToast } from "../ui/use-toast";
 
 
 type PostCardProps = {
@@ -47,13 +48,15 @@ const PostPage = ({username,avatar,postUrl,caption,postId}:PostCardProps) => {
 
   const [isLiked,setIsLiked] = useState(false)
   const [isCommentClicked,setIsCommentClicked] = useState(false)
+  const [commentData,setCommentData] = useState([])
+  const {toast} = useToast()
 
   const onLike =async ()=>{
       try {
         const response = await axios.post(`/api/v1/posts/${postId}/like`)
   
         if(response.status === 201){
-          Toast({
+          toast({
             title:'Liked'
           })
 
@@ -61,15 +64,34 @@ const PostPage = ({username,avatar,postUrl,caption,postId}:PostCardProps) => {
         }
       } catch (error) {
         console.log(error);
-        Toast({
+        toast({
           title:'Not Liked'
         })
       }
 }
 
-const onComment = () =>{
+const onComment =async () =>{
+
   setIsCommentClicked(!isCommentClicked)
+
+  
+    try {
+      const res = await axios.get(`/api/v1/get-all-comments/${postId}`)
+
+      if(res.status === 201){
+        setCommentData(res.data.message)
+        console.log(res.data.message);
+      }
+
+    } catch (error) {
+      console.log("Cannot fetch comments!");
+    }
+
+  console.log('postId',postId);
+
 }
+
+    console.log('data',commentData);
 
   return (
     <div className="w-full h-auto flex justify-center mt-5">
@@ -152,7 +174,7 @@ const onComment = () =>{
             </div>
 
             {              
-              isCommentClicked ? <CommentBox postId={postId} ></CommentBox> :<></>
+              isCommentClicked ? <CommentBox postId={postId} commentData={commentData}></CommentBox> :<></>
             }
       <Separator />
           </div>
