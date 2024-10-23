@@ -1,5 +1,6 @@
 import React from 'react'
 import { Avatar, AvatarImage } from '../ui/avatar'
+import timeAgo from '@/utils/time'
 
 type CommentCardProps={
   avatar:string,
@@ -9,6 +10,9 @@ type CommentCardProps={
 }
 
 const CommentCard = ({avatar,username,createdAt,content}:CommentCardProps) => {
+
+  
+const newCreatedAt = timeAgo(createdAt)
   return (
     <div className="flex gap-2 mt-3">
         <Avatar className="h-8 w-8">
@@ -17,7 +21,7 @@ const CommentCard = ({avatar,username,createdAt,content}:CommentCardProps) => {
         <div>
           <div className="flex gap-2">
           <p className=" text-sm font-semibold">{username}</p>
-          <p className=" text-sm font-light text-gray-600">16m</p>
+          <p className=" text-sm font-light text-gray-600">{newCreatedAt}</p>
           </div>
           <p className=" text-sm">{content}</p>
         </div>
