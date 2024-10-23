@@ -48,7 +48,6 @@ const PostPage = ({username,avatar,postUrl,caption,postId}:PostCardProps) => {
 
   const [isLiked,setIsLiked] = useState(false)
   const [isCommentClicked,setIsCommentClicked] = useState(false)
-  const [commentData,setCommentData] = useState([])
   const {toast} = useToast()
 
   const onLike =async ()=>{
@@ -74,24 +73,8 @@ const onComment =async () =>{
 
   setIsCommentClicked(!isCommentClicked)
 
-  
-    try {
-      const res = await axios.get(`/api/v1/get-all-comments/${postId}`)
-
-      if(res.status === 201){
-        setCommentData(res.data.message)
-        console.log(res.data.message);
-      }
-
-    } catch (error) {
-      console.log("Cannot fetch comments!");
-    }
-
-  console.log('postId',postId);
-
 }
-
-    console.log('data',commentData);
+ 
 
   return (
     <div className="w-full h-auto flex justify-center mt-5">
@@ -165,8 +148,6 @@ const onComment =async () =>{
                <p className=" font-semibold text-sm">1200 likes</p>
             </div> */}
 
-            
-
             <div className="flex w-full justify-start items-center px-2">
             <p className="text-sm font-medium">
               {caption}
@@ -174,9 +155,9 @@ const onComment =async () =>{
             </div>
 
             {              
-              isCommentClicked ? <CommentBox postId={postId} commentData={commentData}></CommentBox> :<></>
+              isCommentClicked ? <CommentBox postId={postId} isCommentClicked={isCommentClicked}></CommentBox> :<></>
             }
-      <Separator />
+             <Separator />
           </div>
         </div>
       </div>
