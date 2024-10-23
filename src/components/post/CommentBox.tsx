@@ -4,18 +4,21 @@ import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { Avatar, AvatarImage } from "../ui/avatar"
 import axios from "axios"
-import { useState } from "react"
-import { Toast } from "../ui/toast"
+import { useEffect, useState } from "react"
 import { useToast } from "../ui/use-toast"
 import CommentCard from "./CommentCard"
+import timeAgo from "@/utils/time"
 
 
-export function CommentBox(postId:any,commentData:any) {
+type CommentBoxProps = {
+  postId:any,
+  isCommentClicked:any
+}
 
-  console.log("Commentdata",commentData);
-  
-
+export function CommentBox({postId,isCommentClicked}:CommentBoxProps) {
+    
   const [content,setContent] = useState('')
+  const [commentData,setCommentData] = useState([])
 
   const {toast} = useToast()
   
@@ -25,7 +28,7 @@ export function CommentBox(postId:any,commentData:any) {
 
   const addComment =async () =>{
     try {
-      const res = await axios.post(`/api/v1/posts/${postId.postId}/comment`,{content})
+      const res = await axios.post(`/api/v1/posts/${postId}/comment`,{content})
 
       if(res.status === 201){
         toast({
@@ -43,24 +46,44 @@ export function CommentBox(postId:any,commentData:any) {
   }
 }
 
+useEffect(()=>{
+  const fetchComment = async()=>{
+ 
+      try {
+        const res = await axios.get(`/api/v1/get-all-comments/${postId}`)
+    
+        if(res.status === 201){
+          setCommentData(res.data.message)
+          console.log(res.data.message);
+        }
+    
+      } catch (error) {
+        console.log("Cannot fetch comments!");
+      }
+  }
+
+  fetchComment()
+},[isCommentClicked,postId])
+
+console.log("comment data",commentData);
+
+
   return (
     <>
     <div className="h-[40vh] w-full mx-5 border border-input rounded-md">
     <ScrollArea className="h-full w-full ">
       <div className="flex flex-col p-4 ">
         <h1 className=" font-medium">Commentssss</h1>
-        
-
 
         {
           commentData.length > 0 ? (
             commentData.map((item:any,index:any)=>(
               <CommentCard
               key={item._id}
-              avatar={item.commentOwner.avatar}
+              avatar={item.commentOwner[0].avatar}
               content={item.content}
               createdAt={item.createdAt}
-              username={item.commentOwner.username}
+              username={item.commentOwner[0].username}
               />
             ))
           ) :(<div className="flex items-center h-[100%] justify-center bg-slate-400">No comments yet!</div>)
