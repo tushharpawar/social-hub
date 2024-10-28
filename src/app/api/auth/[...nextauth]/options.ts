@@ -70,6 +70,8 @@ async signIn( {account, profile}:any ) {
           token.email = user.email;
           token.username = user.username;
           token.isVerified = user.isVerified;
+          token.avatar = user.avatar;
+          token.fullName = user.fullName;
         }
         return token;
     },
@@ -79,6 +81,8 @@ async signIn( {account, profile}:any ) {
         session.user.email = token.email;
         session.user.username = token.username;
         session.user.isVerified = token.isVerified;
+        session.user.avatar = token.avatar;
+        session.user.fullName = token.fullName;
       }
       return session;
     },
