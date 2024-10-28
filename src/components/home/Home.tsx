@@ -3,17 +3,25 @@
 import HomeNavbar from '@/components/HomeNavbar'
 import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "@/components/ui/use-toast";
-import { avatar } from '@nextui-org/react';
 import PostPage from '../post/PostCard';
 import RightSlidebarHeader from '../right-slidebar/RightSlidebar';
+import { useSession } from 'next-auth/react';
+import { User } from 'next-auth';
+import { useDispatch } from 'react-redux';
+import { setAuthUser } from '@/app/redux/authSlice';
 
 
 const HomePageAfterLogin = () => {
 
+  const dispatch = useDispatch()
   const [isLoading,setIsLoading] = useState(false)
   const [posts,setPosts] = useState([])
 
+  const {data:session} = useSession()
+  const user :User = session?.user as User
+  console.log("USer from home",user);
+
+  dispatch(setAuthUser(user))
  const fetchPost = useCallback(
   async()=>{
     setIsLoading(true)
