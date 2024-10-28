@@ -18,8 +18,11 @@ import { useToast } from "@/components/ui/use-toast"
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { signInSchema } from "@/app/schemas/signInSchema";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import GoogleSignIn from "@/components/GoogleSignIn";
+import { useDispatch } from "react-redux";
+import { setAuthUser } from "@/app/redux/authSlice";
+import { User } from "next-auth";
 
 const Page = () => {
 
@@ -53,12 +56,13 @@ const Page = () => {
       })
     }
 
-    if(result?.url){
+    if(result?.url){      
       router.replace('/post')
     }
 
     setIsSubmitting(false)
 	};
+
 
 
 	return (
