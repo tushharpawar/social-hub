@@ -3,11 +3,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from '../ui/separator'
 import { usePathname } from 'next/navigation'
 import NoteUpload from '../notes/NoteUpload'
+import { useSelector } from 'react-redux'
 
 
 const RightSlidebarHeader = () => {
 
-    const pathname = usePathname()  
+    const pathname = usePathname() 
+    const user = useSelector((store:any)=>store.auth.user) 
 
   return (
 
@@ -18,12 +20,12 @@ const RightSlidebarHeader = () => {
         <div className="flex items-center px-4 w-full justify-start text-lg">
           <div className="text-center">
             <Avatar className="mr-3 h-10 w-10">
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage src={user.avatar} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </div>
 
-          <div className="text-base font-normal">@tushharpawar14.___kdosdos</div>
+          <div className="text-base font-semibold">@{user.username}</div>
         </div>
     </div>
     <div className="w-[80%] ml-6">
