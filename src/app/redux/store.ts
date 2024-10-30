@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import commentSlice  from './commentSlice'
 import authSlice from './authSlice'
+import postSlice from './postSlice'
 
 // import {
 //   persistReducer,
@@ -21,6 +22,7 @@ import authSlice from './authSlice'
 
 export const store = configureStore({
   reducer:{
-    auth:authSlice
+    auth:authSlice,
+    post:postSlice,
   }
 })
