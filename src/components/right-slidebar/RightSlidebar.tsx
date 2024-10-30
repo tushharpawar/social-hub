@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 const RightSlidebarHeader = () => {
 
     const pathname = usePathname() 
-    const user = useSelector((store:any)=>store.auth.user) 
+    const {user} = useSelector((store:any)=>store.auth) 
 
   return (
 
@@ -20,12 +20,12 @@ const RightSlidebarHeader = () => {
         <div className="flex items-center px-4 w-full justify-start text-lg">
           <div className="text-center">
             <Avatar className="mr-3 h-10 w-10">
-              <AvatarImage src={user.avatar} />
+              <AvatarImage src={user?user.avatar:""} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </div>
 
-          <div className="text-base font-semibold">@{user.username}</div>
+          <div className="text-base font-semibold">@{user?user.username:""}</div>
         </div>
     </div>
     <div className="w-[80%] ml-6">
