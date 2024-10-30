@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaPaperPlane, FaRegHeart, FaRegPaperPlane } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
 import { IoPaperPlaneOutline } from "react-icons/io5";
 import { FaRegBookmark } from "react-icons/fa";
@@ -59,7 +59,7 @@ const PostPage = ({username,avatar,postUrl,caption,postId}:PostCardProps) => {
             title:'Liked'
           })
 
-          setIsLiked(true)
+          setIsLiked(!isLiked)
         }
       } catch (error) {
         console.log(error);
@@ -85,7 +85,8 @@ const onComment =async () =>{
             {/* post - header */}
 
             <div className="flex items-center justify-between w-[350px] px-2">
-              <div className="flex items-center space-x-4 ">
+              <div className="flex items-center gap-2">
+              <div className="">
               {
                 avatar ? (
                   <img src={avatar} alt="" className="h-10 w-10 rounded-full"></img>
@@ -93,17 +94,18 @@ const onComment =async () =>{
                   <Skeleton className="h-10 w-10 rounded-full"/>
                 )
               }
-              <div className="space-y-2">
+              </div>
+
               {
                 username ? (
-                  <div className="h-3 w-[170px]">
-                  <p className=" font-semibold">{username}</p>
+                  <div className="w-[170px]">
+                  <p className="font-semibold">{username}</p>
                   </div>
                 ):(
                   <Skeleton className="h-3 w-[170px]" />
                 )
               }
-              </div>
+
               </div>
               <div className="">
               <DropdownMenu>
@@ -135,18 +137,22 @@ const onComment =async () =>{
 
             <div className="flex items-center justify-between w-full px-2">
               <div className="flex items-center gap-5">
-              <FaRegHeart className="h-5 w-5 cursor-pointer bg-red-500 object-cover" onClick={onLike}/>
-              <FaRegComment className="h-5 w-5 cursor-pointer" onClick={onComment}/>
-              <IoPaperPlaneOutline className="h-5 w-5 cursor-pointer"/>
+              {
+                isLiked ? <FaHeart size={22} className="cursor-pointer text-red-600" onClick={onLike}/> : 
+                <FaRegHeart size={22} className=" cursor-pointer" onClick={onLike}/>
+              }
+              
+              <FaRegComment size={22} className=" cursor-pointer" onClick={onComment}/>
+              <FaRegPaperPlane size={22} className=" cursor-pointer"/>
               </div>
               <div className="">
-              <FaRegBookmark className="h-5 w-5 cursor-pointer"/>
+              <FaRegBookmark size={22} className=" cursor-pointer"/>
               </div>
             </div>
 
-            {/* <div className="flex w-full justify-start items-center px-2">
+            <div className="flex w-full justify-start items-center px-2">
                <p className=" font-semibold text-sm">1200 likes</p>
-            </div> */}
+            </div>
 
             <div className="flex w-full justify-start items-center px-2">
             <p className="text-sm font-medium">
