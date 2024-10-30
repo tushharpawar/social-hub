@@ -63,8 +63,6 @@ const Page = () => {
     setIsSubmitting(false)
 	};
 
-
-
 	return (
     <div className=" min-h-screen w-full flex justify-center items-center">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
