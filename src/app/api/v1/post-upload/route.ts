@@ -39,7 +39,8 @@ export const POST = async (req: NextRequest, res: NextResponse) =>{
             const newPost = new PostModel({
                 postUrl:cloudinaryUrl.secure_url,
                 caption,
-                owner:userId
+                owner:userId,
+                likeCount:0
             })
 
             await newPost.save();
