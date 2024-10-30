@@ -7,7 +7,7 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useToast } from "../ui/use-toast"
 import CommentCard from "./CommentCard"
-import timeAgo from "@/utils/time"
+import { useSelector } from "react-redux"
 
 
 type CommentBoxProps = {
@@ -19,7 +19,7 @@ export function CommentBox({postId,isCommentClicked}:CommentBoxProps) {
     
   const [content,setContent] = useState('')
   const [commentData,setCommentData] = useState([])
-
+  const {user} = useSelector((store:any)=>store.auth)
   const {toast} = useToast()
   
   const onChange = (e:any) =>{
@@ -95,7 +95,7 @@ console.log("comment data",commentData);
     </div>
     <div className="flex w-full max-w-sm items-center space-x-2">
     <Avatar className="h-8 w-8">
-          <AvatarImage src="https://res.cloudinary.com/tushharpawar/image/upload/v1725987768/avatar/hrcubc6bbowfwelcjheh.jpg" />
+          <AvatarImage src={user.avatar} />
     </Avatar>
     <Input type="text" placeholder="Add a comment" className=" border-none" onChange={onChange}/>
     <Button type="submit" onClick={addComment} >Comment</Button>
