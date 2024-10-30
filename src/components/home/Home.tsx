@@ -7,19 +7,19 @@ import PostPage from '../post/PostCard';
 import RightSlidebarHeader from '../right-slidebar/RightSlidebar';
 import { useSession } from 'next-auth/react';
 import { User } from 'next-auth';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setAuthUser } from '@/app/redux/authSlice';
+import { setPosts } from '@/app/redux/postSlice';
 
 
 const HomePageAfterLogin = () => {
 
   const dispatch = useDispatch()
   const [isLoading,setIsLoading] = useState(false)
-  const [posts,setPosts] = useState([])
 
   const {data:session} = useSession()
-  const user :User = session?.user as User
-  console.log("USer from home",user);
+  const user:User = session?.user as User
+  console.log("User from home",user);
 
   dispatch(setAuthUser(user))
  const fetchPost = useCallback(
@@ -27,12 +27,9 @@ const HomePageAfterLogin = () => {
     setIsLoading(true)
     try {
       const response = await axios.get('/api/v1/all-posts')
-
-      setPosts(response.data.message)
-      console.log(posts);
-      console.log(response.data.message);
-      
+      dispatch(setPosts((response.data.message)))
       setIsLoading(false)
+      
     } catch (error) {
       console.log(error); 
     }
@@ -42,6 +39,7 @@ const HomePageAfterLogin = () => {
     fetchPost()
   }, [])
   
+  const {posts} = useSelector((store:any)=>store.post)
 
   return (
 
@@ -52,9 +50,9 @@ const HomePageAfterLogin = () => {
         <div className="flex items-center justify-center flex-col">
         <div className="mt-2 p-5">
           {
-            posts.length > 0 ?
+            posts?.length > 0 ?
             (
-              posts.map((post,index)=>(
+              posts?.map((post:any,index:any)=>(
                 <PostPage
                 key={index}
                 postId={post._id}
