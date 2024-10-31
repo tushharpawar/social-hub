@@ -37,6 +37,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
             postUrl:1,
             caption:1,
             createdAt:1,
+            likeCount:1,
             "owner.username":1,
             "owner.email":1,
             "owner.avatar":1,
