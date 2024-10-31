@@ -38,6 +38,7 @@ export async function GET(req:NextRequest,{params}:{params:{post_id:string}},res
                 "likedPost._id":1,
                 "likedPost.likeOwner.username":1,
                 "likedPost.likeOwner.avatar":1,
+                "likedPost.likeOwner._id":1,
             }
         },
         {
@@ -70,3 +71,4 @@ export async function GET(req:NextRequest,{params}:{params:{post_id:string}},res
           },{status:501})
     }
 }
+
