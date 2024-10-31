@@ -60,6 +60,7 @@ const HomePageAfterLogin = () => {
                 postUrl={post.postUrl}
                 avatar={post.owner.avatar}
                 caption={post.caption}
+                likeCount={post.likeCount}
                 ></PostPage>
               ))
             ):(<p>No posts to display</p>)
