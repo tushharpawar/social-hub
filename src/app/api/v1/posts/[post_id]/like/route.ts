@@ -3,6 +3,7 @@ import LikeModel from "@/models/Like.model";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import PostModel from "@/models/Post.model";
 
 export async function POST(req:NextRequest,{params}:{params:{post_id:string}},res:NextResponse) {
     await dbConnect();
@@ -32,10 +33,11 @@ export async function POST(req:NextRequest,{params}:{params:{post_id:string}},re
 
             if(existingLike){
                 await LikeModel.findByIdAndDelete(existingLike._id)
+                await PostModel.findByIdAndUpdate(post_id,{$inc:{likeCount:-1}})
                 return NextResponse.json({
                     success:true,
                     message:"Unliked"
-                },{status:201})
+                },{status:201})                
             }
 
              const newLikeModel = new LikeModel({
@@ -44,12 +46,12 @@ export async function POST(req:NextRequest,{params}:{params:{post_id:string}},re
              })
 
              await newLikeModel.save()
+             await PostModel.findByIdAndUpdate(post_id,{$inc:{likeCount:1}})
 
             return NextResponse.json({
                 success:true,
                 message:newLikeModel.likedBy
             },{status:201})
-             
         } catch (error:any) {
             console.log("Error while liking on post:",error);
             return NextResponse.json({
