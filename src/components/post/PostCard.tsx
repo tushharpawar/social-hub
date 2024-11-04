@@ -11,16 +11,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { FaHeart, FaPaperPlane, FaRegHeart, FaRegPaperPlane } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
-import { IoPaperPlaneOutline } from "react-icons/io5";
 import { FaRegBookmark } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator"
 import axios from "axios";
-import { Toast } from "../ui/toast";
 import CommentBox from "./CommentBox";
 import { useToast } from "../ui/use-toast";
-import { ConfettiButton } from "../magicui/confetti";
-import { useSelector } from "react-redux";
-
 
 type PostCardProps = {
   username:string;
@@ -30,7 +25,6 @@ type PostCardProps = {
   postId:any;
   likeCount:number;
 };
- 
 
 const PostPage = ({username,avatar,postUrl,caption,postId,likeCount}:PostCardProps) => {
   const [isLiked,setIsLiked] = useState(false)
@@ -179,7 +173,7 @@ const onComment =async () =>{
             {              
               isCommentClicked ? <CommentBox postId={postId} isCommentClicked={isCommentClicked}></CommentBox> :<></>
             }
-            
+
              <Separator />
           </div>
         </div>
