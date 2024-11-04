@@ -6,8 +6,9 @@ import { authOptions } from "../../auth/[...nextauth]/options";
 
 export async function GET(req: NextRequest, res: NextResponse) {
   await dbConnect();
-  try {
 
+  try {
+    
     const session = await getServerSession(authOptions)
     const _user = session?.user;
 
@@ -49,7 +50,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
             createdAt: -1
           }
         }
-          
     ])
 
     const postsData = await allPosts;
