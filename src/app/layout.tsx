@@ -28,7 +28,6 @@ export default function RootLayout({
     <html lang="en">
       <AuthProvider>
       <body className={inter.className}>
-
         <main className="flex">
         <div className='w-[25%]'>
         <Slidebar></Slidebar>
