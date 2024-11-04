@@ -43,7 +43,12 @@ export async function GET(req:NextRequest,{params}:{params:{post_id:string}},res
                 "allComments.commentOwner.username":1,
                 "allComments.commentOwner.avatar":1
               }
-            } 
+            },
+            {
+              $sort:{
+                createdAt: -1
+              }
+            }
           ]).exec();
 
           if(!comments || (await comments).length === 0){
