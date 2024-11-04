@@ -7,8 +7,8 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useToast } from "../ui/use-toast"
 import CommentCard from "./CommentCard"
-import { useSelector } from "react-redux"
-
+import { useDispatch, useSelector } from "react-redux"
+import { setComment } from "@/app/redux/commentSlice"
 
 type CommentBoxProps = {
   postId:any,
@@ -18,9 +18,10 @@ type CommentBoxProps = {
 export function CommentBox({postId,isCommentClicked}:CommentBoxProps) {
     
   const [content,setContent] = useState('')
-  const [commentData,setCommentData] = useState([])
   const {user} = useSelector((store:any)=>store.auth)
   const {toast} = useToast()
+  const dispatch = useDispatch()
+  const {comments} = useSelector((store:any)=>store.comment)
   
   const onChange = (e:any) =>{
     setContent(e.target.value)
@@ -28,6 +29,20 @@ export function CommentBox({postId,isCommentClicked}:CommentBoxProps) {
 
   const addComment =async () =>{
     try {
+      const newCmt = {
+        "_id":Date.now(),
+        "content":content,
+        "createdAt":Date.now(),
+        "commentOwner":[{
+          "username":user.username,
+          "avatar":user.avatar
+        }]
+      }
+
+      dispatch(setComment([newCmt,...comments]))
+
+      setContent('')
+
       const res = await axios.post(`/api/v1/posts/${postId}/comment`,{content})
 
       if(res.status === 201){
@@ -36,7 +51,6 @@ export function CommentBox({postId,isCommentClicked}:CommentBoxProps) {
         })
       }
 
-      setContent('')
     } catch (error:any) {
       console.log('Error in commenting',error);
       toast({
@@ -53,7 +67,7 @@ useEffect(()=>{
         const res = await axios.get(`/api/v1/get-all-comments/${postId}`)
     
         if(res.status === 201){
-          setCommentData(res.data.message)
+          dispatch(setComment(res.data.message))
           console.log(res.data.message);
         }
     
@@ -65,7 +79,7 @@ useEffect(()=>{
   fetchComment()
 },[isCommentClicked,postId])
 
-console.log("comment data",commentData);
+console.log("comment data",comments);
 
 
   return (
@@ -76,8 +90,8 @@ console.log("comment data",commentData);
         <h1 className=" font-medium">Commentssss</h1>
 
         {
-          commentData.length > 0 ? (
-            commentData.map((item:any,index:any)=>(
+          comments.length > 0 ? (
+            comments.map((item:any,index:any)=>(
               <CommentCard
               key={item._id}
               avatar={item.commentOwner[0].avatar}
@@ -89,7 +103,6 @@ console.log("comment data",commentData);
           ) :(<div className="flex items-center h-[100%] justify-center bg-slate-400">No comments yet!</div>)
         }
 
-
       </div>
     </ScrollArea>
     </div>
@@ -97,7 +110,7 @@ console.log("comment data",commentData);
     <Avatar className="h-8 w-8">
           <AvatarImage src={user.avatar} />
     </Avatar>
-    <Input type="text" placeholder="Add a comment" className=" border-none" onChange={onChange}/>
+    <Input type="text" placeholder="Add a comment" className=" border-none" value={content} onChange={onChange}/>
     <Button type="submit" onClick={addComment} >Comment</Button>
     </div>
     </>
