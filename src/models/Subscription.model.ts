@@ -2,7 +2,7 @@ import mongoose,{Schema,Document} from "mongoose";
 import { User } from "./User.model";
 
 export interface Subscription extends Document {
-    followers:User;
+    follower:User;
     following:User;
     createdAt: Date;
     updatedAt: Date;
@@ -13,7 +13,7 @@ export const SubscriptionSchema : Schema<Subscription> = new mongoose.Schema({
         type:Schema.Types.ObjectId,//whom a user is following
         ref:"User",
     },
-    followers:{
+    follower:{
         type:Schema.Types.ObjectId,//whom a user is followed by
         ref:"User",
     }
