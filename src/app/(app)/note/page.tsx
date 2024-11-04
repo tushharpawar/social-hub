@@ -1,13 +1,10 @@
 "use client"
 
 import HomeNavbar from '@/components/HomeNavbar'
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
-import { avatar } from '@nextui-org/react';
-import PostPage from '../post/page';
 import NoteCard from '@/components/notes/NoteCard'
-import { TweetBody, TweetHeader } from '@/components/magicui/tweet-card';
 import RightSlidebarHeader from '@/components/right-slidebar/RightSlidebar';
 
 
