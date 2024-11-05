@@ -1,4 +1,4 @@
-import mongoose ,{Schema,Document, Mongoose, ObjectId} from "mongoose";
+import mongoose ,{Schema,Document} from "mongoose";
 
 export interface User extends Document {
     username: string;
@@ -8,6 +8,10 @@ export interface User extends Document {
     avatar: string;
     isVerified: boolean;
     verificationCode: string;
+    followers:number;
+    following:number;
+    bio:string;
+    posts:number;
     verifiCationCodeExpires: Date;   
     createdAt: Date;
     updatedAt: Date;
@@ -52,6 +56,21 @@ export const UserSchema : Schema<User> = new mongoose.Schema({
             type: Date,
             required: [true, "Verification code expiry date is required"],
         },
+        followers:{
+            type:Number,
+            default:0
+        },
+        following:{
+            type:Number,
+            default:0
+        },
+        posts:{
+            type:Number,
+            default:0
+        },
+        bio:{
+            type:String
+        }
 }, { timestamps: true });
 
 const UserModel = mongoose.models.User as mongoose.Model<User> || mongoose.model<User>("User", UserSchema);
