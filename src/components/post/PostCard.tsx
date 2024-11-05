@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator"
 import axios from "axios";
 import CommentBox from "./CommentBox";
 import { useToast } from "../ui/use-toast";
+import Link from "next/link";
 
 type PostCardProps = {
   username:string;
@@ -28,7 +29,6 @@ type PostCardProps = {
 
 const PostPage = ({username,avatar,postUrl,caption,postId,likeCount}:PostCardProps) => {
   const [isLiked,setIsLiked] = useState(false)
-  const [likeData,setLikeData] = useState([])
   const [newLikeCount,setNewLikeCount] = useState(likeCount)
   const [isCommentClicked,setIsCommentClicked] = useState(false)
   const {toast} = useToast()
@@ -92,7 +92,8 @@ const onComment =async () =>{
             {/* post - header */}
 
             <div className="flex items-center justify-between w-[350px] px-2">
-              <div className="flex items-center gap-2">
+ 
+              <Link href={`/${username}`} className="flex items-center gap-2">
               <div className="">
               {
                 avatar ? (
@@ -112,7 +113,8 @@ const onComment =async () =>{
                   <Skeleton className="h-3 w-[170px]" />
                 )
               }
-              </div>
+              </Link>
+
 
               <div className="">
               <DropdownMenu>
