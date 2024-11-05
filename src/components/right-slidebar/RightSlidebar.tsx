@@ -4,6 +4,7 @@ import { Separator } from '../ui/separator'
 import { usePathname } from 'next/navigation'
 import NoteUpload from '../notes/NoteUpload'
 import { useSelector } from 'react-redux'
+import Link from 'next/link'
 
 
 const RightSlidebarHeader = () => {
@@ -17,7 +18,7 @@ const RightSlidebarHeader = () => {
 
        <div className="w-full">
        <div className="w-full h-[15vh] flex items-center justify-start ">
-        <div className="flex items-center px-4 w-full justify-start text-lg">
+        <Link href={`/${user.username}`} className="flex items-center px-4 w-full justify-start text-lg">
           <div className="text-center">
             <Avatar className="mr-3 h-10 w-10">
               <AvatarImage src={user?user.avatar:""} />
@@ -26,7 +27,7 @@ const RightSlidebarHeader = () => {
           </div>
 
           <div className="text-base font-semibold">@{user?user.username:""}</div>
-        </div>
+        </Link>
     </div>
     <div className="w-[80%] ml-6">
     <Separator></Separator>
