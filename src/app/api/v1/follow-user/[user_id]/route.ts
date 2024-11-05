@@ -31,7 +31,10 @@ export async function POST(req:NextRequest,{params}:{params:{user_id:string}},re
 
             if(alreadyFollowing){
                 await SubscriptionModel.findByIdAndDelete(alreadyFollowing._id)
-                await UserModel.findByIdAndUpdate(userId,{$inc:{following:-1}})
+                
+                await UserModel.findByIdAndUpdate(userId, { $inc: { following: -1 } }),
+                await UserModel.findByIdAndUpdate(followUserId, { $inc: { followers: -1 } })
+
                 return NextResponse.json({
                     success:true,
                     message:"UnFollowed"
@@ -42,10 +45,10 @@ export async function POST(req:NextRequest,{params}:{params:{user_id:string}},re
                 following:followUserId,
                 follower:userId
              })
-
              await newSubscriptionModel.save()
-             await UserModel.findByIdAndUpdate(userId,{$inc:{followers:1}})
-
+             await UserModel.findByIdAndUpdate(userId,{$inc:{following:1}})
+             await UserModel.findByIdAndUpdate(followUserId,{$inc:{followers:1}})
+             
             return NextResponse.json({
                 success:true,
                 message:`user ${userId} is now following user ${followUserId}`
