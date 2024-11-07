@@ -40,7 +40,7 @@ export const POST = async (req: NextRequest,{params}:{params:{_id:string}}, res:
           success: true,
           message: "Avatar uploaded successfully.",
         },
-        { status: 200 }
+        { status: 201 }
       );
     }
 
@@ -50,7 +50,7 @@ export const POST = async (req: NextRequest,{params}:{params:{_id:string}}, res:
               success: false,
               message: "Avatar didn't uploaded.",
             },
-            { status: 400 }
+            { status: 401 }
           );
     }
      
