@@ -18,15 +18,15 @@ const RightSlidebarHeader = () => {
 
        <div className="w-full">
        <div className="w-full h-[15vh] flex items-center justify-start ">
-        <Link href={`/${user.username}`} className="flex items-center px-4 w-full justify-start text-lg">
+        <Link href={`/${user?.username}`} className="flex items-center px-4 w-full justify-start text-lg">
           <div className="text-center">
             <Avatar className="mr-3 h-10 w-10">
-              <AvatarImage src={user?user.avatar:""} />
+              <AvatarImage src={user?.avatar} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </div>
 
-          <div className="text-base font-semibold">@{user?user.username:""}</div>
+          <div className="text-base font-semibold">@{user?.username}</div>
         </Link>
     </div>
     <div className="w-[80%] ml-6">
