@@ -57,9 +57,8 @@ const Page = () => {
     }
 
     if(result?.url){      
-      router.replace('/post')
+      router.replace('/')
     }
-
     setIsSubmitting(false)
 	};
 
