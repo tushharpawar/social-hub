@@ -18,9 +18,9 @@ import Cropper from "react-easy-crop";
 import getCroppedImg from "@/app/helper/getImg";
 import { Label } from "../ui/label";
 import axios from "axios";
-import { log } from "console";
 import { toast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 const ASPECT_RETIO = 1;
 
@@ -31,10 +31,16 @@ export default function AlertDialogDemo() {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [croppedImage, setCroppedImage] = useState(null);
   const [caption,setCaption] = useState()
+  const [open,setOpen] = useState(false)
+  const [isLoading,setIsLoading] = useState(false)
+  const [isLoading2,setIsLoading2] = useState(false)
+  const [open2,setOpen2] = useState(false)
 
   const router = useRouter()
 
   const onSelectFile = (e: any) => {
+    setImgSrc('')
+    setIsLoading2(false)
     const file = e.target.files?.[0];
 
     if (!file) return;
@@ -54,8 +60,20 @@ export default function AlertDialogDemo() {
 
   const showCroppedImage = async () => {
     try {
+      if(!imgSrc){
+        toast({
+          title:'Please select a photo to continue',
+          variant:'destructive'
+      })
+      setOpen(false)
+      setIsLoading2(false)
+      }
+      else{
+      setIsLoading2(true)
       const croppedImage: any = await getCroppedImg(imgSrc, croppedAreaPixels);
       setCroppedImage(croppedImage);
+      setIsLoading2(false)
+      }
     } catch (e) {
       console.error(e);
     }
@@ -71,19 +89,20 @@ export default function AlertDialogDemo() {
 
   const onUpload =async () =>{
     try {
+      setIsLoading(true)
         const response = await axios.post(`/api/v1/post-upload`,{
             postUrl:croppedImage,
             caption
         })
-
+        setIsLoading(false)
+        setOpen(false)
         console.log(response);
-
         if(response.status ===201){
             toast({
                 title:'Post uploaded',
             })
-    
-            router.replace('/Home');
+            setImgSrc('')
+            router.replace('/');
         }
         
     } catch (error) {
@@ -95,7 +114,7 @@ export default function AlertDialogDemo() {
   }
 
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button variant="ghost" className="w-full justify-start text-lg">
           <AiOutlinePlusSquare className="mr-3 h-6 w-6" />
@@ -115,7 +134,7 @@ export default function AlertDialogDemo() {
           </AlertDialogDescription>
 
           {imgSrc && (
-            <div className="w-full h-[60vh] flex justify-center ml-2 items-center cropper">
+            <div className="w-full h-[50vh] flex justify-center ml-2 items-center cropper">
               {/* Cropper tool from react-easy-crop for croppping image */}
               <Cropper
                 image={imgSrc}
@@ -146,34 +165,54 @@ export default function AlertDialogDemo() {
           )}
         </AlertDialogHeader>
         <AlertDialogFooter className="mt-3">
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel onClick={()=>setImgSrc('')}>Cancel</AlertDialogCancel>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button onClick={showCroppedImage}>Continue</Button>
+            <Button onClick={showCroppedImage} disabled={isLoading2}>
+                  {
+                    isLoading2 ? <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
+                    Please wait
+                    </> : "Continue"
+                  }
+                </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            {
+              imgSrc && !isLoading2 && 
+              <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>
                   Are you absolutely sure to post this?
                 </AlertDialogTitle>
-                {
-                  // eslint-disable-next-line @next/next/no-img-element
+
+                  <div className="flex justify-center">
                   <img
                     src={croppedImage!}
                     alt=""
                     className="w-[300px] h-[300px]"
                   />
-                }
+                  </div>
+
                 <div className="">
-                <Label>Enter Caption</Label>
+                <Label className="font-semibold text-md">Enter Caption</Label>
                 <Input className="w-[90%]" onChange={onCaption} ></Input>
                 </div>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={onUpload}>Continue</AlertDialogAction>
+                {
+                  !isLoading && <AlertDialogCancel>Cancel</AlertDialogCancel>
+                }
+                <Button onClick={onUpload} disabled={isLoading}>
+                  {
+                    isLoading ? <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
+                    Please wait
+                    </> : "Continue"
+                  }
+                </Button>
               </AlertDialogFooter>
             </AlertDialogContent>
+            }
           </AlertDialog>
         </AlertDialogFooter>
       </AlertDialogContent>
