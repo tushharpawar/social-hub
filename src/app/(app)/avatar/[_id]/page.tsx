@@ -21,10 +21,15 @@ import {
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { setAuthUser } from "@/app/redux/authSlice";
 
 const ASPECT_RETIO = 1;
 
 const Page = () => {
+  const {isClickedOnEditProfile} = useSelector((store:any)=>store.isClickedOnEditProfile)
+  const {user} = useSelector((store:any)=>store.auth)
+  const dispatch = useDispatch()
   const [imgSrc, setImgSrc] = useState("");
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [openBox, setOpenBox] = useState(false);
@@ -90,7 +95,7 @@ const Page = () => {
   //When user clicks on (Skip for now ) button.
 
   const onSkip = () => {
-    router.replace(`/sign-in`);
+    isClickedOnEditProfile ? router.replace(`/${user.username}`) : router.replace(`/sign-in`);
   };
 
   //Hits api endpoint for uploading avatar
@@ -103,13 +108,23 @@ const Page = () => {
         avatar: croppedImage,
       });
 
-      toast({
-        title: "Avatar uploaded!",
-      });
-
-      router.replace(`/sign-in`);
-
-      setIsUploading(false);
+      if(response.status === 201){
+        toast({
+          title: "Avatar uploaded!",
+        });
+  
+        dispatch(setAuthUser({
+          ...user,
+          avatar:croppedImage
+        }))
+  
+        isClickedOnEditProfile ? router.replace(`/${user.username}`) : router.replace(`/sign-in`);
+        setIsUploading(false);
+      }else{
+        toast({
+          title: "Avatar is not uploaded!",
+        });
+      }
     } catch (error) {
       console.log("An error in avatar page.tsx", error);
       toast({
@@ -131,7 +146,7 @@ const Page = () => {
         </div>
         <div className="flex flex-col items-center space-y-4">
           <div className="text-center w-full text-lg font-medium">
-            {`Welcome, @${params._id}`}
+            {isClickedOnEditProfile ? "" : `Welcome, @${params._id}`}
           </div>
 
           {/* showing avatar when user just signed up */}
@@ -141,7 +156,7 @@ const Page = () => {
               src={
                 croppedImage
                   ? croppedImage
-                  : "https://res.cloudinary.com/dsgi2zbq2/image/upload/profile_pic_q6ssck.jpg"
+                  : isClickedOnEditProfile ? user.avatar : "https://res.cloudinary.com/dsgi2zbq2/image/upload/profile_pic_q6ssck.jpg"
               }
               alt="profile pic"
               width={150}
@@ -217,13 +232,17 @@ const Page = () => {
         </div>
 
         <div className=" flex justify-between">
-          <Button
-            variant={"outline"}
-            className="text-md border-gray-800"
-            onClick={onSkip}
-          >
-            Skip for now
-          </Button>
+          { 
+            <Button
+              variant={"outline"}
+              className="text-md border-gray-800"
+              onClick={onSkip}
+            >
+              {
+                isClickedOnEditProfile ? "Skip" : "Skip for now"
+              }
+            </Button>
+          }
 
           {/* if image is cropped then this componnent will be shown */}
           {croppedImage && (
