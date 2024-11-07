@@ -13,15 +13,15 @@ import { setPosts } from '@/app/redux/postSlice';
 
 
 const HomePageAfterLogin = () => {
-
-  const dispatch = useDispatch()
-  const [isLoading,setIsLoading] = useState(false)
-
+  
   const {data:session} = useSession()
   const user:User = session?.user as User
   console.log("User from home",user);
 
+  const dispatch = useDispatch()
+  const [isLoading,setIsLoading] = useState(false)
   dispatch(setAuthUser(user))
+  
  const fetchPost = useCallback(
   async()=>{
     setIsLoading(true)
