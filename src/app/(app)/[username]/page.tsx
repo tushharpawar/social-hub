@@ -13,6 +13,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUserProfile } from "@/app/redux/userProfileSlice";
 import { useSession } from "next-auth/react";
 import { User } from "next-auth";
+import EditProfileDialog from "@/components/user-profile/EditProfileDialog";
+import { setFetchedUserPosts } from "@/app/redux/postSlice";
+import Link from "next/link";
 
 export default function Page() {
 
@@ -33,6 +36,7 @@ export default function Page() {
         `api/v1/get-all-posts-by-user/${username}`
       );
       setUserPosts(response.data.message);
+      dispatch(setFetchedUserPosts(response.data.message))
       console.log("Users posts fetched by username", response.data.message);
     } catch (error) {
       console.log("Error while fetching posts of user in profile", error);
@@ -62,6 +66,7 @@ export default function Page() {
   }, []);
 
   const { userProfile } = useSelector((store: any) => store.userProfile);
+  const {fetchedUserPosts} = useSelector((store:any)=>store.post)
 
   return (
     <div className="w-full">
@@ -85,7 +90,7 @@ export default function Page() {
               {/* follow following and post count */}
               <div className="flex gap-5">
                 <div className=" text-center font-semibold text-lg">
-                  <p>{userPosts.length ? userPosts.length : 0}</p>
+                  <p>{fetchedUserPosts[0]?.all_posts?.length ? fetchedUserPosts[0]?.all_posts.length : 0}</p>
                   <p>Posts</p>
                 </div>
 
@@ -102,14 +107,20 @@ export default function Page() {
 
               {/* bio and details count */}
               <div className=" my-2">
-                <p>{userProfile.bio ? userProfile.bio : "welcome ...."}</p>
+                <p>{userProfile.bio ? userProfile.bio : ""}</p>
               </div>
 
-              {/* 2 btn for msg and follow */}
+              {/* 2 btn for msg and follow or edit profile and share profile */}
               <div className="flex my-5 gap-5">
                 {isLoggedInUser ? (
                   <>
-                    <Button className="h-8 w-[130px]">Edit Profile</Button>
+                    <EditProfileDialog
+                    _id={userProfile._id}
+                    username={userProfile.username}
+                    avatar={userProfile.avatar}
+                    fullName={userProfile.fullName}
+                    bio={userProfile.bio}
+                    />
                     <Button variant="outline" className="h-8 w-[130px]">
                       Share Profile
                     </Button>
@@ -146,9 +157,9 @@ export default function Page() {
 
         <div className="flex justify-center my-4">
           <div className="grid grid-flow-row grid-cols-3 gap-3">
-            {userPosts.length > 0
-              ? userPosts.map((item, index) => (
-                  <SmallPostCard key={item._id} postUrl={item.postUrl} />
+            {fetchedUserPosts[0]?.all_posts?.length > 0
+              ? fetchedUserPosts[0]?.all_posts?.map((item : any, index:any) => (
+                  <SmallPostCard key={item?._id}  postUrl={item.postUrl} postId={item._id}/>
                 ))
               : "No posts on feed :(("}
           </div>
