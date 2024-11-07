@@ -33,6 +33,24 @@ export async function GET(req: NextRequest, {params}:{params:{username:string}},
           as: "all_posts",
         },
       },
+      {
+        $project:{
+          _id:1,
+          username:1,
+          fullName:1,
+          avatar:1,
+          "all_posts.postUrl":1,
+          "all_posts._id":1,
+          "all_posts.caption":1,
+          "all_posts.createdAt":1,
+          "all_posts.likeCount":1
+        }
+      },
+      {
+        $sort:{
+          createdAt: -1
+        }
+      }
     ]).exec();
 
 
@@ -54,7 +72,7 @@ export async function GET(req: NextRequest, {params}:{params:{username:string}},
     return NextResponse.json(
       {
         success: true,
-        message: postsData[0].all_posts,
+        message: postsData,
       },
       { status: 200 }
     );
