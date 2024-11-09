@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from '../ui/separator'
 import { usePathname } from 'next/navigation'
 import NoteUpload from '../notes/NoteUpload'
 import { useSelector } from 'react-redux'
 import Link from 'next/link'
+import { StreamChat } from 'stream-chat'
 
+const client = StreamChat.getInstance(process.env.NEXT_PUBLIC_STREAM_API_KEY!);
 
 const RightSlidebarHeader = () => {
 
