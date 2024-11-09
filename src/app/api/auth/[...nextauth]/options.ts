@@ -4,6 +4,9 @@ import bcrypt from "bcryptjs";
 import UserModel from "@/models/User.model";
 import dbConnect from "@/lib/dbConnect";
 import GoogleProvider from "next-auth/providers/google";
+import { StreamChat } from 'stream-chat';
+
+const client = StreamChat.getInstance(process.env.NEXT_PUBLIC_STREAM_API_KEY!, process.env.STREAM_API_SECRET);
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -58,11 +61,35 @@ export const authOptions: NextAuthOptions = {
       })
   ],
   callbacks:{
-async signIn( {account, profile}:any ) {
-      if (account?.provider === "google") {
-        return profile?.email_verified && profile?.email?.endsWith("@gmail.com");
+async signIn({ user }: any): Promise<boolean> {
+      // if (account?.provider === "google") {
+      //   return profile?.email_verified && profile?.email?.endsWith("@gmail.com");
+      // }
+      // return true // Do different verification for other providers that don't have `email_verified`
+      
+      try {
+        const foundUsers = await UserModel.find(user?._id)
+        const foundUser = foundUsers[0] as { _id: string, username: string, avatar: string };
+
+        const existingUsers = await client.queryUsers({ id: user._id.toString() });
+
+        if (existingUsers.users.length > 0) {
+          console.log('User already exists in Stream Chat:', user._id);
+          return true
+        }else{
+          await client.upsertUser({
+            id: foundUser._id,
+            username:foundUser.username,
+            avatar:foundUser.avatar,
+          });
+          console.log("user upserted!!"); 
+        }
+        return true;
+      } catch (error) {
+        console.log("Error while inserting user in stream", error);
+        return false;        
       }
-      return true // Do different verification for other providers that don't have `email_verified`
+
     },
     async jwt({token,user}) {
         if(user){
