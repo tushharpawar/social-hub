@@ -4,10 +4,6 @@ import "./globals.css";
 import AuthProvider from '../context/AuthProvider'
 import { Toaster } from "@/components/ui/toaster"
 import Slidebar from '@/components/Slidebar'
-import { store } from '@/app/redux/store'
-import { Provider } from 'react-redux'
-import { useRouter } from 'next/router';
-import RightSlidebarHeader from "@/components/right-slidebar/RightSlidebar";
 import { StoreProvider } from "./redux/StoreProvider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -25,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <AuthProvider>
       <body className={inter.className}>
         <main className="flex">
@@ -37,7 +33,6 @@ export default function RootLayout({
           </StoreProvider>
           </main>
         <Toaster />
-
       </body>
       </AuthProvider>
     </html>
