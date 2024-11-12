@@ -1,6 +1,4 @@
 "use client";
-import LeftSlidebar from "@/components/inbox/LeftSlidebar";
-import InboxRightSlidebar from "@/components/inbox/InboxRightSlidebar";
 import React, { useEffect, useState } from "react";
 import {
   Chat,
@@ -14,7 +12,9 @@ import {
   useCreateChatClient,
   useMessageContext,
   InfiniteScroll,
-  useMessageListContext
+  useMessageListContext,
+  ChannelSearch,
+  useChannelStateContext
 } from "stream-chat-react";
 import "stream-chat-react/dist/css/v2/index.css";
 import { StreamChat } from "stream-chat";
@@ -23,23 +23,18 @@ import { useSession } from "next-auth/react";
 import "../../../utils/inbox.css";
 import DateSpaerator from "@/components/inbox/DateSpaerator";
 import CustomChannelHeader from "@/components/inbox/CustomChannelHeader";
-import ChatListCard from "@/components/inbox/ChatListCard";
+
 
 const client = StreamChat.getInstance(process.env.NEXT_PUBLIC_STREAM_API_KEY!);
 
 const Page = () => {
   const [connected, setConnected] = useState(false);
-  const [selectedChannel, setSelectedChannel] = useState<Channel | undefined>(
-    undefined
-  );
-  const [activeChannel, setActiveChannel] = useState(null);
   const filters = { members: { $in: [client.userID!] } };
   const sort = { last_message_at: -1 };
   const { data: session } = useSession();
   const user: User = session?.user as User;
   const userId = user?._id;
   const { autoscrollToBottom } = useMessageContext();
-  const { listElement, scrollToBottom } = useMessageListContext();
 
   useEffect(() => {
     async function fetchToken() {
@@ -49,19 +44,19 @@ const Page = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ userId }),
+          body: JSON.stringify({ username:user.username }),
         });
 
         const { token } = await response.json();
         await client.connectUser(
           {
-            id: userId!,
-            username: user?.username,
-            avatar: user?.avatar,
+            id: user.username!,
+            name: user?.username,
+            image: user?.avatar,
           },
           token
         );
-        console.log("USer connected", token);
+        console.log("User connected", token);
         setConnected(true);
         if (autoscrollToBottom) {
           autoscrollToBottom();
@@ -84,16 +79,15 @@ const Page = () => {
 
   return (
     <Chat client={client} theme="str-chat__theme-dark">
-      <section className="w-full flex gap-2">
+      <section className="w-full flex gap-2 h-screen">
         
         <ChannelList
           filters={filters}
           options={{ state: true, presence: true }}
           sort={sort}
+          showChannelSearch
           Paginator={InfiniteScroll}
-          List={(listProps) => <LeftSlidebar {...listProps} />}
         />
-
 
         <Channel DateSeparator={DateSpaerator}>
           <Window>
@@ -101,7 +95,6 @@ const Page = () => {
             <div className="chat-header z-10">
               <CustomChannelHeader />
             </div>
-
             <div className="chat-body overflow-y-auto no-scrollbar">
               <MessageList/>
             </div>
