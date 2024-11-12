@@ -55,7 +55,7 @@ export default function Sidebar({ className }: SidebarProps) {
               </Button>
 
               <Button variant="ghost" className="w-full justify-start text-lg">
-                <Link href={`/inbox/${user?._id}`} className="flex">
+                <Link href={`/inbox`} className="flex">
                   <BiMessageRoundedDots className="mr-3 h-6 w-6" />
                   Messages
                 </Link>
