@@ -6,13 +6,13 @@ const serverClient = StreamChat.getInstance(process.env.NEXT_PUBLIC_STREAM_API_K
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { userId } = body;
+    const { username } = body;
 
-    if (!userId) {
+    if (!username) {
       return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
     }
 
-    const token = serverClient.createToken(userId);
+    const token = serverClient.createToken(username);
     return NextResponse.json({ token }, { status: 200 });
   } catch (error) {
     console.error('Error generating Stream token:', error);
