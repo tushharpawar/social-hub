@@ -15,7 +15,6 @@ import { useSession } from "next-auth/react";
 import { User } from "next-auth";
 import EditProfileDialog from "@/components/user-profile/EditProfileDialog";
 import { setFetchedUserPosts } from "@/app/redux/postSlice";
-import Link from "next/link";
 
 export default function Page() {
 
