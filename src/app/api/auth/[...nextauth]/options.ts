@@ -78,9 +78,9 @@ async signIn({ user }: any): Promise<boolean> {
           return true
         }else{
           await client.upsertUser({
-            id: foundUser._id,
-            username:foundUser.username,
-            avatar:foundUser.avatar,
+            id: foundUser.username,
+            name:foundUser.username,
+            image:foundUser.avatar,
           });
           console.log("user upserted!!"); 
         }
