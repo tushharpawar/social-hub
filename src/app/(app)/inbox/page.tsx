@@ -5,16 +5,10 @@ import {
   Channel,
   ChannelList,
   Window,
-  ChannelHeader,
   MessageList,
   MessageInput,
-  Thread,
-  useCreateChatClient,
   useMessageContext,
   InfiniteScroll,
-  useMessageListContext,
-  ChannelSearch,
-  useChannelStateContext
 } from "stream-chat-react";
 import "stream-chat-react/dist/css/v2/index.css";
 import { StreamChat } from "stream-chat";
@@ -25,10 +19,14 @@ import DateSpaerator from "@/components/inbox/DateSpaerator";
 import CustomChannelHeader from "@/components/inbox/CustomChannelHeader";
 
 
+//TODO: Add Video call & Audio call
+//TODO: Add Live stream
+
 const client = StreamChat.getInstance(process.env.NEXT_PUBLIC_STREAM_API_KEY!);
 
 const Page = () => {
   const [connected, setConnected] = useState(false);
+  const [token,setToken] = useState()
   const filters = { members: { $in: [client.userID!] } };
   const sort = { last_message_at: -1 };
   const { data: session } = useSession();
@@ -48,6 +46,7 @@ const Page = () => {
         });
 
         const { token } = await response.json();
+        setToken(token)
         await client.connectUser(
           {
             id: user.username!,
@@ -81,19 +80,19 @@ const Page = () => {
     <Chat client={client} theme="str-chat__theme-dark">
       <section className="w-full flex gap-2 h-screen">
         
-        <ChannelList
-          filters={filters}
-          options={{ state: true, presence: true }}
-          sort={sort}
-          showChannelSearch
-          Paginator={InfiniteScroll}
-        />
+         <ChannelList
+            filters={filters}
+            options={{ state: true, presence: true }}
+            sort={sort}
+            showChannelSearch
+            Paginator={InfiniteScroll}
+          />
 
         <Channel DateSeparator={DateSpaerator}>
           <Window>
             <div className="grid grid-rows-[auto_1fr_auto] h-screen">
             <div className="chat-header z-10">
-              <CustomChannelHeader />
+              <CustomChannelHeader token={token}/>
             </div>
             <div className="chat-body overflow-y-auto no-scrollbar">
               <MessageList/>
@@ -111,12 +110,3 @@ const Page = () => {
 };
 
 export default Page;
-
-// create channel
-// client.create ('messaging',id,{
-//   name:'',
-//   members:[],
-//   data:{
-//     imgUrl:,
-//   }
-// })
