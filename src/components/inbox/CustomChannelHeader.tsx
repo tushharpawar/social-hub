@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { useChannelStateContext } from "stream-chat-react";
 import { Avatar, AvatarImage } from "../ui/avatar";
@@ -7,16 +9,16 @@ import { StreamChat } from "stream-chat";
 
 const client = StreamChat.getInstance(process.env.NEXT_PUBLIC_STREAM_API_KEY!);
 
-const CustomChannelHeader = () => {
+const CustomChannelHeader = ({token}) => {
   const { channel } = useChannelStateContext();
-
   //find other user
 
-  const otherUser =
+    const otherUser =
     Object.values(channel?.state?.members || {}).find(
       (member) => member.user && member.user.id !== client?.userID
     )?.user || "";
   console.log("Channel header", channel);
+
 
   return (
     <div className="flex items-center justify-between space-x-3 p-3 border-b-2 border-b-gray-200">
@@ -32,7 +34,7 @@ const CustomChannelHeader = () => {
 
       <div className="flex gap-5 items-center px-5">
         <IoCallOutline size={28} />
-        <IoVideocamOutline size={28} />
+        <IoVideocamOutline size={28} className=" cursor-pointer" />
         <IoMdInformationCircleOutline size={28} />
       </div>
     </div>
