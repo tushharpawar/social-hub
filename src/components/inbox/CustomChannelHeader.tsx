@@ -6,6 +6,7 @@ import { Avatar, AvatarImage } from "../ui/avatar";
 import { IoCallOutline, IoVideocamOutline } from "react-icons/io5";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { StreamChat } from "stream-chat";
+import Link from "next/link";
 
 const client = StreamChat.getInstance(process.env.NEXT_PUBLIC_STREAM_API_KEY!);
 
@@ -34,7 +35,7 @@ const CustomChannelHeader = ({token}) => {
 
       <div className="flex gap-5 items-center px-5">
         <IoCallOutline size={28} />
-        <IoVideocamOutline size={28} className=" cursor-pointer" />
+        <Link href={`/call/${token}`}><IoVideocamOutline size={28} className=" cursor-pointer" /></Link>
         <IoMdInformationCircleOutline size={28} />
       </div>
     </div>
