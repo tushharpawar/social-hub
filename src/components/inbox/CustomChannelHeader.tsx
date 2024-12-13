@@ -34,8 +34,8 @@ const CustomChannelHeader = ({token}) => {
       </div>
 
       <div className="flex gap-5 items-center px-5">
-        <IoCallOutline size={28} />
-        <Link href={`/call/${token}`}><IoVideocamOutline size={28} className=" cursor-pointer" /></Link>
+        {/* <IoCallOutline size={28} />
+        <Link><IoVideocamOutline size={28} className=" cursor-pointer" /></Link> */}
         <IoMdInformationCircleOutline size={28} />
       </div>
     </div>
