@@ -11,7 +11,7 @@ import Slidebar from '@/components/Slidebar'
 
 //Notes::::
 //Leaving on 13-11
-//TODO:Add button for like which creates animation on when liked from magic ui (Component name:Cool button)
+//TODO: Add button for like which creates animation on when liked from magic ui (Component name:Cool button)
 //TODO: Add Video call, audio call & live stream
 //TODO: Add story functionality
 //TODO: Add like, comment functionality in notes
@@ -28,7 +28,7 @@ import Slidebar from '@/components/Slidebar'
 //FIXME: Add real email service
 
 export default function Home() {
-    const session = useSession()
+  
   return (
     <>
     <main className="w-full min-h-screen flex items-center justify-center">
