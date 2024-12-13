@@ -86,6 +86,7 @@ const Page = () => {
             sort={sort}
             showChannelSearch
             Paginator={InfiniteScroll}
+            setActiveChannelOnMount={false}
           />
 
         <Channel DateSeparator={DateSpaerator}>
