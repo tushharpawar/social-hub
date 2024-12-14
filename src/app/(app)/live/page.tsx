@@ -1,8 +1,8 @@
 'use client'
 
+import { Button } from "@/components/ui/button";
 import {
     LivestreamPlayer,
-    ParticipantView,
     StreamCall,
     StreamVideo,
     StreamVideoClient,
@@ -11,136 +11,128 @@ import {
     SpeakerLayout,
     User,
     StreamTheme,
-    LivestreamLayout
+    Call,
   } from "@stream-io/video-react-sdk";
 
 import { User as AuthUser }  from "next-auth";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { v4 as uuid } from 'uuid';
-  
-  const apiKey = "536ez6cv3czw";
-  const callId = uuid();
-  
- 
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Card } from "@/components/cards/card";
+
+const apiKey = "536ez6cv3czw";
+   
   export default function App() {
 
     const[token,setToken] = useState("")
     const [username,setUsername] = useState("")
     const [client, setClient] = useState<StreamVideoClient | undefined>(undefined)
+    const [isLoading,setIsLoading] = useState(false)
+    const [livestreams, setLivestreams] = useState<Call[]>([])
     const { data: session } = useSession();
+
     const authUser: AuthUser = session?.user as AuthUser;
+    const router = useRouter()
+    const user: User = {
+        id: authUser?.username|| "",
+        name: authUser?.username || "",
+        image: authUser?.image || "",
+      };
+
+    async function connectUser() {
+        const client = new StreamVideoClient({
+          apiKey,
+          user,
+          token: token as string,
+        });
+        setClient(client);
+        await client.connectUser({ id: authUser?.username || "" }, token);
+      }
+
+    async function fetchToken() {
+      try {
+        setIsLoading(true)
+        setUsername(authUser.username!)
+        console.log("Username:",username);           
+        
+        const response = await fetch("/api/v1/get-token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username}),
+        });
+
+        const { token } = await response.json();
+        console.log("Token",token)
+        setToken(token) 
+        setIsLoading(false) 
+      } catch (error) {
+        setIsLoading(false)
+        console.error("Error connecting to Stream Chat:", error);
+      }
+    }
+
+    const fetchLive =async () =>{
+      if (client) {
+        const { calls } = await client.queryCalls({
+          filter_conditions: {
+            type: { $eq: "livestream" },
+            ongoing: { $eq: true } 
+          },
+          limit: 10,
+          watch: true,
+        });
+
+        setLivestreams(calls)
+        console.log("livestrems",livestreams);
+        
+      }
+
+    }
 
     useEffect(() => {
-        async function fetchToken() {
-          try {
-            setUsername(authUser.username!)
-            console.log("Username:",username);           
-            
-            const response = await fetch("/api/v1/get-token", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ username}),
-            });
-    
-            const { token } = await response.json();
-            console.log("Token",token)
-            setToken(token)   
-
-          } catch (error) {
-            console.error("Error connecting to Stream Chat:", error);
-          }
-        }
-        fetchToken()
-
-        async function connectUser(){
-          const client = new StreamVideoClient({ apiKey, user, token });
-        setClient(client)
-        await client.connectUser({id:username},token)
-        }
-
-        connectUser()
+      setIsLoading(true)
+      fetchToken()
+      connectUser()
+      fetchLive()
+      setIsLoading(false)
       }, [authUser]);
 
-    const user: User = { id: username, name: "live", image: authUser?.avatar || "" };
-    
-    if (client) {
-      const call = client.call("livestream", callId);
-      call.getOrCreate();
-    }
-
-    if (!client) {
-      return <div>Loading...</div>;
-    }
-
-    return (
-      <StreamTheme style={{ fontFamily: 'sans-serif', color: 'white' }}>
-    <StreamVideo client={client}>
-        <StreamCall call={client.call("livestream", callId)}>
-        <LivestreamLayout
-          muted={false}
-          enableFullscreen={true}
-          showParticipantCount={true}
-          showDuration={true}
-          showLiveBadge={true}
-          showSpeakerName={false}
-          floatingParticipantProps={{
-            muted: false,
-            enableFullscreen: true,
-            showParticipantCount: true,
-            showDuration: true,
-            showLiveBadge: true,
-            showSpeakerName: false,
-            position: "top-right",
-          }}
-        />
-
-        <LivestreamPlayer callType="livestream" callId={callId}/>
-        </StreamCall>
-      </StreamVideo>
-  </StreamTheme>
       
-    );
-  }
-
-  const LivestreamView = ({call}) => {
-    const {
-      useCameraState,
-      useMicrophoneState,
-      useParticipantCount,
-      useIsCallLive,
-      useParticipants,
-    } = useCallStateHooks();
-  
-    const { camera: cam, isEnabled: isCamEnabled } = useCameraState();
-    const { microphone: mic, isEnabled: isMicEnabled } = useMicrophoneState();
-    
-    const participantCount = useParticipantCount();
-    const isLive = useIsCallLive();
-  
-    const [firstParticipant] = useParticipants();
-    
     return (
-      <div style={{ display: "flex", flexDirection: 'column', gap: '4px' }}>
-        <div>{isLive ? `Live: ${participantCount}`: `In Backstage`}</div>
-        {firstParticipant ? (
-          <ParticipantView participant={firstParticipant} />
-        ) : (
-          <div>The host hasn&apos;t joined yet</div>
-        )}
-        <div style={{ display: 'flex', gap: '4px'}}>
-          <button onClick={() => (isLive ? call.stopLive() : call.goLive())}>
-            {isLive ? "Stop Live" : "Go Live"}
-          </button>
-          <button onClick={() => cam.toggle()}>
-            {isCamEnabled ? "Disable camera" : "Enable camera"}
-          </button>
-          <button onClick={() => mic.toggle()}>
-            {isMicEnabled ? "Mute Mic" : "Unmute Mic"}
-          </button>
+      <div className="h-screen w-full">
+        <Link href={`/create/live/${token}`}><Button className="justify-start text-lg m-8" disabled={isLoading}>
+          {
+              isLoading? <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
+              Please wait...
+              </> : "Start Live"
+          }
+        </Button></Link>
+
+        <div className="w-full text-xl font-bold px-8">
+          Live
+          <div className="m-5 flex flex-wrap">
+            {livestreams.length > 0 ? (
+              livestreams.map((livestream,index) => (
+                  <Card
+                  key={livestream.cid}
+                  image={livestream.state.createdBy?.image}
+                  name={livestream.state.createdBy?.name}
+                  online={livestream.state.createdBy?.online}
+                  createdAt={livestream.state.createdAt}
+                  watching={livestream.state.participantCount}
+                  />
+
+              ))
+            ) : (
+              "No livestreams available"
+            )}
+          </div>
         </div>
       </div>
     );
-  };
+  }
