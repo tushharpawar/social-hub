@@ -3,6 +3,11 @@ import daisyui from "daisyui"
 
 const config = {
   darkMode: ["class"],
+  safelist: [
+    {
+      pattern: /bg-\[url\(.*\)\]/, // Safelist for dynamic URLs
+    },
+  ],
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
@@ -91,7 +96,9 @@ const config = {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out'
   		}
-  	}
+  	},
+
+
   },
   daisyui:{
     themes:['light']
