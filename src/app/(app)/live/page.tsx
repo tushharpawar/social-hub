@@ -21,6 +21,7 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/cards/card";
+import { MdOutlineVideocam } from "react-icons/md";
 
 const apiKey = "536ez6cv3czw";
    
@@ -34,7 +35,6 @@ const apiKey = "536ez6cv3czw";
     const { data: session } = useSession();
 
     const authUser: AuthUser = session?.user as AuthUser;
-    const router = useRouter()
     const user: User = {
         id: authUser?.username|| "",
         name: authUser?.username || "",
@@ -109,27 +109,30 @@ const apiKey = "536ez6cv3czw";
               isLoading? <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
               Please wait...
-              </> : "Start Live"
+              </> : "Go Live"
           }
         </Button></Link>
 
         <div className="w-full text-xl font-bold px-8">
-          Live
+          Watch Livestreams
           <div className="m-5 flex flex-wrap">
             {livestreams.length > 0 ? (
               livestreams.map((livestream,index) => (
+                  <Link href={`/watch/live/${livestream.cid}/${token}/${username}`}  key={livestream.cid}>
                   <Card
-                  key={livestream.cid}
                   image={livestream.state.createdBy?.image}
                   name={livestream.state.createdBy?.name}
                   online={livestream.state.createdBy?.online}
                   createdAt={livestream.state.createdAt}
                   watching={livestream.state.participantCount}
                   />
+                  </Link>
 
               ))
             ) : (
-              "No livestreams available"
+              <div className="text-xl text-center font-bold">
+                No live streams currently!
+              </div>
             )}
           </div>
         </div>
