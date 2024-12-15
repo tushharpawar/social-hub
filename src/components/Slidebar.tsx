@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { AiOutlineHome } from "react-icons/ai";
 import { IoSearchOutline } from "react-icons/io5";
-import { FaRegHeart } from "react-icons/fa";
+import { IoVideocamOutline } from "react-icons/io5";
 import { CgNotes } from "react-icons/cg";
 import { BiMessageRoundedDots } from "react-icons/bi";
 import { MdOutlineSettings } from "react-icons/md";
@@ -34,41 +34,47 @@ export default function Sidebar({ className }: SidebarProps) {
           <div className="px-8 py-2">
             <div className="space-y-3 ">
               <Button variant="ghost" className="w-full justify-start text-lg">
-                <Link href={"/"} className="flex">
+                <Link href={"/"} className="flex items-center gap-2">
                   <AiOutlineHome className="mr-3 h-6 w-6" />
-                  Home
+                  <p>Home</p>
                 </Link>
               </Button>
 
               <Button variant="ghost" className="w-full justify-start text-lg">
+              <Link href={"#"} className="flex items-center gap-2">
                 <IoSearchOutline className="mr-3 h-6 w-6" fill="true" />
-                Stories
+                <p>Stories</p>
+                </Link>
               </Button>
 
               <CreatePostAlert />
 
               <Button variant="ghost" className="w-full justify-start text-lg">
-                <Link href={"/note"} className="flex">
+                <Link href={"/note"} className="flex items-center gap-2">
                   <CgNotes className="mr-3 h-6 w-6" />
-                  Notes
+                  <p>Notes</p>
                 </Link>
               </Button>
 
               <Button variant="ghost" className="w-full justify-start text-lg">
-                <Link href={`/inbox`} className="flex">
+                <Link href={`/inbox`} className="flex items-center gap-2">
                   <BiMessageRoundedDots className="mr-3 h-6 w-6" />
-                  Messages
+                  <p>Messages</p>
+                </Link>
+              </Button>
+
+              <Button variant="ghost" className="w-full justify-start text-lg ">
+                <Link href={`/live`} className="flex items-center gap-2">
+                <IoVideocamOutline className="mr-3 h-8 w-8" />
+                <p>Live</p>
                 </Link>
               </Button>
 
               <Button variant="ghost" className="w-full justify-start text-lg">
-                <FaRegHeart className="mr-3 h-6 w-6" />
-                Notification
-              </Button>
-
-              <Button variant="ghost" className="w-full justify-start text-lg">
-                <MdOutlineSettings className="mr-3 h-6 w-6" />
-                Settings
+              <Link href={`#`} className="flex items-center gap-2">
+                <MdOutlineSettings className="mr-3 h-7 w-7 gap-2" />
+                <p>Settings</p>
+                </Link>
               </Button>
             </div>
           </div>
