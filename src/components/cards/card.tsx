@@ -41,7 +41,7 @@ export function Card({image,name,online,createdAt,watching}) {
                 <p className="font-lg text-sm relative z-10 my-4 flex gap-2 items-center">
                 <Eye size={20}/>{watching}
                 </p>
-                <img className="h-24 w-24"  src="https://res.cloudinary.com/tushharpawar/image/upload/v1734178827/Animation_-_1734178421057_pludmq.gif" alt=""/>
+                <img className="h-28 w-28"  src="https://res.cloudinary.com/tushharpawar/image/upload/v1734178827/Animation_-_1734178421057_pludmq.gif" alt=""/>
                 </div>
                     
                 :"Offline"}
