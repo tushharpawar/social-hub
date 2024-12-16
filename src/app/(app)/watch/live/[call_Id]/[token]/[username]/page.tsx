@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { useSession } from 'next-auth/react';
-import { useParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import { User as authUser } from 'next-auth';
-import { 
+import { useSession } from "next-auth/react";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { User as authUser } from "next-auth";
+import {
   StreamVideoClient,
   User,
   StreamVideo,
@@ -12,88 +12,81 @@ import {
   useCallStateHooks,
   ParticipantView,
   LivestreamLayout,
-} from '@stream-io/video-react-sdk';
-import '@stream-io/video-react-sdk/dist/css/styles.css';
+} from "@stream-io/video-react-sdk";
+import "@stream-io/video-react-sdk/dist/css/styles.css";
+import { ImPhoneHangUp } from "react-icons/im";
 
-const apiKey = '536ez6cv3czw';
+const apiKey = "536ez6cv3czw";
 
 const Page = () => {
-  const [client, setClient] = useState<StreamVideoClient | undefined>(undefined);
+  const [client, setClient] = useState<StreamVideoClient | undefined>(
+    undefined
+  );
   const [call, setCall] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { call_Id, token, username } = useParams();
+  const { call_Id, token, username } = useParams() as {
+    call_Id: string;
+    token: string;
+    username: string;
+  };
+
   const { data: session } = useSession();
-  const authUser = session?.user as authUser
-
-  const { useParticipants, useRemoteParticipants } = useCallStateHooks();
-
-  // Unconditionally call hooks
-  // const participants = useParticipants?.() || [];
-  const remoteParticipants = useRemoteParticipants?.() || [];
+  const authUser = session?.user as authUser;
 
   const user: User = {
-    id: authUser.username || '',
-    name: authUser.username || '',
-    image: authUser.image || '',
+    id: username || "",
+    name: username || "",
+    image: authUser.image || "",
   };
   useEffect(() => {
     const connectUser = async () => {
       try {
-        const client = new StreamVideoClient({ apiKey });
+        setIsLoading(true);
+        const client = new StreamVideoClient({ apiKey, user, token });
         setClient(client);
-  
-        await client.connectUser(user, token as string);
-  
-        const call = client.call('livestream', Array.isArray(call_Id) ? call_Id[0] : call_Id);
+
+        const call = client.call("livestream", call_Id);
         setCall(call);
-  
-        await call.join({ create: false });
-        console.log('Call joined successfully:', call);
+
+        call.camera.disable();
+        call.microphone.disable();
+
+        await call.join();
+        console.log("Call joined successfully:", call);
       } catch (error) {
-        console.error('Error connecting or joining call:', error);
+        console.error("Error connecting or joining call:", error);
       } finally {
         setIsLoading(false);
       }
     };
-  
-    connectUser();
-  }, [call_Id, token, client, call]);
-  
-  // useEffect(() => {
-  //   console.log('Remote Participants:', remoteParticipants);
-  //   console.log('Participants:', participants);
-  // }, [remoteParticipants, participants]);
-  
 
-  if (isLoading || !client || !call) {
+    connectUser();
+  }, []);
+
+  if (!call || !client) {
     return <div>Loading...</div>;
   }
 
-  console.log(remoteParticipants);
-  
+  const handleLeaveLive = () => {
+    call?.leave();
+  };
 
   return (
     <div className="h-screen">
       <StreamVideo client={client}>
         <StreamCall call={call}>
-        <LivestreamLayout
-          muted={false}
-          enableFullscreen={true}
-          showParticipantCount={true}
-          showDuration={true}
-          showLiveBadge={true}
-          showSpeakerName={false}
-          floatingParticipantProps={{
-            muted: false,
-            enableFullscreen: true,
-            showParticipantCount: true,
-            showDuration: true,
-            showLiveBadge: true,
-            showSpeakerName: false,
-            position: "top-right",
-          }}
-        />
+          <div className="h-screen relative p-4">
+            <LivestreamLayout
+              muted={false}
+              showParticipantCount={true}
+              showDuration={true}
+              showLiveBadge={true}
+            />
+            <div className="absolute top-6 right-10">
+              <ImPhoneHangUp size={24} onClick={handleLeaveLive} />
+            </div>
+          </div>
         </StreamCall>
       </StreamVideo>
     </div>
