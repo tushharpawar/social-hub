@@ -48,7 +48,6 @@ const apiKey = "536ez6cv3czw";
           token: token as string,
         });
         setClient(client);
-        await client.connectUser({ id: authUser?.username || "" }, token);
       }
 
     async function fetchToken() {
@@ -100,7 +99,6 @@ const apiKey = "536ez6cv3czw";
       fetchLive()
       setIsLoading(false)
       }, [authUser]);
-
       
     return (
       <div className="h-screen w-full">
@@ -118,7 +116,7 @@ const apiKey = "536ez6cv3czw";
           <div className="m-5 flex flex-wrap">
             {livestreams.length > 0 ? (
               livestreams.map((livestream,index) => (
-                  <Link href={`/watch/live/${livestream.cid}/${token}/${username}`}  key={livestream.cid}>
+                  <Link href={`/watch/live/${livestream.id}/${token}/${username}`}  key={livestream.cid}>
                   <Card
                   image={livestream.state.createdBy?.image}
                   name={livestream.state.createdBy?.name}
