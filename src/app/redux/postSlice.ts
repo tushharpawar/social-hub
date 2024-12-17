@@ -12,9 +12,10 @@ const postSlice = createSlice({
         },
         setFetchedUserPosts:(state,action)=>{
             state.fetchedUserPosts = action.payload
-        }
-    }
+        },
+        resetPostSlice: () => {posts:null},
+    },
 })
 
-export const {setPosts,setFetchedUserPosts} = postSlice.actions
+export const {setPosts,setFetchedUserPosts,resetPostSlice} = postSlice.actions
 export default postSlice.reducer
