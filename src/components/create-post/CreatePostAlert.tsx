@@ -34,7 +34,6 @@ export default function AlertDialogDemo() {
   const [open,setOpen] = useState(false)
   const [isLoading,setIsLoading] = useState(false)
   const [isLoading2,setIsLoading2] = useState(false)
-  const [open2,setOpen2] = useState(false)
 
   const router = useRouter()
 
