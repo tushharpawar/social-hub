@@ -1,7 +1,6 @@
 import mongoose,{Schema,Document} from "mongoose";
 
 export interface Save extends Document{
-    name:string;
     post:any;
     owner:any;
     createdAt:Date;
@@ -9,9 +8,6 @@ export interface Save extends Document{
 }
 
 export const SaveSchema :Schema<Save> =new mongoose.Schema({
-    name:{
-        type:String
-    },
     post:{
         type:Schema.Types.ObjectId,
         ref:"Post"
