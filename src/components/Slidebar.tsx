@@ -14,6 +14,7 @@ import { Button } from "./ui/button";
 import { useSelector } from "react-redux";
 import { useSession } from "next-auth/react";
 import { User } from "next-auth";
+import { FaRegBookmark } from "react-icons/fa";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -40,14 +41,6 @@ export default function Sidebar({ className }: SidebarProps) {
                 </Link>
               </Button>
 
-              <Button variant="ghost" className="w-full justify-start text-lg">
-              <Link href={"#"} className="flex items-center gap-2">
-                <IoSearchOutline className="mr-3 h-6 w-6" fill="true" />
-                <p>Stories</p>
-                </Link>
-              </Button>
-
-              <CreatePostAlert />
 
               <Button variant="ghost" className="w-full justify-start text-lg">
                 <Link href={"/note"} className="flex items-center gap-2">
@@ -55,6 +48,10 @@ export default function Sidebar({ className }: SidebarProps) {
                   <p>Notes</p>
                 </Link>
               </Button>
+
+              <CreatePostAlert />
+
+              
 
               <Button variant="ghost" className="w-full justify-start text-lg">
                 <Link href={`/inbox`} className="flex items-center gap-2">
@@ -67,6 +64,13 @@ export default function Sidebar({ className }: SidebarProps) {
                 <Link href={`/live`} className="flex items-center gap-2">
                 <IoVideocamOutline className="mr-3 h-8 w-8" />
                 <p>Live</p>
+                </Link>
+              </Button>
+
+              <Button variant="ghost" className="w-full justify-start text-lg">
+              <Link href={`/saved`} className="flex items-center gap-2">
+                <FaRegBookmark className="mr-3 h-6 w-6" />
+                <p>Saved</p>
                 </Link>
               </Button>
 
