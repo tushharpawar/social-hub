@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import PostModel from "@/models/Post.model";
 import { authOptions } from "../../auth/[...nextauth]/options";
+import mongoose from "mongoose";
 
 export async function GET(req: NextRequest, res: NextResponse) {
   await dbConnect();
@@ -19,38 +20,73 @@ export async function GET(req: NextRequest, res: NextResponse) {
           );
     }
 
+    const userId = new mongoose.Types.ObjectId(_user._id);
+
     const allPosts = PostModel.aggregate([
-        
-            {
-              $lookup: {
-                from: "users",
-                localField: "owner",
-                foreignField: "_id",
-                as: "owner"
-              }
-          },
-            {
-              $unwind: "$owner"
-          },
-            {
-          $project: {
-            _id:1,
-            postUrl:1,
-            caption:1,
-            createdAt:1,
-            likeCount:1,
-            "owner.username":1,
-            "owner.email":1,
-            "owner.avatar":1,
-            "owner.fullName":1
-          }
+      //owner details
+      {
+        $lookup: {
+          from: "users",
+          localField: "owner",
+          foreignField: "_id",
+          as: "owner",
         },
-        {
-          $sort:{
-            createdAt: -1
-          }
-        }
-    ])
+      },
+      {
+        $unwind: "$owner",
+      },
+
+      //  isSeen records
+      {
+        $lookup: {
+          from: "isseens", 
+          let: { postId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$post", "$$postId"] }, 
+                    { $eq: ["$user", userId] }, 
+                    { $eq: ["$isSeen", true] }, 
+                  ],
+                },
+              },
+            },
+          ],
+          as: "seenByUser",
+        },
+      },
+
+      // Step 3: Exclude seen posts
+      {
+        $match: {
+          "seenByUser.0": { $exists: false }, // Only include posts that are not seen
+        },
+      },
+
+      // Step 4: Project required fields
+      {
+        $project: {
+          _id: 1,
+          postUrl: 1,
+          caption: 1,
+          createdAt: 1,
+          likeCount: 1,
+          "owner.username": 1,
+          "owner.email": 1,
+          "owner.avatar": 1,
+          "owner.fullName": 1,
+        },
+      },
+
+      // Step 5: Sort by creation date
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+    ]);
 
     const postsData = await allPosts;
 
