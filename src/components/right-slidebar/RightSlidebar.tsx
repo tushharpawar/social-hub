@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from '../ui/separator'
 import { usePathname } from 'next/navigation'
 import NoteUpload from '../notes/NoteUpload'
 import { useSelector } from 'react-redux'
 import Link from 'next/link'
-import { StreamChat } from 'stream-chat'
-
-const client = StreamChat.getInstance(process.env.NEXT_PUBLIC_STREAM_API_KEY!);
+import HomeNavbar from '../HomeNavbar'
 
 const RightSlidebarHeader = () => {
 
@@ -24,7 +22,6 @@ const RightSlidebarHeader = () => {
           <div className="text-center">
             <Avatar className="mr-3 h-10 w-10">
               <AvatarImage src={user?.avatar} />
-              <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </div>
 
@@ -43,7 +40,11 @@ const RightSlidebarHeader = () => {
         pathname === '/note' ? (
             <>
             <NoteUpload/></>
-        ):('kuch bhi nahi')
+        ):(
+          <div className='p-3'>
+            <HomeNavbar/>
+          </div>
+        )
     }
 
  </div>
