@@ -8,6 +8,10 @@ import mongoose from "mongoose";
 export async function GET(req: NextRequest, res: NextResponse) {
   await dbConnect();
 
+  const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = parseInt(searchParams.get("limit") || "10", 10);
+
   try {
     
     const session = await getServerSession(authOptions)
@@ -86,7 +90,19 @@ export async function GET(req: NextRequest, res: NextResponse) {
           createdAt: -1,
         },
       },
+      {
+        $skip: (page - 1) * limit, // Skip documents for previous pages
+      },
+      {
+        $limit: limit, // Limit the number of documents
+      },
     ]);
+
+    // Get total number of posts for pagination metadata
+    const totalPosts = await PostModel.countDocuments();
+
+    // Calculate if there are more posts to fetch
+    const hasMore = page * limit < totalPosts;
 
     const postsData = await allPosts;
 
@@ -94,6 +110,12 @@ export async function GET(req: NextRequest, res: NextResponse) {
       {
         success: true,
         message: postsData,
+        pagination: {
+          page,
+          limit,
+          totalPosts,
+          hasMore,
+        },
       },
       { status: 200 }
     );
