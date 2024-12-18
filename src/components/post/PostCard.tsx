@@ -17,6 +17,8 @@ import axios from "axios";
 import CommentBox from "./CommentBox";
 import { useToast } from "../ui/use-toast";
 import Link from "next/link";
+import { FaBookmark } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 type PostCardProps = {
   username:string;
@@ -29,6 +31,7 @@ type PostCardProps = {
 
 const PostPage = ({username,avatar,postUrl,caption,postId,likeCount}:PostCardProps) => {
   const [isLiked,setIsLiked] = useState(false)
+  const [isSaved,setIsSaved] = useState(false)
   const [newLikeCount,setNewLikeCount] = useState(likeCount)
   const [isCommentClicked,setIsCommentClicked] = useState(false)
   const {toast} = useToast()
@@ -57,6 +60,24 @@ const PostPage = ({username,avatar,postUrl,caption,postId,likeCount}:PostCardPro
         })
      }
 }
+  const onSave =async ()=>{
+      try {
+        setIsSaved(!isSaved)
+
+        const response = await axios.post(`/api/v1/posts/${postId}/save`)
+  
+        if(response.status === 201){
+          toast({
+            title:response.data.message
+          })
+        }
+      } catch (error) {
+        console.log(error);
+        toast({
+          title:'Post Unsaved'
+        })
+     }
+}
 
 // checks if logged-in user liked post or not if user not liked then isLiked state will be false and if it is liked then isLiked state will be true
 
@@ -74,17 +95,52 @@ const getLikedByLoggedInUser = async()=>{
     }
 }
 
+const getSavedByLoggedInUser = async()=>{
+    try {
+    const response = await axios.get(`api/v1/check-is-saved/${postId}`)
+    if(response.data.message === true){
+      setIsSaved(true)
+    }
+    if(response.data.message === false){
+      setIsSaved(false)
+    }
+    } catch (error) {
+      console.log("Error while fething likes",error);
+    }
+}
+
+const {user} = useSelector((store:any)=>store.auth)
+
 useEffect(()=>{
   getLikedByLoggedInUser()
-},[])
+  getSavedByLoggedInUser()
+},[postId])
 
 //opens comment box
 const onComment =async () =>{
   setIsCommentClicked(!isCommentClicked)
 }
 
+const onDelete = async () =>{
+  try {
+
+    const response = await axios.post(`/api/v1/post-delete/${postId}`)
+
+    if(response.status === 201){
+      toast({
+        title:response.data.message
+      })
+    }
+  } catch (error) {
+    console.log(error);
+    toast({
+      title:'Internal server error!'
+    })
+ }
+}
+
   return (
-    <div className="w-full h-auto flex justify-center mt-5">
+    <div className="w-full h-auto flex justify-center mt-5" data-postid={postId}>
       <div className="h-auto flex justify-center items-center">
         <div className="flex items-center justify-center px-5 py-3">
           <div className="max-w-[350px] w-full flex items-center gap-3 flex-col ">
@@ -120,10 +176,12 @@ const onComment =async () =>{
               <DropdownMenu>
                 <DropdownMenuTrigger ><MdOutlineMoreVert className="h-5 w-5"/></DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Share</DropdownMenuItem>
-                  <DropdownMenuItem>Save</DropdownMenuItem>
-                  <DropdownMenuItem className="text-red-500 focus:text-red-500">Delete</DropdownMenuItem>
+                  <Link href={`${username}`}><DropdownMenuItem>Profile</DropdownMenuItem></Link>
+                  <DropdownMenuItem onClick={onSave}>Save</DropdownMenuItem>
+                  {
+                    username === user?.username && <DropdownMenuItem className="text-red-500 focus:text-red-500" onClick={onDelete}>Delete</DropdownMenuItem>
+                  }
+                  
                 </DropdownMenuContent>
               </DropdownMenu>
               </div>
@@ -158,7 +216,9 @@ const onComment =async () =>{
               <FaRegPaperPlane size={22} className=" cursor-pointer"/>
               </div>
               <div className="">
-              <FaRegBookmark size={22} className=" cursor-pointer"/>
+              {
+                isSaved? <FaBookmark size={22} className=" cursor-pointer" onClick={onSave}/> : <FaRegBookmark size={22} className=" cursor-pointer" onClick={onSave}/>
+              }
               </div>
             </div>
 
