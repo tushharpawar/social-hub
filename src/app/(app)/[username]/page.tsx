@@ -68,7 +68,7 @@ export default function Page() {
   const {fetchedUserPosts} = useSelector((store:any)=>store.post)
 
   return (
-    <div className="w-full">
+    <div className="w-full h-screen">
       <div className="w-[80%]">
         {/* user profile upper part */}
 
