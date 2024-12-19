@@ -84,7 +84,7 @@ const Page = () => {
 
       toast({
         title: "Signup Successful!🎉",
-        description: "We have sent you 6-digit code on your email.",
+        description: "We have sent you 6-digit code on your email.If you didn't recieved in inbox, check spam folder.",
       });
 
       router.replace(`/verify/${response.data.newUser._id}`);
@@ -104,8 +104,8 @@ const Page = () => {
   };
 
   return (
-    <div className=" min-h-screen w-full flex justify-center items-center">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+    <div className="w-full min-h-screen h-auto flex justify-center items-center">
+      <div className="w-full max-w-md p-8 space-y-6  rounded-lg shadow-md">
         <div className="text-center">
           <h1 className="text-sm font-extrabold tracking-tight lg:text-4xl">
             Social-hub
