@@ -3,8 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import AuthProvider from '../context/AuthProvider'
 import { Toaster } from "@/components/ui/toaster"
-import Slidebar from '@/components/Slidebar'
 import { StoreProvider } from "./redux/StoreProvider";
+import ThemeProvider from "@/components/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,19 +21,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className=" dark">
+    <html lang="en" >
       <AuthProvider>
       <body className={inter.className}>
-        <main className="flex">
-        <div className='w-[25%]'>
-        <Slidebar></Slidebar>
-        </div>
-          <StoreProvider>
+      <StoreProvider>
+    <ThemeProvider>
+    <main className="flex">
+          
             {children}
-          </StoreProvider>
+          
           </main>
         <Toaster />
-      </body>
+    </ThemeProvider>
+    </StoreProvider>
+    </body>
       </AuthProvider>
     </html>
   );
