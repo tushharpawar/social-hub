@@ -17,10 +17,7 @@ import { useSession } from "next-auth/react";
 import "../../../utils/inbox.css";
 import DateSpaerator from "@/components/inbox/DateSpaerator";
 import CustomChannelHeader from "@/components/inbox/CustomChannelHeader";
-
-
-//TODO: Add Video call & Audio call
-//TODO: Add Live stream
+import { useSelector } from "react-redux";
 
 const client = StreamChat.getInstance(process.env.NEXT_PUBLIC_STREAM_API_KEY!);
 
@@ -76,8 +73,10 @@ const Page = () => {
     };
   }, [user, userId]);
 
+  const {theme} = useSelector((store:any)=>store.theme)
+
   return (
-    <Chat client={client} theme="str-chat__theme-dark">
+    <Chat client={client} theme={theme == 'dark' ? 'str-chat__theme-dark' : 'str-chat__theme-light'}>
       <section className="w-full flex gap-2 h-screen">
         
          <ChannelList
