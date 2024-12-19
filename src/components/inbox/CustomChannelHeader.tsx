@@ -3,8 +3,6 @@
 import React from "react";
 import { useChannelStateContext } from "stream-chat-react";
 import { Avatar, AvatarImage } from "../ui/avatar";
-import { IoCallOutline, IoVideocamOutline } from "react-icons/io5";
-import { IoMdInformationCircleOutline } from "react-icons/io";
 import { StreamChat } from "stream-chat";
 import Link from "next/link";
 
@@ -23,7 +21,7 @@ const CustomChannelHeader = ({token}) => {
 
   return (
     <div className="flex items-center justify-between space-x-3 p-3 border-b-2 border-b-gray-200">
-      <div className="flex gap-2 items-center">
+      <Link href={`/${otherUser?.id}`} className="flex gap-2 items-center">
         <Avatar className="mr-3 h-12 w-12">
           <AvatarImage src={otherUser?.image} />
         </Avatar>
@@ -31,13 +29,8 @@ const CustomChannelHeader = ({token}) => {
         <div className="text-lg font-semibold">
           <p>@{otherUser?.id}</p>
         </div>
-      </div>
+      </Link>
 
-      <div className="flex gap-5 items-center px-5">
-        {/* <IoCallOutline size={28} />
-        <Link><IoVideocamOutline size={28} className=" cursor-pointer" /></Link> */}
-        <IoMdInformationCircleOutline size={28} />
-      </div>
     </div>
   );
 };
