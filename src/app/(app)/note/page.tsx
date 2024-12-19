@@ -1,6 +1,6 @@
 "use client";
 
-import HomeNavbar from "@/components/HomeNavbar";
+import HomeNavbar from "@/components/SearchBar";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
