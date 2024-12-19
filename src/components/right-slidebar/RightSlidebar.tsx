@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import NoteUpload from '../notes/NoteUpload'
 import { useSelector } from 'react-redux'
 import Link from 'next/link'
-import HomeNavbar from '../HomeNavbar'
+import HomeNavbar from '../SearchBar'
 
 const RightSlidebarHeader = () => {
 
