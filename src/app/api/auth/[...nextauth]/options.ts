@@ -5,6 +5,8 @@ import UserModel from "@/models/User.model";
 import dbConnect from "@/lib/dbConnect";
 import GoogleProvider from "next-auth/providers/google";
 import { StreamChat } from 'stream-chat';
+import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 
 const client = StreamChat.getInstance(process.env.NEXT_PUBLIC_STREAM_API_KEY!, process.env.STREAM_API_SECRET);
 
@@ -121,6 +123,11 @@ async signIn({ user }: any): Promise<boolean> {
   session:{
     strategy:"jwt",
   },
+ events:{
+  async signOut({ token, session }) {
+    // Add your signOut logic here
+  }
+ },
   secret: process.env.NEXTAUTH_SECRET ,
   pages:{
     signIn: '/sign-in',
