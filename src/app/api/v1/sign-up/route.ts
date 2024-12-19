@@ -5,11 +5,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import { sendMail } from "@/app/helper/mailer";
 
-//need to add 
-//TODO: Add change password features
-//TODO: Add update or remove avatar feature
-//TODO: Add public/private account feature
-//TODO: Add story upload feature
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -52,16 +47,7 @@ export const POST = async (req: Request, res: NextResponse) => {
         }else{
                 const hashedPassword = await bcrypt.hash(password,10)
                 const expiryDate = new Date()
-                expiryDate.setHours(expiryDate.getHours()+1)
-                    
-                // const dir = path.resolve('/public','/uploads')
-                // const readDir = fs.readdirSync(dir)
-                // const imagesPath = readDir.map(name => path.join('/', '/uploads', name))
-                
-                // const cloudinaryUrl =await uploadOnCloudinary(avatar) 
-                // const cloudinaryUrl = await cloudinary.uploader.upload(avatar,{
-                //     folder:"avatar"
-                // })   
+                expiryDate.setHours(expiryDate.getHours()+1) 
                 
                 let avatar:string="https://res.cloudinary.com/dsgi2zbq2/image/upload/profile_pic_q6ssck.jpg"
 
