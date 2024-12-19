@@ -43,10 +43,7 @@ export function Card({image,name,online,createdAt,watching}) {
                 </p>
                 <img className="h-28 w-28"  src="https://res.cloudinary.com/tushharpawar/image/upload/v1734178827/Animation_-_1734178421057_pludmq.gif" alt=""/>
                 </div>
-                    
                 :"Offline"}
-
-          
         </div>
       </div>
     </div>
