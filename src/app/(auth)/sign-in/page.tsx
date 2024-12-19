@@ -64,7 +64,7 @@ const Page = () => {
 
 	return (
     <div className=" min-h-screen w-full flex justify-center items-center">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+      <div className="w-full max-w-md p-8 space-y-6 rounded-lg shadow-md">
         <div className="text-center">
           <h1 className="text-sm font-extrabold tracking-tight lg:text-4xl">
             Social-hub
@@ -117,8 +117,7 @@ const Page = () => {
           </form>
         </Form>
 
-        <GoogleSignIn></GoogleSignIn>
-        		<div className="text-center mt-4">
+        <div className="text-center mt-4">
           <p>
             Not a member?{' '}
             <Link href="/sign-up" className="text-blue-600 hover:text-blue-800">
