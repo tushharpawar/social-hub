@@ -1,6 +1,6 @@
 "use client";
 
-import HomeNavbar from "@/components/HomeNavbar";
+import HomeNavbar from "@/components/SearchBar";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import PostPage from "../post/PostCard";
