@@ -15,6 +15,7 @@ import authSlice from './authSlice'
 import postSlice from './postSlice'
 import userProfileSlice from './userProfileSlice'
 import updateAvatarSlice from './updateAvatarSlice'
+import themeSlice from './themeSlice'
 
 const combinedReducers = combineReducers({
       auth:authSlice,
@@ -22,6 +23,7 @@ const combinedReducers = combineReducers({
       comment:commentSlice,
       userProfile:userProfileSlice,
       isClickedOnEditProfile:updateAvatarSlice,
+      theme:themeSlice,
 })
 
 const persistedReducer = persistReducer(
