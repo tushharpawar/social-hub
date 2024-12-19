@@ -75,7 +75,7 @@ export default function Sidebar({ className }: SidebarProps) {
               </Button>
 
               <Button variant="ghost" className="w-full justify-start text-lg">
-              <Link href={`#`} className="flex items-center gap-2">
+              <Link href={`settings`} className="flex items-center gap-2">
                 <MdOutlineSettings className="mr-3 h-7 w-7 gap-2" />
                 <p>Settings</p>
                 </Link>
