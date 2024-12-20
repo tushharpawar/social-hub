@@ -76,10 +76,11 @@ const Page = () => {
   const {theme} = useSelector((store:any)=>store.theme)
 
   return (
-    <Chat client={client} theme={theme == 'dark' ? 'str-chat__theme-dark' : 'str-chat__theme-light'}>
-      <section className="w-full flex gap-2 h-screen">
-        
-         <ChannelList
+    <Chat client={client} theme={theme == "dark" ? "str-chat__theme-dark" : "str-chat__theme-light"}>
+      <section className="w-full flex flex-col md:flex-row h-screen gap-2">
+        {/* Channel List Section */}
+
+          <ChannelList
             filters={filters}
             options={{ state: true, presence: true }}
             sort={sort}
@@ -88,22 +89,30 @@ const Page = () => {
             setActiveChannelOnMount={false}
           />
 
-        <Channel DateSeparator={DateSpaerator}>
-          <Window>
-            <div className="grid grid-rows-[auto_1fr_auto] h-screen">
-            <div className="chat-header z-10">
-              <CustomChannelHeader token={token}/>
-            </div>
-            <div className="chat-body overflow-y-auto no-scrollbar">
-              <MessageList/>
-            </div>
+        {/* Channel Chat Section */}
+        <div className="w-full md:w-3/4 lg:w-4/5">
+          <Channel DateSeparator={DateSpaerator}>
+            <Window>
+              <div className="w-full grid grid-rows-[auto_1fr_auto] h-screen">
+                <div className="chat-header z-10">
+                  <CustomChannelHeader token={token} />
+                </div>
+                <div className="chat-body sm:pb-0 overflow-y-auto no-scrollbar">
+                  <MessageList />
+                </div>
 
-            <div className="chat-bottom z-10 p-4 border-t">
-              <MessageInput/>
-            </div>
-            </div>
-          </Window>
-        </Channel>
+                <div className="sm:block chat-footer z-20 m-1 bg-white dark:bg-black border-t">
+                  <MessageInput />
+                </div>
+
+                <div className="fixed bottom-0 w-full z-20 m-1 bg-white dark:bg-black border-t sm:hidden">
+                  <MessageInput />
+                </div>
+
+              </div>
+            </Window>
+          </Channel>
+        </div>
       </section>
     </Chat>
   );
