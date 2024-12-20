@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { User as authUser } from "next-auth";
 import {
@@ -15,6 +15,8 @@ import {
 } from "@stream-io/video-react-sdk";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import { ImPhoneHangUp } from "react-icons/im";
+import { useSelector } from "react-redux";
+import { MdFullscreen } from "react-icons/md";
 
 const apiKey = "536ez6cv3czw";
 
@@ -24,6 +26,7 @@ const Page = () => {
   );
   const [call, setCall] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEnded, setIsEnded] = useState("");
 
   const { call_Id, token, username } = useParams() as {
     call_Id: string;
@@ -31,19 +34,20 @@ const Page = () => {
     username: string;
   };
 
-  const { data: session } = useSession();
-  const authUser = session?.user as authUser;
+  const router = useRouter()
 
-  const user: User = {
-    id: username || "",
-    name: username || "",
-    image: authUser.image || "",
+  const {user} = useSelector((store:any)=>store.auth) 
+      
+  const clientUser: User = {
+    id: user?.username|| "",
+    name: user?.username || "",
+    image: user?.avatar || "",
   };
   useEffect(() => {
     const connectUser = async () => {
       try {
         setIsLoading(true);
-        const client = new StreamVideoClient({ apiKey, user, token });
+        const client = new StreamVideoClient({ apiKey, user:clientUser, token });
         setClient(client);
 
         const call = client.call("livestream", call_Id);
@@ -70,22 +74,31 @@ const Page = () => {
 
   const handleLeaveLive = () => {
     call?.leave();
+    router.replace('/live')
   };
 
   return (
-    <div className="h-screen">
+    <div className="h-screen w-full flex flex-col sm:flex-row">
       <StreamVideo client={client}>
         <StreamCall call={call}>
-          <div className="h-screen relative p-4">
+          <div className="flex flex-col sm:h-screen sm:relative p-4">
             <LivestreamLayout
               muted={false}
               showParticipantCount={true}
               showDuration={true}
               showLiveBadge={true}
             />
-            <div className="absolute top-6 right-10">
-              <ImPhoneHangUp size={24} onClick={handleLeaveLive} />
+
+
+            <div className="absolute top-6 right-10 sm:top-4 sm:right-6">
+              <button
+                className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600"
+                onClick={handleLeaveLive}
+              >
+                <ImPhoneHangUp size={24} />
+              </button>
             </div>
+
           </div>
         </StreamCall>
       </StreamVideo>
