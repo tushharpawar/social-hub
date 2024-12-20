@@ -22,51 +22,63 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/cards/card";
 import { MdOutlineVideocam } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
 
 const apiKey = "536ez6cv3czw";
    
   export default function App() {
 
     const[token,setToken] = useState("")
-    const [username,setUsername] = useState("")
     const [client, setClient] = useState<StreamVideoClient | undefined>(undefined)
     const [isLoading,setIsLoading] = useState(false)
     const [livestreams, setLivestreams] = useState<Call[]>([])
-    const { data: session } = useSession();
-
-    const authUser: AuthUser = session?.user as AuthUser;
-    const user: User = {
-        id: authUser?.username|| "",
-        name: authUser?.username || "",
-        image: authUser?.image || "",
+    
+      const {user} = useSelector((store:any)=>store.auth) 
+      
+      const clientUser: User = {
+        id: user?.username|| "",
+        name: user?.username || "",
+        image: user?.avatar || "",
       };
-
-    async function connectUser() {
-        const client = new StreamVideoClient({
-          apiKey,
-          user,
-          token: token as string,
-        });
-        setClient(client);
-      }
+    
 
     async function fetchToken() {
       try {
-        setIsLoading(true)
-        setUsername(authUser.username!)
-        console.log("Username:",username);           
+        setIsLoading(true)          
         
         const response = await fetch("/api/v1/get-token", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ username}),
+          body: JSON.stringify({ username :clientUser.id}),
         });
 
         const { token } = await response.json();
-        console.log("Token",token)
-        setToken(token) 
+        setToken(token)
+          const client = new StreamVideoClient({
+            apiKey,
+            user:clientUser,
+            token: token as string,
+          });
+          setClient(client)
+          await client.connectUser(clientUser,token)
+          console.log("User connected");
+          
+          setLivestreams([])
+          const { calls } = await client.queryCalls({
+            filter_conditions: {
+              type: { $eq: "livestream" },
+              ongoing: { $eq: true } 
+            },
+            limit: 10,
+            watch: true,
+          });
+
+          setLivestreams(calls)
+          console.log("Live streams",calls);
+          
+
         setIsLoading(false) 
       } catch (error) {
         setIsLoading(false)
@@ -74,31 +86,14 @@ const apiKey = "536ez6cv3czw";
       }
     }
 
-    const fetchLive =async () =>{
-      if (client) {
-        const { calls } = await client.queryCalls({
-          filter_conditions: {
-            type: { $eq: "livestream" },
-            ongoing: { $eq: true } 
-          },
-          limit: 10,
-          watch: true,
-        });
-
-        setLivestreams(calls)
-        console.log("livestrems",livestreams);
-        
-      }
-
-    }
 
     useEffect(() => {
       setIsLoading(true)
       fetchToken()
-      connectUser()
-      fetchLive()
       setIsLoading(false)
-      }, [authUser]);
+      }, [user]);
+
+  
       
     return (
       <div className="h-screen w-full">
@@ -116,7 +111,7 @@ const apiKey = "536ez6cv3czw";
           <div className="m-5 flex flex-wrap">
             {livestreams.length > 0 ? (
               livestreams.map((livestream,index) => (
-                  <Link href={`/watch/live/${livestream.id}/${token}/${username}`}  key={livestream.cid}>
+                  <Link href={`/watch/live/${livestream.id}/${token}/${user.username}`}  key={livestream.cid}>
                   <Card
                   image={livestream.state.createdBy?.image}
                   name={livestream.state.createdBy?.name}
@@ -125,7 +120,6 @@ const apiKey = "536ez6cv3czw";
                   watching={livestream.state.participantCount}
                   />
                   </Link>
-
               ))
             ) : (
               <div className="text-xl text-center font-bold">
