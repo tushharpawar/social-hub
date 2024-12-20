@@ -14,21 +14,20 @@ const RightSlidebarHeader = () => {
 
   return (
 
-    <div className="w-[45%] min-h-screen ">
-
-       <div className="w-full">
-       <div className="w-full h-[15vh] flex items-center justify-start ">
-        <Link href={`/${user?.username}`} className="flex items-center px-4 w-full justify-start text-lg">
+    <div className=" sm:w-[45%] sm:min-h-screen ">
+       <div className="sm:w-full">
+       <div className="sm:w-full sm:h-[15vh] sm:flex sm:items-center sm:justify-start ">
+        <Link href={`/${user?.username}`} className="sm:flex sm:items-center sm:px-4 sm:w-full sm:justify-start sm:text-lg">
           <div className="text-center">
-            <Avatar className="mr-3 h-10 w-10">
+            <Avatar className=" mr-3 h-10 w-10">
               <AvatarImage src={user?.avatar} />
             </Avatar>
           </div>
 
-          <div className="text-base font-semibold">@{user?.username}</div>
+          <div className="hidden sm:block text-base font-semibold">@{user?.username}</div>
         </Link>
     </div>
-    <div className="w-[80%] ml-6">
+    <div className="hidden sm:block sm:w-[80%] ml-6">
     <Separator></Separator>
     </div>
     </div>
@@ -41,7 +40,7 @@ const RightSlidebarHeader = () => {
             <>
             <NoteUpload/></>
         ):(
-          <div className='p-3'>
+          <div className=' hidden sm:p-3 sm:w-full sm:block'>
             <HomeNavbar/>
           </div>
         )
