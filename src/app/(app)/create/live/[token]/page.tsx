@@ -49,15 +49,12 @@ const Page = () => {
 
       const call = client?.call("livestream", callId);
       setCall(call);
-
-      call?.camera.enable();
-      call?.microphone.enable();
       await call?.getOrCreate();
       setIsLoading(false);
     };
 
     connectUser();
-  }, [session, token]);
+  }, []);
 
   if (!session || !session.user) {
     return <div>No session</div>;
@@ -77,7 +74,6 @@ const Page = () => {
   if(isLoading){
     return (
       <div style={{height:"full"}}>  
-      <Loader2 size={40}/> 
       <p style={{fontSize:"40px", textAlign:"center"}}>Initiating Live ...</p>
       </div>
     );
@@ -85,29 +81,22 @@ const Page = () => {
 
   const handleStopLive = () => {
     call?.endCall();
+    call?.camera.disable();
+    call?.microphone.disable();
+    call.streamClient.disconnectUser();
     router.replace("/live");
   };
 
-  const handleDisableVideo = () => {
-    call?.camera.disable();
-  };
-  const handleDisableMicrophone = () => {
-    call?.microphone.disable();
-  };
-
-  const handleEnableVideo = () => {
-    call?.camera.enable();
-  };
 
   return (
     <div className="h-screen">
       {client && call ? (
-        <div className="">
-          <div className="relative h-screen">
+        <div className="h-screen w-full">
+          <div className="md:relative h-screen">
             <StreamVideo client={client}>
               <StreamTheme style={{ fontFamily: "sans-serif", color: "white" }}>
                 <StreamCall call={call}>
-                  <div className="h-screen relative p-4">
+                  <div className=" md:h-screen md:relative md:p-4">
                     <LivestreamPlayer
                       callType="livestream"
                       callId={callId}
@@ -117,33 +106,14 @@ const Page = () => {
                         showParticipantCount: true,
                       }}
                     />
-                    <div className="absolute top-6 right-10">
-                      <ImPhoneHangUp size={24} onClick={handleStopLive} />
-                    </div>
-                    <div className="absolute top-12 right-10">
-                      {/* {call?.camera.enabled ? (
-                        <IoVideocamOutline
-                          size={24}
-                          onClick={handleDisableVideo}
-                        />
-                      ) : (
-                        <IoVideocamOffOutline
-                          size={24}
-                          onClick={handleEnableVideo}
-                        />
-                      )} */}
-
-                        <IoVideocamOutline
-                          size={24}
-                          onClick={handleDisableVideo}
-                        />
-                    </div>
-                    <div className="absolute top-18 right-10">
-                      <ImPhoneHangUp
-                        size={24}
-                        onClick={handleDisableMicrophone}
-                      />
-                    </div>
+                    <div className="absolute top-6 right-10 sm:top-4 sm:right-6">
+                     <button
+                      className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600"
+                      onClick={handleStopLive}
+                    >
+                      <ImPhoneHangUp size={24} />
+                    </button>
+                     </div>
                   </div>
                 </StreamCall>
               </StreamTheme>
