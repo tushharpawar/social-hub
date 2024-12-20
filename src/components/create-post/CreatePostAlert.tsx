@@ -115,9 +115,10 @@ export default function AlertDialogDemo() {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" className="w-full justify-start text-lg">
-          <AiOutlinePlusSquare className="mr-3 h-6 w-6" />
-          Create
+        <Button variant='ghost' className="w-full justify-start text-lg">
+          <AiOutlinePlusSquare className="sm:mr-3 sm:h-8 sm:w-8" />
+          <p className="hidden lg:block">Create</p>
+          <span className="text-xs sm:hidden">Create</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
