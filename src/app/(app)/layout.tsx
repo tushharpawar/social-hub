@@ -9,12 +9,10 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
 
-    const {theme} = useSelector((store:any)=>store.theme)
-
   return (
     <>
-        <main className='w-full min-h-screen flex'>
-        <div className={`w-[25%]`}>
+        <main className='w-full h-screen flex'>
+        <div className={`sm:w-[25%]`}>
             <Slidebar></Slidebar>
         </div>
         {children}
