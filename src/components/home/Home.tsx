@@ -32,21 +32,8 @@ const HomePageAfterLogin = () => {
   const dispatch = useDispatch();
   const userId = user?._id;
 
-  // interface Post {
-  //   _id: string;
-  //   owner: {
-  //     username: string;
-  //     avatar: string;
-  //   };
-  //   postUrl: string;
-  //   caption: string;
-  //   likeCount: number;
-  // }
-
   const [posts, setPosts] = useState<any>([])
   
-  // const { posts } = useSelector((store: any) => store.post);
-
   useEffect(() => {
     if (user) {
       dispatch(setAuthUser(user));
@@ -148,39 +135,43 @@ const HomePageAfterLogin = () => {
   }, [seenPosts]);
 
   return (
-    <div className="w-full flex">
-      <div className="w-full min-h-screen">
-        {/* <HomeNavbar /> */}
-        <div className="flex items-center justify-center flex-col">
-          <div className="p-5">
-            {posts?.length > 0 ? (
-              posts?.map((post: any) => (
-                <div className="w-full h-auto flex justify-center mt-5" key={post._id} data-postid={post._id}>
-                <PostPage
-                  postId={post._id}
-                  username={post.owner.username}
-                  postUrl={post.postUrl}
-                  avatar={post.owner.avatar}
-                  caption={post.caption}
-                  likeCount={post.likeCount}
-                />
-                </div>
-              ))
-              
-            ) : (
-              !hasMore &&
-              <div className="text-center font-semibold text-xl">
-              You have cought all activity!
-              </div> 
-            )}
+    <div className="flex-grow pb-16 mt-5 sm:pb-0 overflow-y-scroll overflow-x-hidden">
+        <div className="w-full flex">
+          <div className="w-full min-h-screen">
+            <div className="flex items-center justify-center flex-col">
+              <div className="p-5">
+                {posts?.length > 0 ? (
+                  posts?.map((post: any) => (
+                    <div className="w-full h-auto flex justify-center mt-5" key={post._id} data-postid={post._id}>
+                      <PostPage
+                        postId={post._id}
+                        username={post.owner.username}
+                        postUrl={post.postUrl}
+                        avatar={post.owner.avatar}
+                        caption={post.caption}
+                        likeCount={post.likeCount}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  !hasMore && (
+                    <div className="m-5 text-center font-semibold text-xl">
+                      You have caught all activity!
+                    </div>
+                  )
+                )}
 
-            {loading && posts.length > 0 && <Loader2 size={24} className="text-center"/>}
-            
+                {loading && posts.length > 0 && (
+                  <Loader2 size={24} className="text-center" />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="hidden sm:block">
+          <RightSlidebarHeader />
           </div>
         </div>
       </div>
-      <RightSlidebarHeader />
-    </div>
   );
 };
 
