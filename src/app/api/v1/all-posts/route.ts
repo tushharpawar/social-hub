@@ -62,14 +62,13 @@ export async function GET(req: NextRequest, res: NextResponse) {
         },
       },
 
-      // Step 3: Exclude seen posts
+      // Exclude seen posts
       {
         $match: {
           "seenByUser.0": { $exists: false }, // Only include posts that are not seen
         },
       },
 
-      // Step 4: Project required fields
       {
         $project: {
           _id: 1,
@@ -84,14 +83,13 @@ export async function GET(req: NextRequest, res: NextResponse) {
         },
       },
 
-      // Step 5: Sort by creation date
       {
         $sort: {
           createdAt: -1,
         },
       },
       {
-        $skip: (page - 1) * limit, // Skip documents for previous pages
+        $skip: (page - 1) * limit, // Skip documents of previous pages
       },
       {
         $limit: limit, // Limit the number of documents
