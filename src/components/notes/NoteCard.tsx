@@ -1,5 +1,4 @@
 import React from "react";
-import {Card, CardBody,} from "@nextui-org/react";
 import { Separator } from "@/components/ui/separator"
 import { MdOutlineMoreVert } from "react-icons/md";
 import {
@@ -8,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { User } from "next-auth";
