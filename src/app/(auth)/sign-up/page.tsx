@@ -107,7 +107,7 @@ const Page = () => {
     <div className="w-full min-h-screen h-auto flex justify-center items-center">
       <div className="w-full max-w-md p-8 space-y-6  rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-sm font-extrabold tracking-tight lg:text-4xl">
+          <h1 className="text-lg font-extrabold tracking-tight lg:text-4xl">
             Social-hub
           </h1>
         </div>
