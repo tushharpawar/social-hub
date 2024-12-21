@@ -27,9 +27,7 @@ export default function RootLayout({
       <StoreProvider>
     <ThemeProvider>
     <main className="flex">
-          
             {children}
-          
           </main>
         <Toaster />
     </ThemeProvider>
