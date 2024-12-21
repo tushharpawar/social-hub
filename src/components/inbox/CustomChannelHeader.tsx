@@ -16,7 +16,6 @@ const CustomChannelHeader = ({token}) => {
     Object.values(channel?.state?.members || {}).find(
       (member) => member.user && member.user.id !== client?.userID
     )?.user || "";
-  console.log("Channel header", channel);
 
 
   return (
