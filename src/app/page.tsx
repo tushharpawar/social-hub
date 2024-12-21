@@ -1,52 +1,46 @@
-'use client';
-import React, { Suspense, useMemo } from 'react';
-import { useSession } from 'next-auth/react';
-
-// Dynamically import components to reduce initial bundle size
-const HomePage = React.lazy(() => import('../app/aceternity/HomePage'));
-const HomePageAfterLogin = React.lazy(() => import('@/components/home/Home'));
-const RightSlidebarHeader = React.lazy(() => import('@/components/right-slidebar/RightSlidebar'));
-const Slidebar = React.lazy(() => import('@/components/Slidebar'));
-const HomeNavbar = React.lazy(() => import('@/components/SearchBar'));
-const CreatePostAlert = React.lazy(() => import('@/components/create-post/CreatePostAlert'));
+'use client'
+import { HeroHighlight } from "@/components/ui/hero-highlight";
+import HomePage from "./aceternity/HomePage";
+import { getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import HomePageAfterLogin from "@/components/home/Home";
+import RightSlidebarHeader from "@/components/right-slidebar/RightSlidebar";
+import Slidebar from '@/components/Slidebar'
+import HomeNavbar from "@/components/SearchBar";
+import CreatePostAlert from "@/components/create-post/CreatePostAlert";
+import { User } from "next-auth";
+import { Loader2 } from "lucide-react";
 
 export default function Home() {
-  const { data: session } = useSession();
+    // const session = await getSession()
+    
+  const {data:session,status} = useSession()
 
-  // Memoize the layout to avoid unnecessary re-renders when session changes
-  const loggedInLayout = useMemo(() => (
-    <>
-      <div className="sm:w-[25%]">
-        <Suspense fallback={<div></div>}>
-          <Slidebar />
-        </Suspense>
-      </div>
-      <div className="w-full bg-white border-gray-300 dark:bg-black dark:border-zinc-700 flex justify-around py-2 z-50 sm:hidden">
-        <Suspense fallback={<div></div>}>
-          <CreatePostAlert />
-        </Suspense>
-        <Suspense fallback={<div></div>}>
-          <HomeNavbar />
-        </Suspense>
-        <Suspense fallback={<div></div>}>
-          <RightSlidebarHeader />
-        </Suspense>
-      </div>
-      <Suspense fallback={<div></div>}>
-        <HomePageAfterLogin />
-      </Suspense>
-    </>
-  ), []);
-
-  const loggedOutLayout = useMemo(() => (
-    <Suspense fallback={<div>Loading HomePage...</div>}>
-      <HomePage />
-    </Suspense>
-  ), []);
+  if(status ==='loading'){
+    return <div className="w-full flex justify-between"><Loader2 className="mr-2 h-10 w-10 animate-spin"></Loader2><p className="text-lg sm:text-2xl">Loading..</p></div>
+  }
 
   return (
-    <main className="w-full min-h-screen flex">
-      {session ? loggedInLayout : loggedOutLayout}
+    <>
+    <main className={`w-full min-h-screen flex`}>
+      {
+        status === 'authenticated' ? (
+          <>
+          <div className='sm:w-[25%]'>
+          <Slidebar></Slidebar>
+         </div>
+          <div className="absolute top-0 w-full bg-white border-gray-300 dark:bg-black dark:border-zinc-700 flex justify-around py-2 z-50 sm:hidden">
+          <CreatePostAlert/>
+          <HomeNavbar/>   
+          <RightSlidebarHeader/>     
+        </div>
+        <HomePageAfterLogin></HomePageAfterLogin>
+          </>
+        ) :(
+          <HomePage/>
+        )
+      }
+
     </main>
-  );
-}
+    </>
+)}
