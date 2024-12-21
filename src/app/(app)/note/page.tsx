@@ -9,7 +9,16 @@ import { Loader2 } from "lucide-react";
 import NoteUpload from "@/components/notes/NoteUpload";
 
 const Page = () => {
-  const [notes, setNotes] = useState([]);
+  interface Note {
+    _id: string;
+    owner: {
+      username: string;
+      avatar: string;
+    };
+    content: string;
+  }
+
+  const [notes, setNotes] = useState<Note[]>([]);
   const [loading,setLoading] = useState(false)
 
   const getNotes = async () => {
