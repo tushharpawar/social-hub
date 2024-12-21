@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
-import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { User as authUser } from "next-auth";
 import { useParams, useRouter } from "next/navigation";
@@ -11,18 +10,13 @@ import {
   LivestreamPlayer,
   StreamCall,
   StreamVideo,
-  useCallStateHooks,
-  CallControls,
-  SpeakerLayout,
   User,
   StreamTheme,
   Call,
 } from "@stream-io/video-react-sdk";
 import cuid from "cuid";
 import { ImPhoneHangUp } from "react-icons/im";
-import { IoVideocamOutline } from "react-icons/io5";
-import { IoVideocamOffOutline } from "react-icons/io5";
-import { Loader2 } from "lucide-react";
+
 
 const apiKey = "536ez6cv3czw";
 const callId = cuid();
