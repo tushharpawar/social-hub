@@ -19,10 +19,6 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { signInSchema } from "@/app/schemas/signInSchema";
 import { signIn, useSession } from "next-auth/react";
-import GoogleSignIn from "@/components/GoogleSignIn";
-import { useDispatch } from "react-redux";
-import { setAuthUser } from "@/app/redux/authSlice";
-import { User } from "next-auth";
 
 const Page = () => {
 
@@ -66,7 +62,7 @@ const Page = () => {
     <div className=" min-h-screen w-full flex justify-center items-center">
       <div className="w-full max-w-md p-8 space-y-6 rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-sm font-extrabold tracking-tight lg:text-4xl">
+          <h1 className="text-lg font-extrabold tracking-tight lg:text-4xl">
             Social-hub
           </h1>
         </div>
