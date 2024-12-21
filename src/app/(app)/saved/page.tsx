@@ -11,7 +11,7 @@ const Page = () => {
   const user: User = session?.user as User;
   console.log(user?._id);
 
-  const [userPosts, setUserPosts] = useState([]);
+  const [userPosts, setUserPosts] = useState<{ saved_post: { _id: string; postUrl: string }[] }[]>([]);
 
   useEffect(() => {
     const fetchSavedPosts = async () => {
