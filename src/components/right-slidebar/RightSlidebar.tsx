@@ -14,7 +14,7 @@ const RightSlidebarHeader = () => {
 
   return (
 
-    <div className=" sm:w-[45%] sm:min-h-screen ">
+    <div className="sm:min-h-screen sm:relative">
        <div className="sm:w-full">
        <div className="sm:w-full sm:h-[15vh] sm:flex sm:items-center sm:justify-start ">
         <Link href={`/${user?.username}`} className="sm:flex sm:items-center sm:px-4 sm:w-full sm:justify-start sm:text-lg">
@@ -37,8 +37,9 @@ const RightSlidebarHeader = () => {
 
     {
         pathname === '/note' ? (
-            <>
-            <NoteUpload/></>
+            <div className="absolute bottom-8 left-2">
+              <NoteUpload/>
+            </div>
         ):(
           <div className=' hidden sm:p-3 sm:w-full sm:block'>
             <HomeNavbar/>
