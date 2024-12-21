@@ -1,15 +1,13 @@
 "use client";
 
-import HomeNavbar from "@/components/SearchBar";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import PostPage from "../post/PostCard";
 import RightSlidebarHeader from "../right-slidebar/RightSlidebar";
 import { useSession } from "next-auth/react";
 import { User } from "next-auth";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setAuthUser } from "@/app/redux/authSlice";
-import { setPosts } from "@/app/redux/postSlice";
 import { Loader2 } from "lucide-react";
 
 const HomePageAfterLogin = () => {
@@ -25,6 +23,7 @@ const HomePageAfterLogin = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const[loading,setLoading] = useState(false)
+  const[fetchPostLoading,setFetchPostLoading] = useState(false)
 
   const { data: session } = useSession();
   const user: User = session?.user as User;
@@ -41,12 +40,11 @@ const HomePageAfterLogin = () => {
   }, [user, dispatch]);
 
   const fetchPost = useCallback(async () => {
-    if (loading) return;
     try {
       setLoading(true)
+      setFetchPostLoading(true)
       const response = await axios.get(`/api/v1/all-posts?page=${page}&limit=10`);
       const {message:newPosts,pagination} = response.data
-      console.log(newPosts);
 
       if(newPosts.length > 0){
         setPosts((prev)=>[...prev,...newPosts]);
@@ -57,14 +55,16 @@ const HomePageAfterLogin = () => {
       }
       
     } catch (error) {
-      console.log(error);
     }finally {
       setLoading(false);
+      setFetchPostLoading(false)
     }
   }, [loading,page]);
 
   useEffect(() => {
+    setFetchPostLoading(true)
     fetchPost();
+    setFetchPostLoading(false)
   }, []);
 
   useEffect(() => {
@@ -126,8 +126,8 @@ const HomePageAfterLogin = () => {
       const timer = setTimeout(() => {
         axios
           .post("api/v1/set-is-post-seen-by-user", { seenPosts })
-          .then(() => console.log("Seen posts updated"))
-          .catch((error) => console.error("Error updating seen posts:", error));
+          .then()
+          .catch();
       }, 1000);
 
       return () => clearTimeout(timer);
@@ -162,7 +162,9 @@ const HomePageAfterLogin = () => {
                 )}
 
                 {loading && posts.length > 0 && (
-                  <Loader2 size={24} className="text-center" />
+                  <div className="flex justify-center gap-2">
+                  <Loader2 className="mr-2 h-6 w-6 animate-spin"></Loader2>
+                </div>
                 )}
               </div>
             </div>
