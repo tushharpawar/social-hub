@@ -4,8 +4,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 import NotesModel from "@/models/Note.model";
 
-export const dynamic = "force-dynamic"; // Mark this API route as dynamic
-
 export async function GET(req: NextRequest, res: NextResponse) {
   await dbConnect();
   try {
