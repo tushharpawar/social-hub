@@ -1,32 +1,29 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { User as authUser } from "next-auth";
+
 import {
   StreamVideoClient,
   User,
   StreamVideo,
   StreamCall,
-  useCallStateHooks,
-  ParticipantView,
   LivestreamLayout,
 } from "@stream-io/video-react-sdk";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import { ImPhoneHangUp } from "react-icons/im";
 import { useSelector } from "react-redux";
-import { MdFullscreen } from "react-icons/md";
 
-const apiKey = "536ez6cv3czw";
+const apiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY;
 
 const Page = () => {
+
   const [client, setClient] = useState<StreamVideoClient | undefined>(
     undefined
   );
   const [call, setCall] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
-  const [isEnded, setIsEnded] = useState("");
+
 
   const { call_Id, token, username } = useParams() as {
     call_Id: string;
@@ -47,7 +44,10 @@ const Page = () => {
     const connectUser = async () => {
       try {
         setIsLoading(true);
-        const client = new StreamVideoClient({ apiKey, user:clientUser, token });
+        if (!apiKey) {
+          throw new Error("API key is not defined");
+        }
+        const client = new StreamVideoClient({ apiKey, user: clientUser, token });
         setClient(client);
 
         const call = client.call("livestream", call_Id);
@@ -88,7 +88,6 @@ const Page = () => {
               showDuration={true}
               showLiveBadge={true}
             />
-
 
             <div className="absolute top-6 right-10 sm:top-4 sm:right-6">
               <button
