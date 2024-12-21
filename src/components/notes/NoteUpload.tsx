@@ -1,35 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { noteSchema } from "@/app/schemas/noteSchema";
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "../ui/use-toast";
 import axios from "axios";
+import { Label } from "../ui/label";
+import { Loader2 } from "lucide-react";
+import { FaPlus } from "react-icons/fa6";
 
 const NoteUpload = () => {
-  const form = useForm<z.infer<typeof noteSchema>>({
-    resolver: zodResolver(noteSchema),
-    defaultValues: {
-      content: "",
-    },
-  });
+  const [note,setNote] = useState("")
+  const [loading,setLoading] = useState(false)
+  const [open,setOpen] = useState(false)
 
-  const onSubmit = async (data: z.infer<typeof noteSchema>) => {
+
+  const handleNoteChange=(e)=>{
+    setNote(e.target.value)
+  } 
+
+  const handleSubmitNote = async () => {
+    setLoading(true)
     try {
       const response = await axios.post("/api/v1/notes-upload", {
-        content: data.content,
+        content: note,
       });
 
       if (response.status === 200) {
@@ -37,49 +43,56 @@ const NoteUpload = () => {
           title: "Note has created successfully!",
         });
       }
+      setLoading(false)
+      setOpen(false)
+      setNote('')
     } catch (error) {
       toast({
         title: "Internal server error!",
         variant: "destructive",
       });
+      setLoading(false)
+      setOpen(false)
+      setNote('')
     }
   };
 
   return (
-    <div className="flex justify-center mt-4">
-      <div className="w-[80%]">
-        <details className="dropdown w-full">
-          <summary className="m-1 rounded-sm bg-[#0f172a] text-white p-4 font-normal text-base cursor-pointer">
-            Click to write notes
-          </summary>
-          <ul className="menu dropdown-content bg-base-100 rounded-sm z-[1] w-full p-2 shadow-md bg-blend-normal mt-2">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
-              >
-                <FormField
-                  control={form.control}
-                  name="content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Notes</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Write notes here..."
-                          className="resize-none h-[200px] outline-none text-base"
-                          {...field}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit">Submit</Button>
-              </form>
-            </Form>
-          </ul>
-        </details>
-      </div>
+    <div className=" flex justify-center mt-4">
+      <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger className='text-lg font-semibold'><FaPlus size={24} className=" rounded-full"/></SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>
+              Write a note
+              </SheetTitle>
+              <SheetDescription>
+                You can write you thought below...
+              </SheetDescription>
+            </SheetHeader>
+            <div className=" py-4">
+              <div className="flex gap-2">
+                <Label className="text-right">
+                  Note:
+                </Label>
+                <Textarea placeholder='Write a beautiful note...' value={note} className="h-5" onChange={handleNoteChange}/>
+              </div>
+            </div>
+            <SheetFooter>
+                <Button type="submit" disabled={loading} onClick={handleSubmitNote}>
+                {
+                  loading ? (
+                    <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
+                    Please wait
+                    </>
+                  ) : ('Upload note')
+                }
+                </Button>
+            </SheetFooter>
+          </SheetContent>
+          
+        </Sheet>
     </div>
   );
 };
