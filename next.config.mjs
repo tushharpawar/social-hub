@@ -1,11 +1,8 @@
 export const images = {
-    domains: ['res.cloudinary.com'],
+  domains: ['res.cloudinary.com'],
 };
-
-export const nextConfig = {
-    webpack: (config) => {
-      // Ensure correct loaders are used
-      return config;
-    },
-    pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
-  };
+export function webpack(config) {
+  // Ensure correct loaders are used
+  return config;
+}
+export const pageExtensions = ['js', 'jsx', 'ts', 'tsx'];
