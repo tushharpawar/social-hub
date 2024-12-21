@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useParams, useRouter } from "next/navigation";
@@ -126,7 +126,6 @@ const Page = () => {
         });
       }
     } catch (error) {
-      console.log("An error in avatar page.tsx", error);
       toast({
         title: "Something went wrong :(",
         description: "Please try again later.",
