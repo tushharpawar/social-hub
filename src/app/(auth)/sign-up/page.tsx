@@ -134,6 +134,7 @@ const Page = () => {
                       onChange={(e) => {
                         field.onChange(e);
                         debounced(e.target.value);
+                        e.target.value === "" && setUsernameMessage("")
                       }}
                     />
                   </FormControl>
@@ -143,7 +144,7 @@ const Page = () => {
                   {isCheckingUsername && <Loader2 className=" animate-spin" />}
                   <p
                     className={`text-sm ${
-                      usernameMessage === "Username is unique"
+                      usernameMessage === "Username is unique."
                         ? " text-green-500"
                         : " text-red-600"
                     }`}
