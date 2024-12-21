@@ -25,10 +25,13 @@ import { toast } from "@/components/ui/use-toast";
 import { ApiResponse } from "@/types/ApiResponse";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useDispatch } from "react-redux";
+import { setIsClickedOnEditProfile } from "@/app/redux/updateAvatarSlice";
 
 const Page = () => {
 
   const [isSubmitting,setIsSubmitting] = useState(false)
+  const dispatch = useDispatch()
 
   //Get id from the url
   const params = useParams<{_id:string}>()
@@ -55,6 +58,7 @@ const Page = () => {
             description:response.data.message
           })
           setIsSubmitting(false)
+          dispatch(setIsClickedOnEditProfile(false))
           router.replace(`/avatar/${params._id}`)
         } catch (error) {
           const axiosError = error as AxiosError<ApiResponse>;
@@ -72,9 +76,9 @@ const Page = () => {
 
   return (
     <div className="min-h-screen w-full flex justify-center items-center">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+      <div className="w-full max-w-md p-8 space-y-6 rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-sm font-extrabold tracking-tight lg:text-4xl">
+          <h1 className="text-md font-extrabold tracking-tight lg:text-4xl">
             Social-hub
           </h1>
         </div>
@@ -108,7 +112,7 @@ const Page = () => {
                 </InputOTP>
               </FormControl>
               <FormDescription>
-                Please enter the one-time password sent to your email.
+                If you didn&apos;t recieved email in inbox,ckeck spam folder.
               </FormDescription>
               <FormMessage />
             </FormItem>
