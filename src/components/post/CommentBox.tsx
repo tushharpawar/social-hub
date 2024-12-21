@@ -52,7 +52,6 @@ export function CommentBox({postId,isCommentClicked}:CommentBoxProps) {
       }
 
     } catch (error:any) {
-      console.log('Error in commenting',error);
       toast({
         title:"Cannot add comment due to technical reason!",
         variant:'destructive'
@@ -68,19 +67,14 @@ useEffect(()=>{
     
         if(res.status === 201){
           dispatch(setComment(res.data.message))
-          console.log(res.data.message);
         }
     
       } catch (error) {
-        console.log("Cannot fetch comments!");
       }
   }
 
   fetchComment()
 },[isCommentClicked,postId])
-
-console.log("comment data",comments);
-
 
   return (
     <>
