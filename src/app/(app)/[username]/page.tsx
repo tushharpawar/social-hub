@@ -3,7 +3,6 @@
 import { useParams } from "next/navigation";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { AnimatedFollowButton } from "@/components/AnimatedFollowButton";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { GrGallery } from "react-icons/gr";
 import SmallPostCard from "@/components/user-profile/SmallPostCard";
@@ -15,6 +14,24 @@ import { useSession } from "next-auth/react";
 import { User } from "next-auth";
 import EditProfileDialog from "@/components/user-profile/EditProfileDialog";
 import { setFetchedUserPosts } from "@/app/redux/postSlice"
+import { MdOutlineSettings } from "react-icons/md";
+import Link from "next/link";
+import { Copy } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useToast } from "@/components/ui/use-toast";
+import { Pencil } from 'lucide-react';
 
 export default function Page() {
 
@@ -26,6 +43,7 @@ export default function Page() {
   const [userPosts, setUserPosts] = useState([]);
   const [isLoggedInUser, setIsLoggedInUser] = useState(false);
   const dispatch = useDispatch();
+  const {toast} = useToast();
 
   // fetching posts of user
 
@@ -60,110 +78,199 @@ export default function Page() {
   };
 
   useEffect(() => {
+    dispatch(setUserProfile(''));
     fetchUser();
     fetchPosts();
   }, []);
+
+
+  const baseUrl = `${window.location.protocol}//${window.location.host}`;
+  const profileUrl = `${baseUrl}/${username}`;
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(profileUrl);
+    toast({
+      title: 'URL Copied!',
+      description: 'Profile URL has been copied to clipboard.',
+    });
+  };
 
   const { userProfile } = useSelector((store: any) => store.userProfile);
   const {fetchedUserPosts} = useSelector((store:any)=>store.post)
 
   return (
-    <div className="w-full h-screen">
-      <div className="w-[80%]">
-        {/* user profile upper part */}
+    <div className="w-full h-screen overflow-y-scroll pb-16 sm:pb-0"> 
+        {
+          isLoggedInUser && <Link href="/settings" className="w-full flex justify-end p-3 sm:hidden">
+          <MdOutlineSettings className="h-6 w-6" /> 
+          </Link>
+        }
+    <div className="w-full lg:w-[80%] mx-auto">
+      {/* User profile upper part */}
+      <div className="flex flex-col lg:flex-row justify-center pt-6">
+        <div className="flex items-center flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-16">
+          <div className="flex flex-col items-center">
+            <Avatar className=" h-24 w-24 sm:h-36 sm:w-36">
+              <AvatarImage src={userProfile.avatar} />
+            </Avatar>
+            
+            <div className="my-2 text-center">
+              <p className="text-lg font-semibold">{userProfile.fullName}</p>
+              <p className="text-md font-normal">@{username}</p>
+            </div>
+          </div>
 
-        <div className="flex justify-center pt-6">
-          <div className="flex items-center space-x-16">
-            <div className="flex-col">
-              <Avatar className="h-36 w-36">
-                <AvatarImage src={userProfile.avatar} />
-              </Avatar>
-
-              <div className="my-2 text-center">
-                <p className=" text-lg font-semibold">{userProfile.fullName}</p>
-                <p className=" text-md font-normal">@{username}</p>
+          <div>
+            {/* Follow, Followers, and Post Count */}
+            <div className="flex justify-center gap-5">
+              <div className="text-center font-semibold text-sm sm:text-lg">
+                <p>{fetchedUserPosts[0]?.all_posts?.length || 0}</p>
+                <p>Posts</p>
+              </div>
+              <div className="text-center font-semibold text-sm sm:text-lg">
+                <p>{userProfile.followers || 0}</p>
+                <p>Followers</p>
+              </div>
+              <div className="text-center font-semibold text-sm sm:text-lg">
+                <p>{userProfile.following || 0}</p>
+                <p>Following</p>
               </div>
             </div>
 
-            <div className="">
-              {/* follow following and post count */}
-              <div className="flex gap-5">
-                <div className=" text-center font-semibold text-lg">
-                  <p>{fetchedUserPosts[0]?.all_posts?.length ? fetchedUserPosts[0]?.all_posts.length : 0}</p>
-                  <p>Posts</p>
-                </div>
+            {/* Bio */}
+            <div className="my-2 text-center lg:text-left">
+              <p>{userProfile.bio || ""}</p>
+            </div>
 
-                <div className=" text-center font-semibold text-lg">
-                  <p>{userProfile.followers ? userProfile.followers : 0}</p>
-                  <p>Followers</p>
-                </div>
-
-                <div className=" text-center font-semibold text-lg">
-                  <p>{userProfile.following ? userProfile.following : 0}</p>
-                  <p>Following</p>
-                </div>
-              </div>
-
-              {/* bio and details count */}
-              <div className=" my-2">
-                <p>{userProfile.bio ? userProfile.bio : ""}</p>
-              </div>
-
-              {/* 2 btn for msg and follow or edit profile and share profile */}
-              <div className="flex my-5 gap-5">
-                {isLoggedInUser ? (
-                  <>
-                    <EditProfileDialog
+            {/* Buttons */}
+            <div className="flex flex-wrap justify-center lg:justify-start my-5 gap-3">
+              {isLoggedInUser ? (
+                <>
+                  <EditProfileDialog
                     _id={userProfile._id}
                     username={userProfile.username}
                     avatar={userProfile.avatar}
                     fullName={userProfile.fullName}
                     bio={userProfile.bio}
-                    />
-                    <Button variant="outline" className="h-8 w-[130px]">
-                      Share Profile
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <AnimatedFollowButton></AnimatedFollowButton>
-                    <Button variant="outline" className="h-8 w-[130px]">
-                      Message
-                    </Button>
-                  </>
-                )}
-              </div>
+                  />
+                  
+                  <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="h-8 w-[120px] sm:w-[130px]">Share</Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Share link</DialogTitle>
+                      <DialogDescription>
+                        Anyone who has this link will be able to view this profile.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex items-center space-x-2">
+                      <div className="grid flex-1 gap-2">
+                        <Label htmlFor="link" className="sr-only">
+                          Link
+                        </Label>
+                        <Input
+                          id="link"
+                          defaultValue={profileUrl}
+                          readOnly
+                        />
+                      </div>
+                      <Button type="submit" size="sm" className="px-3" onClick={copyToClipboard}>
+                        <span className="sr-only">Copy</span>
+                        <Copy />
+                      </Button>
+                      </div>
+                      <DialogFooter className="sm:justify-start">
+                        <DialogClose asChild>
+                          <Button type="button" variant="secondary">
+                            Close
+                          </Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </>
+              ) : (
+                <>
+                  <AnimatedFollowButton />
+
+                {/* share profile dialog */}
+
+                  <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="h-8 w-[120px] sm:w-[130px]">Share</Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Share link</DialogTitle>
+                      <DialogDescription>
+                        Anyone who has this link will be able to view this profile.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex items-center space-x-2">
+                      <div className="grid flex-1 gap-2">
+                        <Label htmlFor="link" className="sr-only">
+                          Link
+                        </Label>
+                        <Input
+                          id="link"
+                          defaultValue={profileUrl}
+                          readOnly
+                        />
+                      </div>
+                      <Button type="submit" size="sm" className="px-3" onClick={copyToClipboard}>
+                        <span className="sr-only">Copy</span>
+                        <Copy />
+                      </Button>
+                      </div>
+                      <DialogFooter className="sm:justify-start">
+                        <DialogClose asChild>
+                          <Button type="button" variant="secondary">
+                            Close
+                          </Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </>
+              )}
             </div>
           </div>
         </div>
+    </div>
 
-        {/* user profile post tab bar */}
-
-        <div className="flex justify-center my-3  ">
-          <div className="flex border-b-2 gap-3 border-black">
-            <GrGallery size={24} />
-            <p className="font-semibold text-lg">Posts</p>
-          </div>
-        </div>
-
-        {/* separator */}
-
-        <div className="flex justify-center my-3">
-          <Separator className="w-[60%]"></Separator>
-        </div>
-
-        {/* posts to be displayed */}
-
-        <div className="flex justify-center my-4">
-          <div className="grid grid-flow-row grid-cols-3 gap-3">
-            {fetchedUserPosts[0]?.all_posts?.length > 0
-              ? fetchedUserPosts[0]?.all_posts?.map((item : any, index:any) => (
-                  <SmallPostCard key={item?._id}  postUrl={item.postUrl} postId={item._id}/>
-                ))
-              : "No posts on feed :(("}
-          </div>
-        </div>
+    {/* User profile post tab bar */}
+    <div className="flex justify-center my-3">
+      <div className="flex items-center border-b-2 gap-2 sm:gap-3 border-black px-2">
+        <GrGallery size={20} />
+        <p className="font-semibold text-md sm:text-lg">Posts</p>
       </div>
     </div>
+
+    {/* Separator */}
+    <div className="flex justify-center my-3">
+      <Separator className="w-[90%] sm:w-[70%]"></Separator>
+    </div>
+
+    {/* Posts */}
+    <div className="flex justify-center my-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+        {fetchedUserPosts[0]?.all_posts?.length > 0 ? (
+          fetchedUserPosts[0]?.all_posts?.map((item: any, index: any) => (
+            <SmallPostCard
+              key={item?._id}
+              postUrl={item.postUrl}
+              postId={item._id}
+            />
+          ))
+        ) : (
+          <p className="text-sm sm:text-md">No posts on feed :(</p>
+        )}
+      </div>
+    </div>
+  </div>
+</div>
+
   );
 }
