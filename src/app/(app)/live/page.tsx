@@ -56,7 +56,6 @@ const apiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY;
           });
           setClient(client)
           await client.connectUser(clientUser,token)
-          console.log("User connected");
           
           setLivestreams([])
           const { calls } = await client.queryCalls({
@@ -69,9 +68,6 @@ const apiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY;
           });
 
           setLivestreams(calls)
-          console.log("Live streams",calls);
-          
-
         setIsLoading(false) 
       } catch (error) {
         setIsLoading(false)
