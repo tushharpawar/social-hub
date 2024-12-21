@@ -9,7 +9,6 @@ const connection: ConnectionObject = {};
 async function dbConnect(): Promise<void> {
   //check for existing connection
   if (connection.isConnected) {
-    console.log("Already connected to DB");
     return;
   }
 
@@ -19,7 +18,6 @@ async function dbConnect(): Promise<void> {
     const db = await mongoose.connect(process.env.MONGODB_URI || "", {});
 
     connection.isConnected = db.connections[0].readyState;
-    console.log("Connection to DB successful");
   } catch (error) {
     console.error("Failed connecting to DB: ", error);
     process.exit(1);
