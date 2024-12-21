@@ -88,9 +88,11 @@ const Page = () => {
             showChannelSearch
             Paginator={InfiniteScroll}
             setActiveChannelOnMount={false}
-            onChannelTruncated={()=><div className="w-full h-screen text-center">
-              Chat with your friends or search tushar.
-            </div>}
+            EmptyStateIndicator={
+              ()=><div className="w-full h-screen text-center">
+              Chat with your friends or <br/> search tushar to send a message to developer.
+            </div>
+            }
           />
 
       {
