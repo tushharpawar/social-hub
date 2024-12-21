@@ -25,6 +25,9 @@ import { Button } from '@/components/ui/button';
 import axios from 'axios';
 import { useToast } from '@/components/ui/use-toast';
 import { Loader2 } from 'lucide-react';
+import { setPosts } from '@/app/redux/postSlice';
+import { setIsClickedOnEditProfile } from '@/app/redux/updateAvatarSlice';
+import { setComment } from '@/app/redux/commentSlice';
 
 
 const Page = () => {
@@ -123,9 +126,14 @@ const Page = () => {
     const handleLogout = async () => {
         await signOut({redirect:false});
         dispatch(setAuthUser(''))
+        dispatch(setPosts([]))
+        dispatch(setIsClickedOnEditProfile(false))
+        dispatch(setComment([]))
+
         localStorage.removeItem('userSession');  // Example of clearing localStorage
         document.cookie = 'session=; expires=Thu, 01 Jan 1970 00:00:00 GMT';  // Example of clearing a cookie
         router.push('/sign-in')
+        dispatch(setTheme('light'))
       };
 
     const {theme} = useSelector((store:any)=>store.theme)
@@ -159,19 +167,19 @@ const Page = () => {
                 <Label className="text-right">
                   Old Password
                 </Label>
-                <Input  placeholder='Enter new password' value={oldPassword} className="col-span-3" onChange={handleOldPasswordInput}/>
+                <Input type='password' placeholder='Enter new password' value={oldPassword} className="col-span-3" onChange={handleOldPasswordInput}/>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label className="text-right">
                   New Password
                 </Label>
-                <Input placeholder='Enter new password' value={newPassword} className="col-span-3" onChange={handleNewPasswordInput}/>
+                <Input type='password' placeholder='Enter new password' value={newPassword} className="col-span-3" onChange={handleNewPasswordInput}/>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="username" className="text-right">
                   Confirm Password
                 </Label>
-                <Input placeholder='Enter confirm password' value={confirmPassword} className="col-span-3" onChange={handleConfirmPasswordInput}/>
+                <Input type='password' placeholder='Enter confirm password' value={confirmPassword} className="col-span-3" onChange={handleConfirmPasswordInput}/>
               </div>
             </div>
             <SheetFooter>
