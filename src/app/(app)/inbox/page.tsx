@@ -54,14 +54,13 @@ const Page = () => {
           },
           token
         );
-        console.log("User connected", token);
         setConnected(true);
         if (autoscrollToBottom) {
           autoscrollToBottom();
         }
         
       } catch (error) {
-        console.error("Error connecting to Stream Chat:", error);
+        
       }
     }
 
