@@ -84,7 +84,7 @@ const Page = () => {
     call?.camera.disable();
     call?.microphone.disable();
     call.streamClient.disconnectUser();
-    router.replace("/live");
+    router.replace("/");
   };
 
 
