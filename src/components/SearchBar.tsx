@@ -79,8 +79,8 @@ const HomeNavbar = () => {
 
       {loading && <div className="flex gap-2 p-4"><Loader2 className="mr-2 h-6 w-6 animate-spin"/> Searching...</div>}
       <ul>
-        {results.map((user) => (
-          <div className="m-3 p-2 max-w-sm border border-gray-800 rounded-sm dark:hover:bg-zinc-800">
+        {results.map((user,index) => (
+          <div className="m-3 p-2 max-w-sm border border-gray-800 rounded-sm dark:hover:bg-zinc-800" key={index}>
           <Link href={`/${user?.username}`} className="flex items-center px-4 w-full justify-start text-lg">
           <div className="text-center">
             <Avatar className="mr-3 h-12 w-12">
