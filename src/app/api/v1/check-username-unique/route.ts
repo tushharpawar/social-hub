@@ -1,19 +1,11 @@
-export const dynamic = 'force-dynamic';
-
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/User.model";
 import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async (req: NextRequest, res: NextResponse) => {
+export const GET = async (req: NextRequest,{params}:{params:{username:string}} ,res: NextResponse) => {
   await dbConnect();
   try {
-    const { searchParams } = new URL(req.url);
-
-    const queryParams = {
-      username: searchParams.get("username"),
-    };
-
-    const { username } = queryParams;
+    const { username } = params;
 
     const existingUser = await UserModel.findOne({
       username,
