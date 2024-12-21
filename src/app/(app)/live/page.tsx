@@ -2,29 +2,17 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    LivestreamPlayer,
-    StreamCall,
-    StreamVideo,
     StreamVideoClient,
-    useCallStateHooks,
-    CallControls,
-    SpeakerLayout,
     User,
-    StreamTheme,
     Call,
   } from "@stream-io/video-react-sdk";
-
-import { User as AuthUser }  from "next-auth";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Card } from "@/components/cards/card";
-import { MdOutlineVideocam } from "react-icons/md";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
-const apiKey = "536ez6cv3czw";
+const apiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY;
    
   export default function App() {
 
@@ -56,6 +44,11 @@ const apiKey = "536ez6cv3czw";
 
         const { token } = await response.json();
         setToken(token)
+
+        if (!apiKey) {
+          throw new Error("API key is not defined");
+        }
+        
           const client = new StreamVideoClient({
             apiKey,
             user:clientUser,
