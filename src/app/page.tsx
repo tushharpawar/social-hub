@@ -1,40 +1,52 @@
-'use client'
-import { HomePage } from "./aceternity/HomePage";
-import { useSession, signIn, signOut } from "next-auth/react";
-import HomePageAfterLogin from "@/components/home/Home";
-import RightSlidebarHeader from "@/components/right-slidebar/RightSlidebar";
-import Slidebar from '@/components/Slidebar'
-import HomeNavbar from "@/components/SearchBar";
-import CreatePostAlert from "@/components/create-post/CreatePostAlert";
-import { User } from "next-auth";
+'use client';
+import React, { Suspense, useMemo } from 'react';
+import { useSession } from 'next-auth/react';
 
+// Dynamically import components to reduce initial bundle size
+const HomePage = React.lazy(() => import('../app/aceternity/HomePage'));
+const HomePageAfterLogin = React.lazy(() => import('@/components/home/Home'));
+const RightSlidebarHeader = React.lazy(() => import('@/components/right-slidebar/RightSlidebar'));
+const Slidebar = React.lazy(() => import('@/components/Slidebar'));
+const HomeNavbar = React.lazy(() => import('@/components/SearchBar'));
+const CreatePostAlert = React.lazy(() => import('@/components/create-post/CreatePostAlert'));
 
 export default function Home() {
+  const { data: session } = useSession();
 
-  const {data:session} = useSession()
-  const user:User = session?.user as User 
-  
-  return (
+  // Memoize the layout to avoid unnecessary re-renders when session changes
+  const loggedInLayout = useMemo(() => (
     <>
-    <main className={`w-full min-h-screen flex`}>
-      {
-        session ? (
-          <>
-          <div className='sm:w-[25%]'>
-          <Slidebar></Slidebar>
-         </div>
-          <div className="absolute top-0 w-full bg-white border-gray-300 dark:bg-black dark:border-zinc-700 flex justify-around py-2 z-50 sm:hidden">
-          <CreatePostAlert/>
-          <HomeNavbar/>   
-          <RightSlidebarHeader/>     
-        </div>
-        <HomePageAfterLogin></HomePageAfterLogin>
-          </>
-        ) :(
-          <HomePage/>
-        )
-      }
-    </main>
+      <div className="sm:w-[25%]">
+        <Suspense fallback={<div></div>}>
+          <Slidebar />
+        </Suspense>
+      </div>
+      <div className="w-full bg-white border-gray-300 dark:bg-black dark:border-zinc-700 flex justify-around py-2 z-50 sm:hidden">
+        <Suspense fallback={<div></div>}>
+          <CreatePostAlert />
+        </Suspense>
+        <Suspense fallback={<div></div>}>
+          <HomeNavbar />
+        </Suspense>
+        <Suspense fallback={<div></div>}>
+          <RightSlidebarHeader />
+        </Suspense>
+      </div>
+      <Suspense fallback={<div></div>}>
+        <HomePageAfterLogin />
+      </Suspense>
     </>
+  ), []);
+
+  const loggedOutLayout = useMemo(() => (
+    <Suspense fallback={<div>Loading HomePage...</div>}>
+      <HomePage />
+    </Suspense>
+  ), []);
+
+  return (
+    <main className="w-full min-h-screen flex">
+      {session ? loggedInLayout : loggedOutLayout}
+    </main>
   );
 }
