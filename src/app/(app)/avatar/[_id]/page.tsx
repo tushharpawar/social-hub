@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useParams, useRouter } from "next/navigation";
@@ -138,16 +138,13 @@ const Page = () => {
 
   return (
     <div className="min-h-screen w-full flex justify-center items-center">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+      <div className="w-full max-w-md p-8 space-y-6 rounded-lg shadow-md">
         <div className="text-center">
           <h1 className="text-sm font-extrabold tracking-tight lg:text-4xl">
             Social-hub
           </h1>
         </div>
         <div className="flex flex-col items-center space-y-4">
-          <div className="text-center w-full text-lg font-medium">
-            {isClickedOnEditProfile ? "" : `Welcome, @${params._id}`}
-          </div>
 
           {/* showing avatar when user just signed up */}
 
@@ -156,7 +153,7 @@ const Page = () => {
               src={
                 croppedImage
                   ? croppedImage
-                  : isClickedOnEditProfile ? user.avatar : "https://res.cloudinary.com/dsgi2zbq2/image/upload/profile_pic_q6ssck.jpg"
+                  : isClickedOnEditProfile ? user.avatar : "https://res.cloudinary.com/tushharpawar/image/upload/v1721905572/profile_pic_q6ssck.jpg"
               }
               alt="profile pic"
               width={150}
