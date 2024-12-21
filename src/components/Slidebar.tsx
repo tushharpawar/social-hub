@@ -1,22 +1,17 @@
 'use client'
 
-import { cn } from "@/lib/utils";
-import { AiOutlineHome } from "react-icons/ai";
-import { IoSearchOutline } from "react-icons/io5";
-import { IoVideocamOutline } from "react-icons/io5";
-import { CgNotes } from "react-icons/cg";
-import { BiMessageRoundedDots } from "react-icons/bi";
-import { MdOutlineSettings } from "react-icons/md";
 import React from "react";
 import Link from "next/link";
 import CreatePostAlert from "../components/create-post/CreatePostAlert";
 import { Button } from "./ui/button";
-import { useSelector } from "react-redux";
 import { useSession } from "next-auth/react";
 import { User } from "next-auth";
-import { FaRegBookmark } from "react-icons/fa";
-import HomeNavbar from "./SearchBar";
-import RightSlidebarHeader from "./right-slidebar/RightSlidebar";
+import { NotebookPen } from 'lucide-react';
+import { House } from 'lucide-react';
+import { MessageCircleMore } from 'lucide-react';
+import { Radio } from 'lucide-react';
+import { Bookmark } from 'lucide-react';
+import { Settings } from 'lucide-react';
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -36,14 +31,14 @@ export default function Sidebar({ className }: SidebarProps) {
           <div className="px-8 py-2 space-y-3">
             <Button variant="ghost" className="w-full justify-start text-lg">
               <Link href="/" className="flex items-center gap-2">
-                <AiOutlineHome className="mr-3" />
+                <House className="mr-3 h-8 w-8" />
                 <p className="hidden lg:block">Home</p>
               </Link>
             </Button>
 
             <Button variant="ghost" className="w-full justify-start text-lg">
               <Link href="/note" className="flex items-center gap-2">
-                <CgNotes className="mr-3 h-8 w-8" />
+                <NotebookPen className="mr-3 h-8 w-8" />
                 <p className="hidden lg:block">Notes</p>
               </Link>
             </Button>
@@ -52,21 +47,28 @@ export default function Sidebar({ className }: SidebarProps) {
 
             <Button variant="ghost" className="w-full justify-start text-lg">
               <Link href="/inbox" className="flex items-center gap-2">
-                <BiMessageRoundedDots className="mr-3 h-8 w-8" />
+                <MessageCircleMore className="mr-3 h-8 w-8" />
                 <p className="hidden lg:block">Messages</p>
               </Link>
             </Button>
 
             <Button variant="ghost" className="w-full justify-start text-lg">
               <Link href="/live" className="flex items-center gap-2">
-                <IoVideocamOutline className="mr-3 h-8 w-8" />
+                <Radio className="mr-3 h-8 w-8" />
                 <p className="hidden lg:block">Live</p>
               </Link>
             </Button>
 
             <Button variant="ghost" className="w-full justify-start text-lg">
+            <Link href="/saved" className="flex items-center gap-2">
+            <Bookmark className="mr-3 h-8 w-8" />
+            <span className="hidden lg:block">Saved</span>
+            </Link>
+            </Button>
+
+            <Button variant="ghost" className="w-full justify-start text-lg">
               <Link href="/settings" className="flex items-center gap-2">
-                <MdOutlineSettings className="mr-3 h-8 w-8" />
+                <Settings className="mr-3 h-8 w-8" />
                 <p className="hidden lg:block">Settings</p>
               </Link>
             </Button>
@@ -78,28 +80,28 @@ export default function Sidebar({ className }: SidebarProps) {
       {/* Tab bar for small screens */}
       <div className="fixed bottom-0 w-full bg-white border-t dark:bg-black dark:border-zinc-700 border-gray-300 sm:hidden flex justify-around py-2 z-10">
         <Link href="/" className="flex flex-col items-center">
-          <AiOutlineHome className="h-6 w-6" />
+          <House className="h-6 w-6" />
           <span className="text-xs">Home</span>
         </Link>
 
         <Link href="/note" className="flex flex-col items-center">
-          <CgNotes className="h-6 w-6" />
+          <NotebookPen className="h-6 w-6" />
           <span className="text-xs">Notes</span>
         </Link>
 
         <Link href="/inbox" className="flex flex-col items-center">
-          <BiMessageRoundedDots className="h-6 w-6" />
+          <MessageCircleMore className="h-6 w-6" />
           <span className="text-xs">Messages</span>
         </Link>
 
         <Link href="/live" className="flex flex-col items-center">
-          <IoVideocamOutline className="h-6 w-6" />
+          <Radio className="h-6 w-6" />
           <span className="text-xs">Live</span>
         </Link>
 
-        <Link href="/settings" className="flex flex-col items-center">
-          <MdOutlineSettings className="h-6 w-6" />
-          <span className="text-xs">Settings</span>
+        <Link href="/saved" className="flex flex-col items-center">
+          <Bookmark className="h-6 w-6" />
+          <span className="text-xs">Saved</span>
         </Link>
       </div>
 
@@ -108,8 +110,3 @@ export default function Sidebar({ className }: SidebarProps) {
   );
 }
 
-
-// <Link href="/saved" className="flex flex-col items-center">
-// <FaRegBookmark className="h-6 w-6" />
-// <span className="text-xs">Saved</span>
-// </Link>
