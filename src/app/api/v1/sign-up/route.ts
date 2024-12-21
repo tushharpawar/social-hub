@@ -49,7 +49,7 @@ export const POST = async (req: Request, res: NextResponse) => {
                 const expiryDate = new Date()
                 expiryDate.setHours(expiryDate.getHours()+1) 
                 
-                let avatar:string="https://res.cloudinary.com/dsgi2zbq2/image/upload/profile_pic_q6ssck.jpg"
+                let avatar:string="https://res.cloudinary.com/tushharpawar/image/upload/v1721905572/profile_pic_q6ssck.jpg"
 
                 const newUser = new UserModel({
                     username,
