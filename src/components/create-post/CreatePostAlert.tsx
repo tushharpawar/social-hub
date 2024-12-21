@@ -1,7 +1,6 @@
 'use client'
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -48,11 +47,8 @@ export default function AlertDialogDemo() {
 
     reader.addEventListener("load", () => {
       if (imgSrc) setImgSrc("");
-
       const imgUrl = reader.result?.toString() || "";
-      console.log("Image url", imgUrl);
       setImgSrc(imgUrl);
-      console.log(imgSrc);
     });
     reader.readAsDataURL(file);
   };
@@ -74,7 +70,6 @@ export default function AlertDialogDemo() {
       setIsLoading2(false)
       }
     } catch (e) {
-      console.error(e);
     }
   };
 
@@ -95,7 +90,6 @@ export default function AlertDialogDemo() {
         })
         setIsLoading(false)
         setOpen(false)
-        console.log(response);
         if(response.status ===201){
             toast({
                 title:'Post uploaded',
@@ -115,10 +109,9 @@ export default function AlertDialogDemo() {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant='ghost' className="w-full justify-start text-lg">
-          <AiOutlinePlusSquare className="sm:mr-3 sm:h-8 sm:w-8" />
+        <Button variant='ghost' className="sm:w-full sm:justify-start sm:text-lg">
+          <AiOutlinePlusSquare size={24} className="sm:mr-3 sm:h-8 sm:w-8" />
           <p className="hidden lg:block">Create</p>
-          <span className="text-xs sm:hidden">Create</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -134,7 +127,7 @@ export default function AlertDialogDemo() {
           </AlertDialogDescription>
 
           {imgSrc && (
-            <div className="w-full h-[50vh] flex justify-center ml-2 items-center cropper">
+            <div className="w-full h-[60vh] sm:h-[65vh] flex justify-center items-center cropper">
               {/* Cropper tool from react-easy-crop for croppping image */}
               <Cropper
                 image={imgSrc}
@@ -148,10 +141,9 @@ export default function AlertDialogDemo() {
                 objectFit="cover"
                 style={{
                   containerStyle: {
-                    width: "300px",
-                    height: "300px",
-                    marginTop: "110px",
-                    marginLeft: "110px",
+                    width: "400px",
+                    height: "400px",
+                    marginTop: "100px",
                     display: "flex",
                     justifyItems: "center",
                   },
