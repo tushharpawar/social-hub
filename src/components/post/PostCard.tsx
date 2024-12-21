@@ -19,6 +19,20 @@ import { useToast } from "../ui/use-toast";
 import Link from "next/link";
 import { FaBookmark } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { Copy } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 type PostCardProps = {
   username:string;
@@ -34,10 +48,9 @@ const PostPage = ({username,avatar,postUrl,caption,postId,likeCount}:PostCardPro
   const [isSaved,setIsSaved] = useState(false)
   const [newLikeCount,setNewLikeCount] = useState(likeCount)
   const [isCommentClicked,setIsCommentClicked] = useState(false)
+  const [isFetchedLikeStatus,setIsFetchedLikeStatus] = useState(false)
+  const [isFetchedSaveStatus,setIsFetchedSaveStatus] = useState(false)
   const {toast} = useToast()
-
-  //increase & decrease like and update state of isLiked on fronted
-  //the changes will be appear first on ui and later it will updated in db
 
   const onLike =async ()=>{
       try {
@@ -48,16 +61,8 @@ const PostPage = ({username,avatar,postUrl,caption,postId,likeCount}:PostCardPro
 
         const response = await axios.post(`/api/v1/posts/${postId}/like`)
   
-        if(response.status === 201){
-          toast({
-            title:'Liked'
-          })
-        }
       } catch (error) {
         console.log(error);
-        toast({
-          title:'Not Liked'
-        })
      }
 }
   const onSave =async ()=>{
@@ -82,6 +87,7 @@ const PostPage = ({username,avatar,postUrl,caption,postId,likeCount}:PostCardPro
 // checks if logged-in user liked post or not if user not liked then isLiked state will be false and if it is liked then isLiked state will be true
 
 const getLikedByLoggedInUser = async()=>{
+  setIsFetchedLikeStatus(false)
     try {
     const response = await axios.get(`api/v1/check-logged-in-user-liked/${postId}`)
     if(response.data.message === true){
@@ -90,12 +96,17 @@ const getLikedByLoggedInUser = async()=>{
     if(response.data.message === false){
       setIsLiked(false)
     }
+    setIsFetchedLikeStatus(true)
     } catch (error) {
       console.log("Error while fething likes",error);
+      setIsFetchedLikeStatus(true)
+    }finally{
+      setIsFetchedLikeStatus(true)
     }
 }
 
 const getSavedByLoggedInUser = async()=>{
+  setIsFetchedSaveStatus(false)
     try {
     const response = await axios.get(`api/v1/check-is-saved/${postId}`)
     if(response.data.message === true){
@@ -104,8 +115,12 @@ const getSavedByLoggedInUser = async()=>{
     if(response.data.message === false){
       setIsSaved(false)
     }
+    setIsFetchedSaveStatus(true)
     } catch (error) {
       console.log("Error while fething likes",error);
+      setIsFetchedSaveStatus(true)
+    }finally{
+      setIsFetchedSaveStatus(true)
     }
 }
 
@@ -139,8 +154,22 @@ const onDelete = async () =>{
  }
 }
 
+const baseUrl = `${window.location.protocol}//${window.location.host}`;
+  const profileUrl = `${baseUrl}/posts/${postId}`;
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(profileUrl);
+    toast({
+      title: 'URL Copied!',
+      description: 'Post URL has been copied to clipboard.',
+    });
+  };
+
   return (
     
+    <>
+    
+  
       <div className="h-auto flex justify-center items-center">
         <div className="flex items-center justify-center px-5 py-3">
           <div className="max-w-[350px] w-full flex items-center gap-3 flex-col ">
@@ -213,7 +242,46 @@ const onDelete = async () =>{
               }
               
               <FaRegComment size={22} className=" cursor-pointer" onClick={onComment}/>
-              <FaRegPaperPlane size={22} className=" cursor-pointer"/>
+              
+
+              <Dialog>
+                  <DialogTrigger asChild>
+                  <FaRegPaperPlane size={22} className=" cursor-pointer"/>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Share link</DialogTitle>
+                      <DialogDescription>
+                        Anyone who has this link will be able to view this post.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex items-center space-x-2">
+                      <div className="grid flex-1 gap-2">
+                        <Label htmlFor="link" className="sr-only">
+                          Link
+                        </Label>
+                        <Input
+                          id="link"
+                          defaultValue={profileUrl}
+                          readOnly
+                        />
+                      </div>
+                      <Button type="submit" size="sm" className="px-3" onClick={copyToClipboard}>
+                        <span className="sr-only">Copy</span>
+                        <Copy />
+                      </Button>
+                      </div>
+                      <DialogFooter className="sm:justify-start">
+                        <DialogClose asChild>
+                          <Button type="button" variant="secondary">
+                            Close
+                          </Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+
+
               </div>
               <div className="">
               {
@@ -240,6 +308,10 @@ const onDelete = async () =>{
           </div>
         </div>
       </div>
+
+    </>
+
+      
     
   );
 };
