@@ -7,4 +7,5 @@ export const nextConfig = {
       // Ensure correct loaders are used
       return config;
     },
+    pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
   };
