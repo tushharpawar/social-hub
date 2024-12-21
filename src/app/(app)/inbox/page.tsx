@@ -26,7 +26,7 @@ const Page = () => {
   const [connected, setConnected] = useState(false);
   const [token,setToken] = useState()
   const filters = { members: { $in: [client.userID!] } };
-  const sort = { last_message_at: -1 };
+  const sort = { last_message_at: -1 as const };
   const { data: session } = useSession();
   const user: User = session?.user as User;
   const userId = user?._id;
