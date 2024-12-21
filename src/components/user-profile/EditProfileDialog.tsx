@@ -18,6 +18,7 @@ import axios from "axios"
 import { setUserProfile } from "@/app/redux/userProfileSlice"
 import { useToast } from "../ui/use-toast"
 import { setIsClickedOnEditProfile } from "@/app/redux/updateAvatarSlice"
+import { Pencil } from "lucide-react"
 
 
 type EditProfileDialogProps = {
@@ -45,7 +46,8 @@ const EditProfileDialog = ({username,fullName,bio,avatar,_id}:EditProfileDialogP
         setNewBio(e.target.value)
     }
 
-    const onSave =async () =>{
+    const onSave =async () =>{;
+      
         const response = await axios.post(`/api/v1/update-user-info`,{
             fullName:newFullName,
             bio:newBio
@@ -64,8 +66,7 @@ const EditProfileDialog = ({username,fullName,bio,avatar,_id}:EditProfileDialogP
                 title:"Success",
                 description:response.data.message
             })
-
-        }
+          }
         else{
           toast({
             title:"Failed",
@@ -83,10 +84,11 @@ const EditProfileDialog = ({username,fullName,bio,avatar,_id}:EditProfileDialogP
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
           <div className="w-full flex-col my-3">
-              <Link href={`/avatar/${_id}`} className="flex justify-center" onClick={()=>{dispatch(setIsClickedOnEditProfile(true))}}>
+              <Link href={`/avatar/${_id}`} className="relative flex justify-center" onClick={()=>{dispatch(setIsClickedOnEditProfile(true))}}>
               <Avatar className="h-24 w-24">
                 <AvatarImage src={avatar} />
-              </Avatar>
+                <Pencil className="absolute top-5 right-2 h-5 w-5 z-5"/>
+              </Avatar>       
               </Link>
 
               <div className="my-2 text-center">
@@ -103,6 +105,7 @@ const EditProfileDialog = ({username,fullName,bio,avatar,_id}:EditProfileDialogP
               id="fullName"
               defaultValue={fullName}
               className="col-span-3"
+              value={newFullName}
               onChange={onFullNameChange}
             />
           </div>
