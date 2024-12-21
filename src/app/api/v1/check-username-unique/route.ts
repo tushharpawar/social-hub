@@ -2,15 +2,16 @@ import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/User.model";
 import { NextRequest, NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic"; // Ensure dynamic behavior for this route
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { username: string } }
-) {
+
+export const GET = async (req: NextRequest, res: NextResponse) => {
   await dbConnect();
   try {
-    const { username } = params;
+    const { searchParams } = new URL(req.url);
+    const queryParams = {
+      username: searchParams.get("username"),
+    };
+    const { username } = queryParams;
 
     // Validate username
     if (!username || username.trim() === "") {
