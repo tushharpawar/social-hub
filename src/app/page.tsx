@@ -17,7 +17,7 @@ export default function Home() {
   const {data:session,status} = useSession()
 
   if(status ==='loading'){
-    return <div className="w-full flex justify-center m-3"><Loader2 className="mr-2 h-10 w-10 animate-spin"></Loader2><p className="text-lg sm:text-2xl">Loading..</p></div>
+    return  <div className="w-full flex justify-center m-3"><Loader2 className="mr-2 h-8 w-8 animate-spin"></Loader2><p className="text-lg sm:text-2xl">Loading..</p></div>
   }
 
   return (
