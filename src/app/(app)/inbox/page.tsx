@@ -31,7 +31,6 @@ const Page = () => {
   const user: User = session?.user as User;
   const userId = user?._id;
   const { autoscrollToBottom } = useMessageContext();
-  const {channels} = useChannelListContext()
 
   useEffect(() => {
     async function fetchToken() {
@@ -94,14 +93,6 @@ const Page = () => {
             </div>
             }
           />
-
-      {
-          channels?.length === 0 && (
-            <div className="w-full h-screen text-center">
-              Chat with your friends or search tushar.
-            </div>
-          )
-        }
 
         {/* Channel Chat Section */}
         <div className="w-full md:w-3/4 lg:w-4/5">

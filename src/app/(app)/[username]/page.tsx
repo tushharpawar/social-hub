@@ -1,13 +1,13 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { AnimatedFollowButton } from "@/components/AnimatedFollowButton";
 import { Separator } from "@/components/ui/separator";
 import { GrGallery } from "react-icons/gr";
 import SmallPostCard from "@/components/user-profile/SmallPostCard";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
+import axios, { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserProfile } from "@/app/redux/userProfileSlice";
 import { useSession } from "next-auth/react";
@@ -16,7 +16,7 @@ import EditProfileDialog from "@/components/user-profile/EditProfileDialog";
 import { setFetchedUserPosts } from "@/app/redux/postSlice"
 import { MdOutlineSettings } from "react-icons/md";
 import Link from "next/link";
-import { Copy } from "lucide-react"
+import { Copy, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -31,30 +31,34 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/components/ui/use-toast";
-import { Pencil } from 'lucide-react';
 
 export default function Page() {
 
-  const {data:session} = useSession()
-  const user:User = session?.user as User
 
+  const {toast} = useToast();
+  const router = useRouter();
+
+  const {data:session,status} = useSession()
+  const user:User = session?.user as User
   const params = useParams<{ username: string }>();
   const { username } = params;
-  const [userPosts, setUserPosts] = useState([]);
   const [isLoggedInUser, setIsLoggedInUser] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const {toast} = useToast();
 
   // fetching posts of user
 
+  
+
   const fetchPosts = async () => {
     try {
+      setFetchedUserPosts([])
       const response = await axios.get(
         `api/v1/get-all-posts-by-user/${username}`
       );
-      setUserPosts(response.data.message);
+
       dispatch(setFetchedUserPosts(response.data.message))
-      console.log("Users posts fetched by username", response.data.message);
+        console.log("Users posts fetched by username", response.data.message);
     } catch (error) {
       console.log("Error while fetching posts of user in profile", error);
     }
@@ -63,26 +67,53 @@ export default function Page() {
   // fetching user
 
   const fetchUser = async () => {
+    setLoading(true)
     if(user){
       if(user.username === username){
         setIsLoggedInUser(true)
       }
       try {
-        const res = await axios.get(`/api/v1/get-user-profile/${username}`);
-        dispatch(setUserProfile(res.data.message));
-        console.log("fetched user from url", res.data.message);
-      } catch (error) {
-        console.log("error while fetching user profile", error);
+        const response = await axios.get(`/api/v1/get-user-profile/${username}`);
+
+        if(response.status === 200){
+            dispatch(setUserProfile(response.data.message));
+            console.log("fetched user from url", response.data.message);
+            setLoading(false)   
+        }
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+
+          if(error.response && error.response.status === 400){
+            setLoading(true)
+            toast({
+              title:"User not found!",
+              variant:"destructive"
+            })
+            router.replace('/')
+            setLoading(false)
+          }
+        else{
+            setLoading(false)
+            return <div>Internal server error</div>
+          }
+        }else{
+          setLoading(false)
+        }
       }
     }
   };
 
   useEffect(() => {
+
     dispatch(setUserProfile(''));
     fetchUser();
-    fetchPosts();
-  }, []);
+  }, [user]);
 
+  const { userProfile } = useSelector((store: any) => store.userProfile);
+
+  useEffect(()=>{
+    fetchPosts();
+  },[userProfile])
 
   const baseUrl = `${window.location.protocol}//${window.location.host}`;
   const profileUrl = `${baseUrl}/${username}`;
@@ -95,8 +126,19 @@ export default function Page() {
     });
   };
 
-  const { userProfile } = useSelector((store: any) => store.userProfile);
+   
+  
   const {fetchedUserPosts} = useSelector((store:any)=>store.post)
+
+
+  if(status === 'unauthenticated'){
+  router.replace('/sign-in')
+  }
+
+
+  if(status ==='loading'){
+    return <div className="w-full flex justify-center m-3"><Loader2 className="mr-2 h-8 w-8 animate-spin"></Loader2><p className="text-lg sm:text-2xl">Loading..</p></div>
+  }
 
   return (
     <div className="w-full h-screen overflow-y-scroll pb-16 sm:pb-0"> 
@@ -105,7 +147,15 @@ export default function Page() {
           <MdOutlineSettings className="h-6 w-6" /> 
           </Link>
         }
-    <div className="w-full lg:w-[80%] mx-auto">
+
+
+        {
+          loading && <div className="w-full flex justify-center m-3"><Loader2 className="mr-2 h-8 w-8 animate-spin"></Loader2><p className="text-lg sm:text-2xl">Loading..</p></div>
+        }
+
+    {
+      !loading && 
+      <div className="w-full lg:w-[80%] mx-auto">
       {/* User profile upper part */}
       <div className="flex flex-col lg:flex-row justify-center pt-6">
         <div className="flex items-center flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-16">
@@ -270,6 +320,7 @@ export default function Page() {
       </div>
     </div>
   </div>
+    }
 </div>
 
   );

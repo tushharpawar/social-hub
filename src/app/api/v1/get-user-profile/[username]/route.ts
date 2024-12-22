@@ -58,6 +58,6 @@ export const GET = async (req:NextRequest,{params}:{params:{username:string}},re
         return NextResponse.json({
             suceess:false,
             message: "Failed to fetch followers"}
-        ,{status: 400});
+        ,{status: 402});
     }
 }
