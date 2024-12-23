@@ -4,9 +4,7 @@ import bcrypt from "bcryptjs";
 import UserModel from "@/models/User.model";
 import dbConnect from "@/lib/dbConnect";
 import GoogleProvider from "next-auth/providers/google";
-import { StreamChat } from 'stream-chat';
-import { redirect } from "next/navigation";
-import { NextResponse } from "next/server";
+import { StreamChat } from "stream-chat";
 
 const client = StreamChat.getInstance(process.env.NEXT_PUBLIC_STREAM_API_KEY!, process.env.STREAM_API_SECRET);
 
@@ -17,11 +15,13 @@ export const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "text" },
-        password: { label: "password", type: "password" },
+        password: { label: "Password", type: "password" },
       },
-      async authorize(credentials: any):Promise<any>{
+      async authorize(credentials: any): Promise<any> {
         await dbConnect();
+
         try {
+          // Find user by email or username
           const user = await UserModel.findOne({
             $or: [
               { email: credentials.identifier },
@@ -29,107 +29,100 @@ export const authOptions: NextAuthOptions = {
             ],
           });
 
+          // Handle errors with meaningful messages
           if (!user) {
-            throw new Error('No user found with this email')
+            throw new Error("No user found with this email or username.");
           }
-          if(!user.isVerified){
-            throw new Error('Verify your account to log in!')
+
+          if (!user.isVerified) {
+            throw new Error("Verify your account to log in.");
           }
 
           const isPasswordCorrect = await bcrypt.compare(
-            credentials.password, user.password
-          )
+            credentials.password,
+            user.password
+          );
 
-          if(!isPasswordCorrect){
-            throw new Error('Wrong password!')
-          }else{
-            return user
+          if (!isPasswordCorrect) {
+            throw new Error("Wrong password.");
           }
-        } catch (error:any) {
-             throw new Error("Error in login",error)
+
+          // Return user on successful login
+          return user;
+        } catch (error: any) {
+          console.error("Error during login:", error.message);
+          throw new Error(error.message);
         }
       },
     }),
-    GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID || "",
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-        authorization: {
-          params: {
-            prompt: "consent",
-            access_type: "offline",
-            response_type: "code"
-          }
-        }
-      })
   ],
-  callbacks:{
-async signIn({ user }: any): Promise<boolean> {
-      // if (account?.provider === "google") {
-      //   return profile?.email_verified && profile?.email?.endsWith("@gmail.com");
-      // }
-      // return true // Do different verification for other providers that don't have `email_verified`
-      
+  callbacks: {
+    async signIn({ user }: any): Promise<boolean> {
       try {
-        const foundUsers = await UserModel.find(user?._id)
-        const foundUser = foundUsers[0] as { _id: string, username: string, avatar: string };
+        const foundUser = await UserModel.findById(user._id);
 
         const existingUsers = await client.queryUsers({ id: user._id.toString() });
 
         if (existingUsers.users.length > 0) {
-          console.log('User already exists in Stream Chat:', user._id);
-          return true
-        }else{
-          await client.upsertUser({
-            id: foundUser.username,
-            name:foundUser.username,
-            image:foundUser.avatar,
-          });
-          console.log("user upserted!!"); 
+          console.log("User already exists in Stream Chat:", user._id);
+          return true;
+        } else {
+          if (foundUser) {
+            await client.upsertUser({
+              id: foundUser.username,
+              name: foundUser.username,
+              image: foundUser.avatar,
+            });
+          } else {
+            throw new Error("User not found.");
+          }
+          console.log("User upserted in Stream Chat!");
         }
         return true;
       } catch (error) {
-        console.log("Error while inserting user in stream", error);
-        return false;        
+        console.error("Error while inserting user in Stream:", error);
+        return false;
       }
-
     },
-    async jwt({token,user}) {
-        if(user){
-          token._id = user._id?.toString();
-          token.email = user.email;
-          token.username = user.username;
-          token.isVerified = user.isVerified;
-          token.avatar = user.avatar;
-          token.fullName = user.fullName;
-        }
-        return token;
+    async jwt({ token, user }) {
+      if (user) {
+        token._id = user._id?.toString();
+        token.email = user.email;
+        token.username = user.username;
+        token.isVerified = user.isVerified;
+        token.avatar = user.avatar;
+        token.fullName = user.fullName;
+      }
+      return token;
     },
-    async session({session,token}){
-      if(token){
-        session.user._id = token._id;
-        session.user.email = token.email;
-        session.user.username = token.username;
-        session.user.isVerified = token.isVerified;
-        session.user.avatar = token.avatar;
-        session.user.fullName = token.fullName;
+    async session({ session, token }) {
+      if (token) {
+        session.user = {
+          _id: token._id,
+          email: token.email,
+          username: token.username,
+          isVerified: token.isVerified,
+          avatar: token.avatar,
+          fullName: token.fullName,
+        };
       }
       return session;
     },
-    async redirect({ url, baseUrl }) {
-      //redirecting user to anoher page after sign in
-      return "/"; 
+    // async redirect({ url, baseUrl }) {
+    //   return "/";
+    // },
+  },
+  session: {
+    strategy: "jwt",
+  },
+  events: {
+    async signOut({ token, session }) {
+      console.log("User signed out.");
     },
   },
-  session:{
-    strategy:"jwt",
+  secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/sign-in",
+    error: '/sign-in',
   },
- events:{
-  async signOut({ token, session }) {
-    // Add your signOut logic here
-  }
- },
-  secret: process.env.NEXTAUTH_SECRET ,
-  pages:{
-    signIn: '/sign-in',
-  }
-}
+};
