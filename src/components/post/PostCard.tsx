@@ -89,7 +89,7 @@ const PostPage = ({username,avatar,postUrl,caption,postId,likeCount}:PostCardPro
 const getLikedByLoggedInUser = async()=>{
   setIsFetchedLikeStatus(false)
     try {
-    const response = await axios.get(`api/v1/check-logged-in-user-liked/${postId}`)
+    const response = await axios.get(`/api/v1/check-logged-in-user-liked/${postId}`)
     if(response.data.message === true){
       setIsLiked(true)
     }
@@ -108,7 +108,7 @@ const getLikedByLoggedInUser = async()=>{
 const getSavedByLoggedInUser = async()=>{
   setIsFetchedSaveStatus(false)
     try {
-    const response = await axios.get(`api/v1/check-is-saved/${postId}`)
+    const response = await axios.get(`/api/v1/check-is-saved/${postId}`)
     if(response.data.message === true){
       setIsSaved(true)
     }
@@ -129,7 +129,7 @@ const {user} = useSelector((store:any)=>store.auth)
 useEffect(()=>{
   getLikedByLoggedInUser()
   getSavedByLoggedInUser()
-},[postId])
+},[])
 
 //opens comment box
 const onComment =async () =>{
@@ -168,8 +168,7 @@ const baseUrl = `${window.location.protocol}//${window.location.host}`;
   return (
     
     <>
-    
-  
+
       <div className="h-auto flex justify-center items-center">
         <div className="flex items-center justify-center px-5 py-3">
           <div className="max-w-[350px] w-full flex items-center gap-3 flex-col ">
@@ -242,9 +241,8 @@ const baseUrl = `${window.location.protocol}//${window.location.host}`;
               }
               
               <FaRegComment size={22} className=" cursor-pointer" onClick={onComment}/>
-              
-
-              <Dialog>
+          
+               <Dialog>
                   <DialogTrigger asChild>
                   <FaRegPaperPlane size={22} className=" cursor-pointer"/>
                   </DialogTrigger>
@@ -280,8 +278,6 @@ const baseUrl = `${window.location.protocol}//${window.location.host}`;
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
-
-
               </div>
               <div className="">
               {
@@ -303,16 +299,11 @@ const baseUrl = `${window.location.protocol}//${window.location.host}`;
             {              
               isCommentClicked ? <CommentBox postId={postId} isCommentClicked={isCommentClicked}></CommentBox> :<></>
             }
-
              <Separator />
           </div>
         </div>
       </div>
-
-    </>
-
-      
-    
+    </>  
   );
 };
 
