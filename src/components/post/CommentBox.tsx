@@ -9,6 +9,7 @@ import { useToast } from "../ui/use-toast"
 import CommentCard from "./CommentCard"
 import { useDispatch, useSelector } from "react-redux"
 import { setComment } from "@/app/redux/commentSlice"
+import { Loader2 } from "lucide-react"
 
 type CommentBoxProps = {
   postId:any,
@@ -18,6 +19,7 @@ type CommentBoxProps = {
 export function CommentBox({postId,isCommentClicked}:CommentBoxProps) {
     
   const [content,setContent] = useState('')
+  const [loading,setLoading] = useState(false)
   const {user} = useSelector((store:any)=>store.auth)
   const {toast} = useToast()
   const dispatch = useDispatch()
@@ -60,20 +62,23 @@ export function CommentBox({postId,isCommentClicked}:CommentBoxProps) {
 }
 
 useEffect(()=>{
+  setLoading(true)
   const fetchComment = async()=>{
  
       try {
+        dispatch(setComment([]))
         const res = await axios.get(`/api/v1/get-all-comments/${postId}`)
-    
         if(res.status === 201){
           dispatch(setComment(res.data.message))
         }
-    
+        setLoading(false)
       } catch (error) {
+        setLoading(false)
       }
   }
 
   fetchComment()
+  setLoading(false)
 },[isCommentClicked,postId])
 
   return (
@@ -84,7 +89,11 @@ useEffect(()=>{
         <h1 className=" font-medium">Commentssss</h1>
 
         {
-          comments.length > 0 ? (
+          loading &&  <div className="w-full flex justify-center m-3"><Loader2 className="mr-2 h-5 w-5 animate-spin"></Loader2></div>
+        }
+
+        {
+        comments.length > 0 ? (
             comments.map((item:any,index:any)=>(
               <CommentCard
               key={item._id}
@@ -94,7 +103,7 @@ useEffect(()=>{
               username={item.commentOwner[0].username}
               />
             ))
-          ) :(<div className="flex items-center h-[100%] justify-center bg-slate-400">No comments yet!</div>)
+          ) :(<div className="flex items-center h-[100%] justify-center">No comments yet!</div>)
         }
 
       </div>
