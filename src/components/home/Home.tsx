@@ -156,7 +156,7 @@ const HomePageAfterLogin = () => {
                 ) : (
                   !hasMore && (
                     <div className="m-5 text-center font-semibold text-xl">
-                      You have caught all activity!
+                      You have seen all posts!
                     </div>
                   )
                 )}
