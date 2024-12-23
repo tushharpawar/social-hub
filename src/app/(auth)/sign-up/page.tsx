@@ -132,8 +132,8 @@ const Page = () => {
                       placeholder="username"
                       {...field}
                       onChange={(e) => {
-                        field.onChange(e);
-                        debounced(e.target.value);
+                        field.onChange(e.target.value.toLowerCase());
+                        debounced(e.target.value.toLowerCase());
                         e.target.value === "" && setUsernameMessage("")
                       }}
                     />
