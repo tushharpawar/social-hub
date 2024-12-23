@@ -17,13 +17,28 @@ import userProfileSlice from './userProfileSlice'
 import updateAvatarSlice from './updateAvatarSlice'
 import themeSlice from './themeSlice'
 
-export const store = configureStore({
-  reducer: {
-    auth:authSlice,
-    post:postSlice,
-    comment:commentSlice,
-    userProfile:userProfileSlice,
-    isClickedOnEditProfile:updateAvatarSlice,
-    theme:themeSlice,
-},
+const combinedReducers = combineReducers({
+  auth:authSlice,
+  post:postSlice,
+  comment:commentSlice,
+  userProfile:userProfileSlice,
+  isClickedOnEditProfile:updateAvatarSlice,
+  theme:themeSlice,
 })
+const persistedReducer = persistReducer(
+{
+     key: 'root',
+     storage,
+ },
+ combinedReducers
+)
+ export const store = configureStore({
+ reducer: persistedReducer,
+ middleware: (getDefaultMiddleware) =>
+     getDefaultMiddleware({
+         serializableCheck: {
+             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],   
+         },
+     }),
+})
+export const persistor = persistStore(store)
