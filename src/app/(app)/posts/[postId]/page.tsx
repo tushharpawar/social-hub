@@ -29,7 +29,7 @@ const Page = () => {
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
 
-          if(error.response && error.response.status === 400){
+          if(error.response && error.response.status === 402){
             setLoading(true)
             toast({
               title:"Post not found!",
@@ -81,7 +81,7 @@ const Page = () => {
                     />
                   </div>
             ))
-          ):(<div>Post not found</div>)
+          ):(<div></div>)
         }
     </div>
   )
