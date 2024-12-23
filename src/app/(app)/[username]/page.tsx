@@ -39,7 +39,6 @@ export default function Page() {
   const router = useRouter();
 
   const {data:session,status} = useSession()
-
   const user:User = session?.user as User
   const params = useParams<{ username: string }>();
   const { username } = params;
@@ -48,8 +47,6 @@ export default function Page() {
   const dispatch = useDispatch();
 
   // fetching posts of user
-
-  
 
   const fetchPosts = async () => {
     try {
@@ -95,9 +92,12 @@ export default function Page() {
           }
         else{
             setLoading(false)
+            return <div>Internal server error</div>
           }
+        }else{
+          setLoading(false)
         }
-      } 
+      }
     }
   };
 
@@ -112,10 +112,6 @@ export default function Page() {
   useEffect(()=>{
     fetchPosts();
   },[userProfile])
-
-  useCallback(()=>{
-    fetchPosts();
-  },[userProfile.length>0])
 
   const baseUrl = `${window.location.protocol}//${window.location.host}`;
   const profileUrl = `${baseUrl}/${username}`;
@@ -133,10 +129,10 @@ export default function Page() {
   const {fetchedUserPosts} = useSelector((store:any)=>store.post)
 
 
-
   if(status === 'unauthenticated'){
   router.replace('/sign-in')
   }
+
 
   if(status ==='loading'){
     return <div className="w-full flex justify-center m-3"><Loader2 className="mr-2 h-8 w-8 animate-spin"></Loader2><p className="text-lg sm:text-2xl">Loading..</p></div>
