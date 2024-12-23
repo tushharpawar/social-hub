@@ -20,6 +20,7 @@ import axios from "axios";
 import { toast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const ASPECT_RETIO = 1;
 
