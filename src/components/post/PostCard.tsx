@@ -204,7 +204,7 @@ const baseUrl = `${window.location.protocol}//${window.location.host}`;
               <DropdownMenu>
                 <DropdownMenuTrigger ><MdOutlineMoreVert className="h-5 w-5"/></DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <Link href={`${username}`}><DropdownMenuItem>Profile</DropdownMenuItem></Link>
+                  <Link href={`/${username}`}><DropdownMenuItem>Profile</DropdownMenuItem></Link>
                   <DropdownMenuItem onClick={onSave}>Save</DropdownMenuItem>
                   {
                     username === user?.username && <DropdownMenuItem className="text-red-500 focus:text-red-500" onClick={onDelete}>Delete</DropdownMenuItem>
