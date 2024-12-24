@@ -62,7 +62,7 @@ const PostPage = ({username,avatar,postUrl,caption,postId,likeCount}:PostCardPro
         const response = await axios.post(`/api/v1/posts/${postId}/like`)
   
       } catch (error) {
-        console.log(error);
+        // console.log(error);
      }
 }
   const onSave =async ()=>{
@@ -77,7 +77,7 @@ const PostPage = ({username,avatar,postUrl,caption,postId,likeCount}:PostCardPro
           })
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         toast({
           title:'Post Unsaved'
         })
@@ -98,7 +98,6 @@ const getLikedByLoggedInUser = async()=>{
     }
     setIsFetchedLikeStatus(true)
     } catch (error) {
-      console.log("Error while fething likes",error);
       setIsFetchedLikeStatus(true)
     }finally{
       setIsFetchedLikeStatus(true)
@@ -117,7 +116,7 @@ const getSavedByLoggedInUser = async()=>{
     }
     setIsFetchedSaveStatus(true)
     } catch (error) {
-      console.log("Error while fething likes",error);
+      // console.log("Error while fething likes",error);
       setIsFetchedSaveStatus(true)
     }finally{
       setIsFetchedSaveStatus(true)
@@ -129,11 +128,11 @@ const {user} = useSelector((store:any)=>store.auth)
 useEffect(()=>{
   getLikedByLoggedInUser()
   getSavedByLoggedInUser()
-},[])
+},[postId])
 
 //opens comment box
 const onComment =async () =>{
-  setIsCommentClicked(!isCommentClicked)
+    setIsCommentClicked(!isCommentClicked)
 }
 
 const onDelete = async () =>{
@@ -147,7 +146,6 @@ const onDelete = async () =>{
       })
     }
   } catch (error) {
-    console.log(error);
     toast({
       title:'Internal server error!'
     })
@@ -163,12 +161,11 @@ const baseUrl = `${window.location.protocol}//${window.location.host}`;
       title: 'URL Copied!',
       description: 'Post URL has been copied to clipboard.',
     });
-  };
+  }; 
 
   return (
     
     <>
-
       <div className="h-auto flex justify-center items-center">
         <div className="flex items-center justify-center px-5 py-3">
           <div className="max-w-[350px] w-full flex items-center gap-3 flex-col ">
@@ -204,7 +201,7 @@ const baseUrl = `${window.location.protocol}//${window.location.host}`;
               <DropdownMenu>
                 <DropdownMenuTrigger ><MdOutlineMoreVert className="h-5 w-5"/></DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <Link href={`/${username}`}><DropdownMenuItem>Profile</DropdownMenuItem></Link>
+                  <Link href={`${username}`}><DropdownMenuItem>Profile</DropdownMenuItem></Link>
                   <DropdownMenuItem onClick={onSave}>Save</DropdownMenuItem>
                   {
                     username === user?.username && <DropdownMenuItem className="text-red-500 focus:text-red-500" onClick={onDelete}>Delete</DropdownMenuItem>
@@ -241,8 +238,9 @@ const baseUrl = `${window.location.protocol}//${window.location.host}`;
               }
               
               <FaRegComment size={22} className=" cursor-pointer" onClick={onComment}/>
-          
-               <Dialog>
+              
+
+              <Dialog>
                   <DialogTrigger asChild>
                   <FaRegPaperPlane size={22} className=" cursor-pointer"/>
                   </DialogTrigger>
@@ -278,6 +276,8 @@ const baseUrl = `${window.location.protocol}//${window.location.host}`;
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
+
+
               </div>
               <div className="">
               {
@@ -299,11 +299,16 @@ const baseUrl = `${window.location.protocol}//${window.location.host}`;
             {              
               isCommentClicked ? <CommentBox postId={postId} isCommentClicked={isCommentClicked}></CommentBox> :<></>
             }
+
              <Separator />
           </div>
         </div>
       </div>
-    </>  
+
+    </>
+
+      
+    
   );
 };
 

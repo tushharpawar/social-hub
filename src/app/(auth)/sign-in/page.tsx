@@ -19,6 +19,17 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { signInSchema } from "@/app/schemas/signInSchema";
 import { signIn, useSession } from "next-auth/react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { Label } from "@/components/ui/label";
+import axios from "axios";
 
 const Page = () => {
 
@@ -27,6 +38,10 @@ const Page = () => {
 	  const { toast } = useToast();
 
 	  const router = useRouter();
+    const [email,setEmail] = useState('')
+        const [message,setMessage] = useState('')
+        const [loading,setLoading] = useState(false)
+        const [open,setOpen] = useState(false)
 
 	//implementing zod .
 
@@ -59,6 +74,54 @@ const Page = () => {
 
     setIsSubmitting(false)
 	};
+
+  const handleEmailInput=(e)=>{
+    setEmail(e.target.value)
+  }
+
+  const handleSubmitEmail =async ()=> {
+      try {
+        setLoading(true)
+
+        if(email === ''){
+          toast({
+            title:"Please enter email!",
+            variant:"destructive"
+          })
+          setOpen(false)
+          setLoading(false)
+          setEmail('')
+          return
+        }
+
+        const response = await axios.post(`/api/v1/get-user/${email}`)
+
+        if(response.status === 200){
+          toast({
+            title:"We have sent you a 6 digit code on your email.",
+            description:"Please verify your account."
+          })
+          router.replace(`/verify-email/${response.data.message}`)
+        }
+        setLoading(false)
+      } catch (error) {
+        if(error.response && error.response.status === 400){
+          toast({
+            title:"User not found with this email or username.",
+            variant:"destructive"
+          })
+          setLoading(false)
+        }else{
+          toast({
+            title:"Internal server error.",
+            variant:"destructive"
+          })
+          setLoading(false)
+        }
+      }finally{
+        setEmail('')
+      }
+  }
 
 	return (
     <div className=" min-h-screen w-full flex justify-center items-center">
@@ -115,6 +178,41 @@ const Page = () => {
           </form>
         </Form>
 
+        <div className="text-center mt-4">    
+          <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger className='text-lg'><p className="text-blue-600 hover:text-blue-800">Forget password</p>
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Forget Password</SheetTitle>
+              <SheetDescription>
+                Enter your email address.
+              </SheetDescription>
+            </SheetHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">
+                  Email
+                </Label>
+                <Input type='email' placeholder='Enter email' value={email} className="col-span-3" onChange={handleEmailInput}/>
+              </div>
+            </div>
+            <SheetFooter>
+                <Button type="submit" disabled={loading} onClick={handleSubmitEmail}>
+                {
+                  loading ? (
+                    <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
+                    Please wait
+                    </>
+                  ) : ('Submit')
+                }
+                </Button>
+            </SheetFooter>
+          </SheetContent>
+          
+        </Sheet>
+        </div>
         <div className="text-center mt-4">
           <p>
             Not a member?{' '}

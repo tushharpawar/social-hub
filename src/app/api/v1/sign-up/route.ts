@@ -41,8 +41,8 @@ export const POST = async (req: Request, res: NextResponse) => {
                 await sendMail({email,verificationCode})
                 return NextResponse.json({
                     success: true,
-                    message: "We have send you  verificaion email please verify your account",
-                }, {status: 200});
+                    message: existingUserByEmail,
+                }, {status: 202});
             }
         }else{
                 const hashedPassword = await bcrypt.hash(password,10)
@@ -66,9 +66,8 @@ export const POST = async (req: Request, res: NextResponse) => {
                 await sendMail({email,verificationCode})
                 return NextResponse.json({
                     success: true,
-                    message: "User registered successfully ,please verify your account from email",
-                    newUser
-                }, {status: 200});
+                    message: newUser, 
+                }, {status: 201});
         }
         
         
