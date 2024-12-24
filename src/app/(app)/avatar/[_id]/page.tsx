@@ -56,7 +56,7 @@ const Page = () => {
       if (imgSrc) setImgSrc("");
       const imgUrl = reader.result?.toString() || "";
       setOpenBox(true);
-      console.log(imgUrl);
+      // console.log(imgUrl);
       setImgSrc(imgUrl);
     });
 
@@ -81,7 +81,7 @@ const Page = () => {
       setOpenBox(false);
       setIsLoadingImage(false);
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       setIsLoadingImage(false);
     }
   };
