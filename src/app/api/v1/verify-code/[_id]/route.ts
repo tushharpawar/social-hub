@@ -36,7 +36,7 @@ export const POST =async(req:NextRequest,{params}:{params:{_id:string}},res:Next
 
             return NextResponse.json({
                 suceess:false,
-                message: "Verification code is expired"}
+                message: "Verification code is expired,Please sign-up again."}
             ,{status: 404});
         }else{
             //wrong code
