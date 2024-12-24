@@ -82,12 +82,16 @@ const Page = () => {
     try {
       const response = await axios.post(`api/v1/sign-up`, data);
 
+      console.log("Response",response);
+      
+      
       toast({
         title: "Signup Successful!🎉",
         description: "We have sent you 6-digit code on your email.If you didn't recieved in inbox, check spam folder.",
       });
 
-      router.replace(`/verify/${response.data.newUser._id}`);
+      router.replace(`/verify/${response.data.message._id}`);
+
       setIsSubmitting(false);
     } catch (error) {
       console.error("Error in signup user", error);
@@ -133,7 +137,7 @@ const Page = () => {
                       {...field}
                       onChange={(e) => {
                         field.onChange(e.target.value.toLowerCase());
-                        debounced(e.target.value.toLowerCase());
+                        debounced(e.target.value);
                         e.target.value === "" && setUsernameMessage("")
                       }}
                     />
