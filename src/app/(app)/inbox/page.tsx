@@ -68,7 +68,6 @@ const Page = () => {
     return () => {
       if (connected) {
         client.disconnectUser();
-        console.log("Disconnected", userId);
       }
     };
   }, [user, userId]);
