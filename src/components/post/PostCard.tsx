@@ -62,7 +62,7 @@ const PostPage = ({username,avatar,postUrl,caption,postId,likeCount}:PostCardPro
         const response = await axios.post(`/api/v1/posts/${postId}/like`)
   
       } catch (error) {
-        console.log(error);
+        // console.log(error);
      }
 }
   const onSave =async ()=>{
@@ -77,7 +77,7 @@ const PostPage = ({username,avatar,postUrl,caption,postId,likeCount}:PostCardPro
           })
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         toast({
           title:'Post Unsaved'
         })
@@ -89,7 +89,7 @@ const PostPage = ({username,avatar,postUrl,caption,postId,likeCount}:PostCardPro
 const getLikedByLoggedInUser = async()=>{
   setIsFetchedLikeStatus(false)
     try {
-    const response = await axios.get(`api/v1/check-logged-in-user-liked/${postId}`)
+    const response = await axios.get(`/api/v1/check-logged-in-user-liked/${postId}`)
     if(response.data.message === true){
       setIsLiked(true)
     }
@@ -98,7 +98,6 @@ const getLikedByLoggedInUser = async()=>{
     }
     setIsFetchedLikeStatus(true)
     } catch (error) {
-      console.log("Error while fething likes",error);
       setIsFetchedLikeStatus(true)
     }finally{
       setIsFetchedLikeStatus(true)
@@ -108,7 +107,7 @@ const getLikedByLoggedInUser = async()=>{
 const getSavedByLoggedInUser = async()=>{
   setIsFetchedSaveStatus(false)
     try {
-    const response = await axios.get(`api/v1/check-is-saved/${postId}`)
+    const response = await axios.get(`/api/v1/check-is-saved/${postId}`)
     if(response.data.message === true){
       setIsSaved(true)
     }
@@ -117,7 +116,7 @@ const getSavedByLoggedInUser = async()=>{
     }
     setIsFetchedSaveStatus(true)
     } catch (error) {
-      console.log("Error while fething likes",error);
+      // console.log("Error while fething likes",error);
       setIsFetchedSaveStatus(true)
     }finally{
       setIsFetchedSaveStatus(true)
@@ -133,7 +132,7 @@ useEffect(()=>{
 
 //opens comment box
 const onComment =async () =>{
-  setIsCommentClicked(!isCommentClicked)
+    setIsCommentClicked(!isCommentClicked)
 }
 
 const onDelete = async () =>{
@@ -147,7 +146,6 @@ const onDelete = async () =>{
       })
     }
   } catch (error) {
-    console.log(error);
     toast({
       title:'Internal server error!'
     })
@@ -163,13 +161,11 @@ const baseUrl = `${window.location.protocol}//${window.location.host}`;
       title: 'URL Copied!',
       description: 'Post URL has been copied to clipboard.',
     });
-  };
+  }; 
 
   return (
     
     <>
-    
-  
       <div className="h-auto flex justify-center items-center">
         <div className="flex items-center justify-center px-5 py-3">
           <div className="max-w-[350px] w-full flex items-center gap-3 flex-col ">
