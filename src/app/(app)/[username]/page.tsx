@@ -48,8 +48,6 @@ export default function Page() {
 
   // fetching posts of user
 
-  
-
   const fetchPosts = async () => {
     try {
       setFetchedUserPosts([])

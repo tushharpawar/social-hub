@@ -1,6 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
 import LikeModel from "@/models/Like.model";
+import { ObjectId } from "mongodb";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -21,10 +22,12 @@ export const GET = async (req: NextRequest,{params}:{params:{postId:string}}, re
  
      const likedBy = _user._id;
 
-    const loggedInUserLiked = await LikeModel.findOne({
-      post:postId,
-      likedBy
-    });
+    const loggedInUserLiked = await LikeModel.aggregate([{
+      $match:{
+        post:new ObjectId(postId),
+        likedBy:new ObjectId(likedBy)
+      }
+    }]);
 
     if (loggedInUserLiked) {
       return NextResponse.json(

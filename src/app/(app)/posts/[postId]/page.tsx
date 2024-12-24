@@ -1,46 +1,87 @@
 'use client'
 
 import PostPage from '@/components/post/PostCard'
-import { useParams } from 'next/navigation'
-import React, { useEffect, useRef } from 'react'
-import { useSelector } from 'react-redux'
+import { useToast } from '@/components/ui/use-toast'
+import axios from 'axios'
+import { Loader2 } from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import { useParams, useRouter } from 'next/navigation'
+import React, { useEffect, useRef, useState } from 'react'
 
 const Page = () => {
     const params = useParams<{ postId: string }>()
-    const {fetchedUserPosts} = useSelector((store:any)=>store.post)
     const {postId} = params
+    const [posts,setPosts] = useState([])
+    const [loading,setLoading] = useState(false)
+    const {data:session,status} = useSession()
 
-    const postRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
-    const containerRef = useRef<HTMLDivElement>(null)
+    const {toast} = useToast()
+    const router = useRouter()
+
+    const getPost =async () =>{
+      try {
+        setLoading(true)
+        const response = await axios.get(`/api/v1/get-post/${postId}`)
+        if(response.status === 200){
+          setPosts(response.data.message) 
+        }
+        setLoading(false)
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+
+          if(error.response && error.response.status === 402){
+            setLoading(true)
+            toast({
+              title:"Post not found!",
+              variant:"destructive"
+            })
+            router.replace('/')
+            setLoading(false)
+          }
+        else{
+            setLoading(false)
+            return <div>Internal server error</div>
+          }
+        }else{
+          setLoading(false)
+        }
+      }
+    }
 
     useEffect(() => {
-        // Scroll to the post with the matching postId
-        if (postId && postRefs.current[postId]) {
-          containerRef.current?.scrollTo({
-            top: postRefs.current[postId]?.offsetTop || 0,
-            behavior: 'auto' // No smooth scroll
-        })
-        }
-    }, [postId, fetchedUserPosts])
+        getPost()
+    }, [postId])
+
+    if(status === 'unauthenticated'){
+      router.replace('/sign-in')
+      }   
+    
+      if(status ==='loading'){
+        return <div className="w-full flex justify-center m-3"><Loader2 className="mr-2 h-8 w-8 animate-spin"></Loader2><p className="text-lg sm:text-2xl">Loading..</p></div>
+      }
 
   return (
-    <div ref={containerRef} className="w-full h-screen overflow-auto">
+    <div className="w-full h-screen overflow-auto">
+
         {
-          fetchedUserPosts[0]?.all_posts?.map((post:any,index:any)=>(
-            <div 
-                  key={post._id} 
-                  ref={(el) => { postRefs.current[post._id] = el }}
-                >
+          loading && <div className="w-full flex justify-center m-3"><Loader2 className="mr-2 h-8 w-8 animate-spin"></Loader2><p className="text-lg sm:text-2xl">Loading..</p></div>
+        } 
+
+        {
+          posts?.length > 0 ? (
+            posts?.map((post:any,index:any)=>(
+              <div key={post._id} >
                     <PostPage
-                        avatar={fetchedUserPosts[0]?.avatar}
-                        username={fetchedUserPosts[0]?.username}
-                        postUrl={post?.postUrl}
-                        postId={post?._id}
-                        caption={post?.caption}
-                        likeCount={post?.likeCount}
+                    username={post.post_owner[0].username}
+                    avatar={post.post_owner[0].avatar}
+                    postId={post._id}
+                    postUrl={post.postUrl}
+                    caption={post.caption}
+                    likeCount={post.likeCount}
                     />
-                </div>
-          ))
+                  </div>
+            ))
+          ):(<div></div>)
         }
     </div>
   )
