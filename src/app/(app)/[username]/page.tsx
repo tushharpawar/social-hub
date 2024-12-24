@@ -58,9 +58,8 @@ export default function Page() {
       );
 
       dispatch(setFetchedUserPosts(response.data.message))
-        console.log("Users posts fetched by username", response.data.message);
     } catch (error) {
-      console.log("Error while fetching posts of user in profile", error);
+      // console.log("Error while fetching posts of user in profile", error);
     }
   };
 
@@ -77,7 +76,6 @@ export default function Page() {
 
         if(response.status === 200){
             dispatch(setUserProfile(response.data.message));
-            console.log("fetched user from url", response.data.message);
             setLoading(false)   
         }
       } catch (error: unknown) {
