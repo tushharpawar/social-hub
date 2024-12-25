@@ -4,9 +4,9 @@ Social-Hub is a modern social media web appliication to connect people.
 
 ## Url
 
-Site URL: ([Social-hub](https://social-hub-web.netlify.app/))
+Site URL: https://social-hub-web.netlify.app/
 
----
+
 ## Tech stack
 - Next.js
 - Tailwind CSS
@@ -16,7 +16,7 @@ Site URL: ([Social-hub](https://social-hub-web.netlify.app/))
 - GetStream.io
 - ZOHO
 
----
+
 ## Features
 
 - **User Authentication**: Secure login and registration with email verification and forget password.
@@ -29,5 +29,3 @@ Site URL: ([Social-hub](https://social-hub-web.netlify.app/))
 - **User Profile**:Follow user ,share profile,explore posts.
 - **Save**:Watch saved posts.
 - **Settings**:Enable/desable darkmode,change password & logout function.
-
----
