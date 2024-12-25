@@ -1,7 +1,7 @@
 # Social-Hub
 
 Social-Hub is a modern social media web appliication to connect people.
----
+
 ## Url
 
 Site URL: ([Social-hub](https://social-hub-web.netlify.app/))
